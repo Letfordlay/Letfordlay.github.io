@@ -7,7 +7,7 @@
 
 <header><center>Welcome to Letfordlay Gaming!</center></header><br />
 
-<header><center>Stick Ranger</center></header><br />
+<header><center>Powdergame</center></header><br />
 
 <aside><a href="index.html" style="color:white;">Home</a><br />
 <a href="Videos.html" style="color:white;">Videos</a><br /><br />
@@ -15,28 +15,14 @@
 <a href="DoubleWires.html" style="color:white;">Double Wires</a><br />
 <a href="StickRanger.html" style="color:white;">Stick Ranger</a></aside><br />
 
-<p><center><SCRIPT>
-function cookie_get(nm){
-	var r='';
-	if(document.cookie){
-		var c=document.cookie.split("; ");
-		for(var i=0; i<c.length; i++){
-			var k=c[i].split("=");
-			if(k[0]==nm && k[1]!=""){
-				r=k[1].split("+");
-				break;
-			}
-		}
-		for(i=0; i<r.length; i++)
-			r[i]=decodeURIComponent(r[i]);
-	}
-	return(r);
-}
+<p><center><IFRAME ID="gmi" SRC="/Games/Powdergame/game.html" SCROLLING="no" STYLE="WIDTH:400px;HEIGHT:456px;" ONLOAD="adl();"></IFRAME></DIV><DIV CLASS="tt" STYLE="HEIGHT:20px;WIDTH:100%;MAX-WIDTH:400px;"><DIV ID="facebook"><SCRIPT>
+facebook('\/en\/javagame\/dust\/','Physics Simulation Game | Powder Game');
 </SCRIPT>
-</HEAD><BODY><CANVAS ID="cv" ONMOUSEDOWN="top.gmi.focus();"></CANVAS><SCRIPT SRC="/Games/Powdergame/dust.js"></SCRIPT><SCRIPT>
-var src_ck=cookie_get("user");
-Init(src_ck[3],1,"");
-</SCRIPT></p>
+</DIV></DIV>
+<!-- google_ad_section_start(weight=ignore) -->
+<DIV ID="save" STYLE="HEIGHT:144px;MARGIN:14px auto;OVERFLOW:hidden;"></DIV><SCRIPT>
+ajax('score\/dust_4works.php?lg=1&n=1&v=9.5','dust_4works2_html5');
+</SCRIPT></center></p>
 
 </body>
 </html>
