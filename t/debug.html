@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>WebCraft</title>
+		
+		<!-- Character encoding -->
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		
+		<!-- Stylesheet -->
+		<link href="style/main.css" rel="stylesheet" type="text/css">
+		<link href="style/debug.css" rel="stylesheet" type="text/css">
+		
+		<!-- Modules -->
+		<script src="js/glMatrix-1.2.min.js" type="text/javascript"></script> 
+		<script src="js/blocks.js" type="text/javascript"></script>
+		<script src="js/helpers.js" type="text/javascript"></script>
+		<script src="js/generator.js" type="text/javascript"></script>
+		<script src="js/world.js" type="text/javascript"></script>
+		<script src="js/render.js" type="text/javascript"></script>
+		<script src="js/physics.js" type="text/javascript"></script>
+		<script src="js/player.js" type="text/javascript"></script>
+		<script src="js/fps.js" type="text/javascript"></script>
+	</head>
+	
+	<body oncontextmenu="return false">
+		<!-- Render surface -->
+		<canvas id="renderSurface"></canvas>
+		
+		<!-- Material selection -->
+		<div id="debug_input">
+			<input type="text" id="roughness" value="80">
+			<input type="text" id="smoothAmount" value="2">
+			<input type="text" id="smoothAmt" value="0.1">
+			<input type="button" id="debugVisible" value="deselect">
+		</div>
+
+		
+		<div id="blocks" style="display: none;">
+			Wybor klocka:
+			<tr></tr>
+		</div>
+		<!-- Infobox -->
+		<div id="chatbox">
+			<span id="chatbox_text">WebCraft v0.2</br>
+			<div id="fps"></div></span>
+		</div>
+		<table id="materialSelector">
+			<tr></tr>
+		</table>
+		
+		<!-- Initialisation code -->
+		<script type="text/javascript">			
+			// Create a new flat world
+			var world = new World( 60,60, 100, 80, 3, 0.1 );
+			world.createWorld();
+			
+			// Set up renderer
+			var render = new Renderer( "renderSurface" );
+			render.setWorld( world, 8 );
+			render.setPerspective( 80, 0.01, 220 );
+			
+			// Create physics simulator
+			//var physics = new Physics();
+			//physics.setWorld( world );
+			
+			// Create new local player
+			var player = new Player();
+			player.setWorld( world );
+			player.setInputCanvas( "renderSurface", 3 );
+			player.setMaterialSelector( "materialSelector" );
+			
+			// Render loop			
+			setInterval( function()
+			{
+				var time = new Date().getTime() / 1000.0;
+				
+				// Simulate physics
+				//physics.simulate();
+				
+				// Update local player
+				player.update();
+				
+				// Build a chunk
+				render.buildChunks( 30 );
+				
+				// Draw world
+				render.setCamera( player.getEyePos().toArray(), player.angles );
+				render.draw();
+				
+				while ( new Date().getTime() / 1000 - time < 0.016 );
+			}, 1 );
+		</script>
+	</body>
+</html>

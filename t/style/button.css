@@ -1,0 +1,31 @@
+@font-face {
+	font-family: minecraftia;
+	src: url( 'minecraftia.ttf' );
+}
+
+.button{
+	height: 40px;
+	width: 405px;
+	text-decoration: none;
+	text-align: center;
+	color: white;
+	cursor: pointer;
+	background: url('../media/btn1.png') no-repeat;
+	font-family: minecraftia;
+	line-height: 26px;
+	padding-top: 6px;
+}
+			
+.button:hover{
+	background: url('../media/btn2.png') no-repeat;
+}
+
+.button a:link {
+    text-decoration: none;
+    color: white;
+}
+
+.button a:visited {
+    text-decoration: none;
+    color: white;
+}
