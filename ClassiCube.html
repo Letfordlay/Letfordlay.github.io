@@ -22,8 +22,20 @@ $(function(){
 </script></center></p>
 
 <script>
-$("body").click(function(){
-  $('#iframe-element').focus();
+function setFocusThickboxIframe() {
+    var iframe = $("#TB_iframeContent")[0];
+    iframe.contentWindow.focus();
+}
+
+$(document).ready(function(){
+   $("#id_cmd_open").click(function(){
+      /*
+         run thickbox code here to open lightbox,
+         like tb_show("google this!", "http://www.google.com");
+       */
+      setTimeout(setFocusThickboxIframe, 100);
+      return false;
+   });
 });
 </script>
 
