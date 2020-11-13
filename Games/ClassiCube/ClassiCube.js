@@ -38,8 +38,8 @@ Module.expectedDataFileDownloads++;
     } else {
       throw 'using preloaded data can only be done on a web page or in a web worker';
     }
-    var PACKAGE_NAME = '/static/default.zip';
-    var REMOTE_PACKAGE_BASE = '/static/default.zip';
+    var PACKAGE_NAME = '/Games/ClassiCube/Games/ClassiCube/static/default.zip';
+    var REMOTE_PACKAGE_BASE = '/Games/ClassiCube/static/default.zip';
     if (typeof Module['locateFilePackage'] === 'function' && !Module['locateFile']) {
       Module['locateFile'] = Module['locateFilePackage'];
       err('warning: you defined Module.locateFilePackage, that has been renamed to Module.locateFile (using your locateFilePackage for now)');
@@ -167,10 +167,10 @@ Module['FS_createPath']('/', 'texpacks', true, true);
           for (var i = 0; i < files.length; ++i) {
             DataRequest.prototype.requests[files[i].filename].onload();
           }
-              Module['removeRunDependency']('datafile_/static/default.zip');
+              Module['removeRunDependency']('datafile_/Games/ClassiCube/static/default.zip');
 
     };
-    Module['addRunDependency']('datafile_/static/default.zip');
+    Module['addRunDependency']('datafile_/Games/ClassiCube/static/default.zip');
   
     if (!Module.preloadResults) Module.preloadResults = {};
   
