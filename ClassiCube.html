@@ -21,8 +21,20 @@ $(function(){
 });
 </script></center></p>
 
+
 <script>
-document.getElementsByName("Game")[0].contentWindow.document.body.focus();
+function setFocusThickboxIframe() {
+    var iframe = $("#TB_iframeContent")[0];
+    iframe.contentWindow.focus();
+}
+
+$(document).ready(function(){
+   $("#id_cmd_open").click(function(){
+         tb_show("Play!", "Games/ClassiCube/ClassiCube.html");
+      setTimeout(setFocusThickboxIframe, 100);
+      return false;
+   });
+});
 </script>
 
 <p><center><iframe name="Game" src="Games/ClassiCube/ClassiCube.html" height="500" width="825" frameborder="0"></iframe></center></p>
