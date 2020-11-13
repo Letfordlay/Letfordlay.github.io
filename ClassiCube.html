@@ -22,24 +22,10 @@ $(function(){
 </script></center></p>
 
 <script>
-function setFocusThickboxIframe() {
-    var iframe = $("#TB_iframeContent")[0];
-    iframe.contentWindow.focus();
-}
-
-$(document).ready(function(){
-   $("#id_cmd_open").click(function(){
-      /*
-         run thickbox code here to open lightbox,
-         like tb_show("google this!", "http://www.google.com");
-       */
-      setTimeout(setFocusThickboxIframe, 100);
-      return false;
-   });
-});
+document.getElementsByName("Game")[0].contentWindow.document.body.focus();
 </script>
 
-<p><center><iframe src="Games/ClassiCube/ClassiCube.html" height="400" width="700" frameborder="0"></iframe></center></p>
+<p><center><iframe name="Game" src="Games/ClassiCube/ClassiCube.html" height="400" width="700" frameborder="0"></iframe></center></p>
 
 <section><center></center></section>
 
