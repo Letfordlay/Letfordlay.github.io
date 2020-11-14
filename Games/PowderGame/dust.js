@@ -152,8 +152,8 @@ function Lb(a, b, c) {
         Zb = k(512 * Math.random()) | 1;
         for (a = 0; a < g * ca; a++) l[a] = 4278190080;
         for (a = 0; a < g * ca * 4; a++) $b[a] = 255;
-        m.e("Games/PowderGame//dust/font.gif", 8, 12);
-        ac.e("Games/PowderGame//dust/wheel.gif");
+        m.e("dust/font.gif", 8, 12);
+        ac.e("dust/wheel.gif");
         dc() ? Kb-- : Kb++
     }
     1 == Kb && (ec(m.o), ec(ac), 0 != fc ? gc(Lb, hc()) : Kb++);
