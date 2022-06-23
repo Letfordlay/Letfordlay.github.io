@@ -1,6 +1,8 @@
 body {
 	background-image: url("Images/bg.png");
 	background-color: black;
+	background-repeat: no-repeat;
+	background-size: auto;
 }
 
 aside {
