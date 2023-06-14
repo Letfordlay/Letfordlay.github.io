@@ -2,20 +2,21 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="Style.css">
-<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 <body>
 
-<header><center>404 Page Not Found</center></header><br />
-
+<header><center>Error 404 Page not found</center></header><br />
+  
 <p><center>
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <div id="Menu">
 
 </div>
 
-<section><center><img src="/Images/glitchedlogo.gif" alt="Glitched Logo" /></center></section>
-<section><center><a href="index.html" style="color:white;">Home</a><br /></center></section>
-
+<script>
+$(function(){
+  $("#Menu").load("Menu.html");
+});
+</script>
 </body>
 </html>
