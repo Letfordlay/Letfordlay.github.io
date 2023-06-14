@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" translate="no" class="notranslate">
-	<head>
+	<head><script src="https://polyfill.io/v3/polyfill.min.js" crossorigin="anonymous"></script>
 		<meta charset="utf-8">
 		<title>Marble Blast Web</title>
 		<meta name="description" content="A web port of Marble Blast Gold and Marble Blast Platinum: In this 3D platformer classic, race your marble to the finish as fast as possible in more than 4100 diverse levels taken from Marble Blast Gold, Platinum and Ultra. Play Marble Blast online right in your browser or on your mobile device.">
@@ -13,30 +13,11 @@
 		<!--<meta name="DISABLED twitter:card" content="summary_large_image">-->
 		<link rel="shortcut icon" href="./assets/img/mbp.png" id="favicon">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-		<link rel="manifest" href="manifest.json">
+		<link rel="manifest" href="/manifest.json">
 		<link rel="apple-touch-icon" href="./assets/img/app-icon/180x180.png">
 		<link rel="apple-touch-icon image_src" href="./assets/img/app-icon/180x180.png">
 
-		<link rel="stylesheet" href="./css/main.css">
-		<link rel="stylesheet" href="./css/popup.css">
-		<link rel="stylesheet" href="./css/home.css">
-		<link rel="stylesheet" href="./css/home_mbp.css">
-		<link rel="stylesheet" href="./css/level_select.css">
-		<link rel="stylesheet" href="./css/level_select_mbp.css">
-		<link rel="stylesheet" href="./css/loading.css">
-		<link rel="stylesheet" href="./css/loading_mbp.css">
-		<link rel="stylesheet" href="./css/help.css">
-		<link rel="stylesheet" href="./css/help_mbp.css">
-		<link rel="stylesheet" href="./css/options.css">
-		<link rel="stylesheet" href="./css/options_mbp.css">
-		<link rel="stylesheet" href="./css/hud.css">
-		<link rel="stylesheet" href="./css/touch_controls.css">
-		<link rel="stylesheet" href="./css/pause_screen.css">
-		<link rel="stylesheet" href="./css/pause_screen_mbp.css">
-		<link rel="stylesheet" href="./css/finish_screen.css">
-		<link rel="stylesheet" href="./css/finish_screen_mbp.css">
-		<link rel="stylesheet" href="./css/video_renderer.css">
-	</head>
+	<link rel="stylesheet" href="./bundles/eb51b4d8bc68.css"></head>
 	<body>
 		<!-- https://stackoverflow.com/questions/18524177/strange-click-event-bubble-on-iphone-safari-that-it-stop-before-bubbling-to-docu -->
 		<div onclick="void 0;" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1000;"></div>
@@ -182,7 +163,7 @@
 		<div id="mbp-menu" class="hidden">
 			<img id="mbp-background-image">
 			<p id="mbp-version"></p>
-			<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#29abe0', 'O5O43J2HG');kofiwidget2.draw();</script>
+			<script type="text/javascript" src="https://ko-fi.com/widgets/widget_2.js"></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#29abe0', 'O5O43J2HG');kofiwidget2.draw();</script>
 
 			<div id="mbp-home-screen" class="hidden">
 				<div class="_inner">
@@ -301,15 +282,7 @@
 			<img src="./assets/ui/background.jpg" id="background-image">
 			<p id="version"></p>
 			
-			<style>
-				.btn-container {
-					position: absolute;
-					bottom: 10px;
-					right: 10px;
-					z-index: 1;
-				}
-			</style>
-			<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#29abe0', 'O5O43J2HG');kofiwidget2.draw();</script>
+			<script type="text/javascript" src="https://ko-fi.com/widgets/widget_2.js"></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee', '#29abe0', 'O5O43J2HG');kofiwidget2.draw();</script>
 
 			<div id="home-screen" class="hidden">
 				<div class="_inner">
@@ -667,11 +640,9 @@
 		<div style="font-family: MarkerFelt; opacity: 0; pointer-events: none;">ABC</div>
 		<div style="font-family: Chakra Petch; opacity: 0; pointer-events: none;">ABC</div>
 		
-		<script src="./lib/oggdec.js" defer></script>
-		<script src="./lib/pako.js" defer></script>
-		<script src="./lib/jszip.js" defer></script>
+		<script src="./bundles/6d5ad2a5e040.js" defer></script>
 		<div></div> <!-- Force Sarcina to put these into different bundles -->
 		<!-- Main bundle -->
-		<script src="./js/bundle.js" defer></script>
+		<script src="./bundles/133e739ed0b7.js" defer></script>
 	</body>
 </html>
