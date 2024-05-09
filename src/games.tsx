@@ -134,5 +134,13 @@ export const flashGames: Record<string, GameEntry> = {
                 <embed src="/Games/TheWorldsHardestGame.swf" width="600" height="465" />
             </object>
         )
+    },
+    mcgruff: {
+        name: "McGruff's Brick Smash",
+        content: (
+            <object>
+                <embed src="/Games/bricksmash.swf" width="600" height="465" />
+            </object>
+        )
     }
 };
