@@ -119,12 +119,15 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
-    mcgruff: {
+    "mcgruff-bricksmash": {
         name: "McGruff's Brick Smash",
         content: (
-            <object>
-                <embed src="/Games/McGruff Bricksmash/bricksmash.swf" width="600" height="465" />
-            </object>
+            <iframe
+                src="/Games/McGruff Bricksmash/index.html"
+                width="640"
+                height="485"
+                style={{ border: 0 }}
+            />
         )
     },
     portal: {
@@ -142,5 +145,5 @@ export const flashGames: Record<string, GameEntry> = {
                 <embed src="/Games/TheWorldsHardestGame.swf" width="600" height="465" />
             </object>
         )
-    },
+    }
 };
