@@ -171,7 +171,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Happy Wheels",
         content: (
             <object>
-                <embed src="/Games/Happy Wheels/Happy-Wheels.swf" />
+                <embed src="/Games/Happy Wheels/hwpreloader.swf" />
             </object>
         )
     },
