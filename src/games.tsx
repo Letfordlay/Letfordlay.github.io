@@ -6,7 +6,7 @@ export const games: Record<string, GameEntry> = {
         name: "Google Pacman",
         content: (
             <iframe
-                src="/Games/GooglePacman/GooglePacman.html"
+                src="/Games/Google Pacman/GooglePacman.html"
                 height="400"
                 width="700"
                 style={{ border: 0 }}
@@ -79,11 +79,43 @@ export const games: Record<string, GameEntry> = {
 };
 
 export const flashGames: Record<string, GameEntry> = {
-    btd5: {
+    "bloons-tower-defense-3": {
+        name: "Bloons Tower Defense 3",
+        content: (
+            <object>
+                <embed src="/Games/bloonstowerdefense3.swf" width="600" height="465" />
+            </object>
+        )
+    },
+    "bloons-tower-defense-4": {
+        name: "Bloons Tower Defense 4",
+        content: (
+            <object>
+                <embed src="/Games/bloonstowerdefense4.swf" width="600" height="465" />
+            </object>
+        )
+    },
+    "bloons-tower-defense-5": {
         name: "Bloons Tower Defense 5",
         content: (
             <object>
-                <embed src="/Games/BTD5.swf" width="600" height="465" />
+                <embed src="/Games/bloonstowerdefense5.swf" width="600" height="465" />
+            </object>
+        )
+    },
+    boombot: {
+        name: "BOOMBOT",
+        content: (
+            <object>
+                <embed src="/Games/boombot.swf" width="600" height="465" />
+            </object>
+        )
+    },
+    "boombot-2": {
+        name: "BOOMBOT 2",
+        content: (
+            <object>
+                <embed src="/Games/boombot2.swf" width="600" height="465" />
             </object>
         )
     },
@@ -103,6 +135,14 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    cubefield: {
+        name: "CUBEFIELD",
+        content: (
+            <object>
+                <embed src="/Games/cubefield.swf" width="600" height="465" />
+            </object>
+        )
+    },
     "double-wires": {
         name: "Double Wires",
         content: (
@@ -111,11 +151,43 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "free-rider-2": {
+        name: "FREE RIDER 2",
+        content: (
+            <object>
+                <embed src="/Games/freerider2.swf" width="600" height="465" />
+            </object>
+        )
+    },
     "happy-wheels": {
         name: "Happy Wheels",
         content: (
             <object>
                 <embed src="/Games/Happy Wheels/Happy-Wheels.swf" />
+            </object>
+        )
+    },
+    "interactive-buddy": {
+        name: "Interactive Buddy",
+        content: (
+            <object>
+                <embed src="/Games/interactivebuddy.swf" width="600" height="465" />
+            </object>
+        )
+    },
+    "interactive-buddy-2": {
+        name: "Interactive Buddy 2",
+        content: (
+            <object>
+                <embed src="/Games/interactivebuddy2.swf" width="600" height="465" />
+            </object>
+        )
+    },
+    "line-rider-2": {
+        name: "Line Rider 2",
+        content: (
+            <object>
+                <embed src="/Games/linerider2.swf" width="600" height="465" />
             </object>
         )
     },
@@ -134,15 +206,23 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Portal",
         content: (
             <object>
-                <embed src="/Games/Portal.swf" width="600" height="320" />
+                <embed src="/Games/portal.swf" width="600" height="320" />
             </object>
         )
     },
-    twhg: {
+    "raft-wars": {
+        name: "RAFT WARS",
+        content: (
+            <object>
+                <embed src="/Games/raftwars.swf" width="600" height="320" />
+            </object>
+        )
+    },
+    "the-worlds-hardest-game": {
         name: "The World's Hardest Game",
         content: (
             <object>
-                <embed src="/Games/TheWorldsHardestGame.swf" width="600" height="465" />
+                <embed src="/Games/theworldshardestgame.swf" width="600" height="465" />
             </object>
         )
     }
