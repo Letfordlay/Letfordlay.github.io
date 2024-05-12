@@ -104,7 +104,7 @@ export const flashGames: Record<string, GameEntry> = {
         )
     },
     boombot: {
-        name: "BOOMBOT",
+        name: "Boombot",
         content: (
             <object>
                 <embed src="/Games/boombot.swf" width="600" height="465" />
@@ -112,7 +112,7 @@ export const flashGames: Record<string, GameEntry> = {
         )
     },
     "boombot-2": {
-        name: "BOOMBOT 2",
+        name: "Boombot 2",
         content: (
             <object>
                 <embed src="/Games/boombot2.swf" width="600" height="465" />
@@ -136,7 +136,7 @@ export const flashGames: Record<string, GameEntry> = {
         )
     },
     cubefield: {
-        name: "CUBEFIELD",
+        name: "Cubefield",
         content: (
             <object>
                 <embed src="/Games/cubefield.swf" width="600" height="465" />
@@ -151,8 +151,16 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+	"dune-buggy": {
+        name: "Dune Buggy",
+        content: (
+            <object>
+                <embed src="/Games/dunebuggy.swf" width="700" height="400" />
+            </object>
+        )
+    },
     "free-rider-2": {
-        name: "FREE RIDER 2",
+        name: "Free Rider 2",
         content: (
             <object>
                 <embed src="/Games/freerider2.swf" width="600" height="465" />
@@ -211,7 +219,7 @@ export const flashGames: Record<string, GameEntry> = {
         )
     },
     "raft-wars": {
-        name: "RAFT WARS",
+        name: "Raft Wars",
         content: (
             <object>
                 <embed src="/Games/raftwars.swf" width="600" height="320" />
