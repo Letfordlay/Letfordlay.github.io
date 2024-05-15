@@ -7,7 +7,9 @@ export default function Home() {
                 <title>Letfordlay Gaming</title>
             </Head>
 
-            <p>Home</p>
+            <p>
+				Home
+			</p>
 
             <p>
                 This is a very cool website
