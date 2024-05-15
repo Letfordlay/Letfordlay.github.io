@@ -10,8 +10,7 @@ export default function Home() {
             <p>Home</p>
 
             <p>
-                This website contains games made by amazing people including my friend jcv8000,
-                D_OP_I, and myself.
+                This is a very cool website
             </p>
         </>
     );
