@@ -83,7 +83,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Bloons Tower Defense 3",
         content: (
             <object>
-                <embed src="/Games/bloonstowerdefense3.swf" width="600" height="465" />
+                <embed src="/Games/bloonstowerdefense3.swf" width="600" height="452" />
             </object>
         )
     },
@@ -91,7 +91,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Bloons Tower Defense 4",
         content: (
             <object>
-                <embed src="/Games/bloonstowerdefense4.swf" width="600" height="465" />
+                <embed src="/Games/bloonstowerdefense4.swf" width="500" height="500" />
             </object>
         )
     },
@@ -99,7 +99,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Bloons Tower Defense 5",
         content: (
             <object>
-                <embed src="/Games/bloonstowerdefense5.swf" width="600" height="465" />
+                <embed src="/Games/bloonstowerdefense5.swf" width="600" height="466" />
             </object>
         )
     },
@@ -107,7 +107,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Boombot",
         content: (
             <object>
-                <embed src="/Games/boombot.swf" width="600" height="465" />
+                <embed src="/Games/boombot.swf" width="600" height="450" />
             </object>
         )
     },
@@ -115,7 +115,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Boombot 2",
         content: (
             <object>
-                <embed src="/Games/boombot2.swf" width="600" height="465" />
+                <embed src="/Games/boombot2.swf" width="600" height="450" />
             </object>
         )
     },
@@ -123,7 +123,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Bowman 2",
         content: (
             <object>
-                <embed src="/Games/Bowman 2.swf" width="600" height="465" />
+                <embed src="/Games/bowman2.swf" width="678" height="428" />
             </object>
         )
     },
@@ -131,7 +131,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Cat Mario",
         content: (
             <object>
-                <embed src="/Games/cat mario.swf" width="750" height="660" />
+                <embed src="/Games/catmario.swf" width="750" height="660" />
             </object>
         )
     },
@@ -147,7 +147,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Double Wires",
         content: (
             <object>
-                <embed src="/Games/DoubleWires.swf" width="700" height="400" />
+                <embed src="/Games/doublewires.swf" width="700" height="400" />
             </object>
         )
     },
@@ -155,7 +155,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Dune Buggy",
         content: (
             <object>
-                <embed src="/Games/dunebuggy.swf" width="700" height="400" />
+                <embed src="/Games/dunebuggy.swf" width="714" height="500" />
             </object>
         )
     },
@@ -163,7 +163,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Free Rider 2",
         content: (
             <object>
-                <embed src="/Games/freerider2.swf" width="600" height="465" />
+                <embed src="/Games/freerider2.swf" width="498" height="398" />
             </object>
         )
     },
@@ -182,7 +182,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Interactive Buddy",
         content: (
             <object>
-                <embed src="/Games/interactivebuddy.swf" width="600" height="465" />
+                <embed src="/Games/interactivebuddy.swf" width="600" height="436" />
             </object>
         )
     },
@@ -190,7 +190,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Line Rider 2",
         content: (
             <object>
-                <embed src="/Games/linerider2.swf" width="600" height="465" />
+                <embed src="/Games/linerider2.swf" width="700" height="500" />
             </object>
         )
     },
@@ -199,8 +199,8 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <iframe
                 src="/Games/McGruff Bricksmash/index.html"
-                width="640"
-                height="485"
+                width="708"
+                height="545"
                 style={{ border: 0 }}
             />
         )
@@ -209,7 +209,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Portal",
         content: (
             <object>
-                <embed src="/Games/portal.swf" width="600" height="320" />
+                <embed src="/Games/portal.swf" width="700" height="394" />
             </object>
         )
     },
@@ -217,7 +217,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Raft Wars",
         content: (
             <object>
-                <embed src="/Games/raftwars.swf" width="600" height="320" />
+                <embed src="/Games/raftwars.swf" width="666" height="500" />
             </object>
         )
     },
