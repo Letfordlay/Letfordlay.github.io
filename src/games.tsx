@@ -137,7 +137,7 @@ export const flashGames: Record<string, GameEntry> = {
 					src="/Games/Call of Duty Zombies/index.html"
 					aspect-ratio="16/9"
 					width="66.66%"
-					height="auto"
+					height="width*56.25%"
 					style={{ border: 0 }}
 				/>
 
