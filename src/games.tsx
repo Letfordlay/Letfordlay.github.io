@@ -133,14 +133,13 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Call of Duty: Zombies",
         content: (
             <>
-				<div className="responsive">
-					<iframe
-						src="/Games/Call of Duty Zombies/index.html"
-						width="1280"
-						height="720"
-						style={{ border: 0 }}
-					/>
-				</div>
+				<iframe
+					src="/Games/Call of Duty Zombies/index.html"
+					aspect-ratio="16/9"
+					width="66.66%"
+					height="auto"
+					style={{ border: 0 }}
+				/>
 
                 <br />
 
