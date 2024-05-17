@@ -2,6 +2,23 @@
 export type GameEntry = { name: string; content: React.ReactNode };
 
 export const games: Record<string, GameEntry> = {
+	"call-of-duty-zombies": {
+        name: "Call of Duty: Zombies",
+        content: (
+            <>
+				<iframe
+					src="/Games/Call of Duty Zombies/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://github.com/nzp-team/nzp-team.github.io/tree/main">
+                    <img width="240px" alt="Original on Github" src="/img/github.png" />
+                </a>
+            </>
+        )
+    },
     "google-pacman": {
         name: "Google Pacman",
         content: (
@@ -36,9 +53,7 @@ export const games: Record<string, GameEntry> = {
             <div className="responsive">
 					<iframe
 						src="/Games/Minecraft Classic/index.html"
-						width="1280"
-						height="720"
-						style={{ border: 0 }}
+						style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 					/>
 				</div>
         )
@@ -127,23 +142,6 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed src="/Games/bowman2.swf" width="678" height="428" />
             </object>
-        )
-    },
-	"call-of-duty-zombies": {
-        name: "Call of Duty: Zombies",
-        content: (
-            <>
-				<iframe
-					src="/Games/Call of Duty Zombies/index.html"
-					style={{ "border" : "0", "width" : "66.66vw", "height" : "56.25vw" }}
-				/>
-
-                <br />
-
-                <a href="https://github.com/nzp-team/nzp-team.github.io/tree/main">
-                    <img width="240px" alt="Original on Github" src="/img/github.png" />
-                </a>
-            </>
         )
     },
     "cat-mario": {
