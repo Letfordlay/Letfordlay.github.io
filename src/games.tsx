@@ -14,7 +14,7 @@ export const games: Record<string, GameEntry> = {
                 <br />
 
                 <a href="https://github.com/nzp-team/nzp-team.github.io/tree/main">
-                    <img width="240px" alt="Original on Github" src="/img/github.png" />
+                    <img width="180px" alt="Original on Github" src="/img/github.png" />
                 </a>
             </>
         )
@@ -42,7 +42,7 @@ export const games: Record<string, GameEntry> = {
                 <br />
 
                 <a href="https://github.com/Vanilagy/MarbleBlast">
-                    <img width="240px" alt="Original on Github" src="/img/github.png" />
+                    <img width="180px" alt="Original on Github" src="/img/github.png" />
                 </a>
             </>
         )
