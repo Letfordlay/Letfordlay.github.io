@@ -127,6 +127,17 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+	"call-of-duty-zombies": {
+        name: "Call of Duty: Zombies",
+        content: (
+            <iframe
+                src="/Games/Call of Duty Zombies/index.html"
+                width="640"
+                height="480"
+                style={{ border: 0 }}
+            />
+        )
+    },
     "cat-mario": {
         name: "Cat Mario",
         content: (
