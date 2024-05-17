@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import './styles.css';
 export type GameEntry = { name: string; content: React.ReactNode };
 
 export const games: Record<string, GameEntry> = {
@@ -34,7 +33,7 @@ export const games: Record<string, GameEntry> = {
     "minecraft-classic": {
         name: "Minecraft Classic",
         content: (
-            <div class="responsive">
+            <div className="responsive">
 					<iframe
 						src="/Games/Minecraft Classic/index.html"
 						width="1280"
@@ -134,7 +133,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Call of Duty: Zombies",
         content: (
             <>
-				<div class="responsive">
+				<div className="responsive">
 					<iframe
 						src="/Games/Call of Duty Zombies/index.html"
 						width="1280"
