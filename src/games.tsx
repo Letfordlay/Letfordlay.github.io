@@ -33,12 +33,14 @@ export const games: Record<string, GameEntry> = {
     "minecraft-classic": {
         name: "Minecraft Classic",
         content: (
-            <iframe
-                src="/Games/Minecraft Classic/index.html"
-                height="400"
-                width="700"
-                style={{ border: 0 }}
-            />
+            <div class="responsive">
+					<iframe
+						src="/Games/Minecraft Classic/index.html"
+						width="1280"
+						height="720"
+						style={{ border: 0 }}
+					/>
+				</div>
         )
     },
     "powder-game": {
@@ -130,12 +132,22 @@ export const flashGames: Record<string, GameEntry> = {
 	"call-of-duty-zombies": {
         name: "Call of Duty: Zombies",
         content: (
-            <iframe
-                src="/Games/Call of Duty Zombies/index.html"
-                width="640"
-                height="480"
-                style={{ border: 0 }}
-            />
+            <>
+				<div class="responsive">
+					<iframe
+						src="/Games/Call of Duty Zombies/index.html"
+						width="1280"
+						height="720"
+						style={{ border: 0 }}
+					/>
+				</div>
+
+                <br />
+
+                <a href="https://github.com/nzp-team/nzp-team.github.io/tree/main">
+                    <img width="240px" alt="Original on Github" src="/img/github.png" />
+                </a>
+            </>
         )
     },
     "cat-mario": {
