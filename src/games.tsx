@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import './styles.css';
 export type GameEntry = { name: string; content: React.ReactNode };
 
 export const games: Record<string, GameEntry> = {
