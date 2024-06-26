@@ -935,6 +935,7 @@ const workerBody = () => {
 	let url: string;
 	let muxer: WebMMuxer;
 	let videoEncoder: VideoEncoder;
+	// @ts-ignore
 	let audioEncoder: AudioEncoder;
 	let fileWritableStream: FileSystemWritableFileStream;
 	let width: number;
