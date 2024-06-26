@@ -34,10 +34,10 @@ export const games: Record<string, GameEntry> = {
         name: "Marble Blast",
         content: (
             <>
-                <object data="https://marbleblast.vaniverse.io/" width="600" height="400">
-                    <embed src="https://marbleblast.vaniverse.io/" />
-                    Error: Embedded data could not be displayed.
-                </object>
+                <iframe
+					src="/Games/Marble Blast/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
 
                 <br />
 
