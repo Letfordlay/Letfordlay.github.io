@@ -1001,6 +1001,7 @@ const workerBody = () => {
 		if (data.includeAudio) {
 			// @ts-ignore
 			audioEncoder = new AudioEncoder({
+				// @ts-ignore
 				output: (chunk, metadata) => {
 					muxer.addAudioChunk(chunk, metadata);
 					self.postMessage({
