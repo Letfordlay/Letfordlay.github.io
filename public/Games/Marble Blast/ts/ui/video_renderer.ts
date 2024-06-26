@@ -1009,6 +1009,7 @@ const workerBody = () => {
 						timestamp: chunk.timestamp
 					});
 				},
+				// @ts-ignore
 				error: e => console.error(e)
 			});
 			audioEncoder.configure({
