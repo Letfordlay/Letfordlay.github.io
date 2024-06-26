@@ -14,7 +14,7 @@
 		"target": "es2019",
         "module": "esnext",
         "moduleResolution": "bundler",
-		"suppressImplicitAnyIndexErrors": true
+		"suppressImplicitAnyIndexErrors": true,
         "resolveJsonModule": true,
 		"noEmit": true,
         "isolatedModules": true,
