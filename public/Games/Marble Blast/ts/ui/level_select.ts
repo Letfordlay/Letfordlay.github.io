@@ -657,6 +657,7 @@ export abstract class LevelSelect {
 
 		let directoryHandle: FileSystemDirectoryHandle;
 		try {
+			// @ts-ignore
 			directoryHandle = await window.showDirectoryPicker({
 				mode: 'readwrite'
 			});
