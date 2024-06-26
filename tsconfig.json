@@ -8,6 +8,7 @@
 		"strictNullChecks": false,
         "noEmit": true,
         "esModuleInterop": true,
+		"target": "es2019",
         "module": "esnext",
         "moduleResolution": "bundler",
         "resolveJsonModule": true,
