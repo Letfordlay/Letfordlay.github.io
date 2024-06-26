@@ -76,6 +76,7 @@ export abstract class VideoRenderer {
 			let suggestedFilename = Util.removeSpecialChars(mission.title.toLowerCase().split(' ').map(x => Util.uppercaseFirstLetter(x)).join(''));
 
 			try {
+				// @ts-ignore
 				this.fileHandle = await window.showSaveFilePicker({
 					startIn: 'videos',
 					suggestedName: `${suggestedFilename}.webm`,
