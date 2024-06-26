@@ -1,17 +1,30 @@
 {
-	"compilerOptions": {
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"outDir": "./js",
-		"module": "es6",
-		"moduleResolution": "Node",
-		"target": "es2019",
-		"strict": true,
-		"strictNullChecks": false,
-		"lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker"],
+    "compilerOptions": {
+        "lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker"],
 		"allowSyntheticDefaultImports": true,
-		"types": ["@types/wicg-file-system-access", "@types/dom-webcodecs", "@types/dom-screen-wake-lock"]
-	},
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+		"strictPropertyInitialization": false,
+		"strictNullChecks": false,
+		"outDir": "./js",
+		"emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+		"experimentalDecorators": true,
+		"target": "es2019",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+		"suppressImplicitAnyIndexErrors": true
+        "resolveJsonModule": true,
+		"noEmit": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+		"types": ["@types/wicg-file-system-access", "@types/dom-webcodecs", "@types/dom-screen-wake-lock"],
+        "incremental": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"]
 }
