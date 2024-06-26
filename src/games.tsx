@@ -69,6 +69,32 @@ export const games: Record<string, GameEntry> = {
             />
         )
     },
+	"q1-infinity": {
+        name: "Q1 Infinity",
+        content: (
+            <>
+				<iframe
+					src="/Games/Q1 Infinity/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://github.com/phoboslab/q1k3">
+                    <img width="180px" alt="Original on Github" src="/img/github.png" />
+                </a>
+            </>
+        )
+    },
+	"q1k3": {
+        name: "Q1K3",
+        content: (
+			<iframe
+				src="/Games/Q1K3/index.html"
+				style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+			/>
+        )
+    },
     "stick-ranger": {
         name: "Stick Ranger",
         content: (
