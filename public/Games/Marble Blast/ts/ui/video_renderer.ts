@@ -1055,6 +1055,7 @@ const workerBody = () => {
 	};
 
 	const onAudioData = (data: {
+		// @ts-ignore
 		audioData: AudioData
 	}) => {
 		audioEncoder.encode(data.audioData);
