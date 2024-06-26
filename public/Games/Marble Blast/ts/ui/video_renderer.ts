@@ -835,6 +835,7 @@ class RenderingProcess {
 			}
 		}
 
+		// @ts-ignore
 		let audioData = new AudioData({
 			format: 'f32-planar',
 			sampleRate: OFFLINE_CONTEXT_SAMPLE_RATE,
