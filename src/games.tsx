@@ -47,15 +47,32 @@ export const games: Record<string, GameEntry> = {
             </>
         )
     },
+    "minecraft-b1.7.3": {
+        name: "Minecraft Beta 1.7.3",
+        content: (
+            <div className="responsive">
+				<iframe
+					src="/Games/Minecraft b1.7.3/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+					
+				<br />
+
+				<a href="https://github.com/leaningtech/browsercraft">
+					<img width="180px" alt="Original on Github" src="/img/github.png" />
+				</a>
+			</div>
+        )
+    },
     "minecraft-classic": {
         name: "Minecraft Classic",
         content: (
             <div className="responsive">
-					<iframe
-						src="/Games/Minecraft Classic/index.html"
-						style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-					/>
-				</div>
+				<iframe
+					src="/Games/Minecraft Classic/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+			</div>
         )
     },
     "powder-game": {
