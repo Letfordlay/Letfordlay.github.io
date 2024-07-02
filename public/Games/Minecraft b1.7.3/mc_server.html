@@ -20,10 +20,10 @@
 		// TODO: Run with nogui
 		cheerpjCreateDisplay(-1, -1, document.getElementById("display"));
 		// The server needs to write a few files to its cwd, copy it over to /files/
-		await installFile("https://archive.org/download/Minecraft-JE-Beta/b1.7.3/b1.7.3.jar", "/files/server_1.2.5.jar");
+		await installFile("https://archive.org/download/Minecraft-JE-Beta/b1.7.3/b1.7.3.jar", "/files/server_b1.7.3.jar");
 		// Copy over a modified configuration allowing any client to connect
 		await installFile("/server.properties", "/files/server.properties");
-		await cheerpjRunJar("/files/server_1.2.5.jar");
+		await cheerpjRunJar("/files/server_b1.7.3.jar");
 	}
 	runServer();
     </script>

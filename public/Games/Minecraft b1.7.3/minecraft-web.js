@@ -177,7 +177,7 @@ export default class MinecraftClient extends HTMLElement {
   
     this.#canvas.style.display = 'unset';
     window.lwjglCanvasElement = this.#canvas;
-    const exitCode = await cheerpjRunMain("net.minecraft.client.Minecraft", `/app/lwjgl-2.9.0.jar:/app/lwjgl_util-2.9.0.jar:${jarPath}`)
+    const exitCode = await cheerpjRunMain("net.minecraft.client.Minecraft", `https://github.com/Letfordlay/Letfordlay.github.io/tree/master/public/Games/Minecraft%20b1.7.3/lwjgl-2.9.0.jar:https://github.com/Letfordlay/Letfordlay.github.io/tree/master/public/Games/Minecraft%20b1.7.3/lwjgl_util-2.9.0.jar:${jarPath}`)
 
     this.#canvas.style.display = 'none';
     this.#isRunning = false;
