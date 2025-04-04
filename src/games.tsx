@@ -22,7 +22,11 @@ export const games: Record<string, GameEntry> = {
     "cut-the-rope": {
         name: "Cut the Rope",
         content: (
-			<embed src="/Games/Cut the Rope/index.html" width="900" height="500" />
+			<div id="game-container" style="width: 900px; height: 500px; margin: 0 auto;">
+				<script src="/Games/Cut the Rope/ytgame.js" nonce="OkKiuaUW84wvpuqQi7rBbQ"></script>
+				<script src="/Games/Cut the Rope/ctrr.js" nonce="OkKiuaUW84wvpuqQi7rBbQ"></script>
+				<script nonce="OkKiuaUW84wvpuqQi7rBbQ">Ctrr.main()</script>
+			</div>
         )
     },
     "google-pacman": {
