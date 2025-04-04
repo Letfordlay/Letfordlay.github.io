@@ -51,10 +51,10 @@ export const games: Record<string, GameEntry> = {
         name: "Minecraft Beta 1.7.3",
         content: (
             <>
-                <iframe
-					src="/Games/Minecraft Beta 1.7.3/index.html"
-					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-				/>
+				<object data="/Games/Minecraft Beta 1.7.3/index.html" width="66.66vw" height="37.5vw">
+					<embed src="/Games/Minecraft Beta 1.7.3/index.html" width="66.66vw" height="37.5vw"> </embed>
+					Error: Embedded data could not be displayed.
+				</object>
 
                 <br />
 
