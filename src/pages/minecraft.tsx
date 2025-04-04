@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { mcversions } from "@/games";
 
-export default function Home() {
+export default function Minecraft() {
     return (
             <center className="list">
                 <p className="list-title">Versions</p>
