@@ -21,6 +21,8 @@ a {
 	
 	max-height: 80dvh;
 	overflow: auto;
+	scrollbar-color: blue;
+	scrollbar-width: thin;
 }
 
 .menu a {
