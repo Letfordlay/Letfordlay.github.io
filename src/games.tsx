@@ -47,14 +47,11 @@ export const games: Record<string, GameEntry> = {
             </>
         )
     },
-	    "minecraft-beta-1-7-3": {
+	"minecraft-beta-1-7-3": {
         name: "Minecraft Beta 1.7.3",
         content: (
             <>
-				<object data="/Games/Minecraft Beta 1.7.3/index.html" width="66.66vw" height="37.5vw">
-					<embed src="/Games/Minecraft Beta 1.7.3/index.html" width="66.66vw" height="37.5vw"> </embed>
-					Error: Embedded data could not be displayed.
-				</object>
+				<embed src="/Games/Minecraft Beta 1.7.3/index.html" width="66.66vw" height="37.5vw"> </embed>
 
                 <br />
 
@@ -64,7 +61,6 @@ export const games: Record<string, GameEntry> = {
             </>
         )
     },
-	
     "minecraft-classic": {
         name: "Minecraft Classic",
         content: (

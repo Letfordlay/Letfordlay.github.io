@@ -12,7 +12,9 @@ export default function Home() {
 			</p>
 
             <p>
-                This is a very cool website
+                This website was made with the idea of looking old while using current coding techniques.
+				
+				You'll find many old and new games created by an assortment of talented individuals.
             </p>
         </>
     );
