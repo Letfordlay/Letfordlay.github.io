@@ -29,6 +29,6 @@ export default function Minecraft() {
 			<p>
                 <Link href="/game/minecraft-classic">Minecraft Classic</Link>
             </p>
-		<>
+		</>
     );
 }
