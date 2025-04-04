@@ -18,6 +18,9 @@ a {
 
     padding: 4px 8px;
     border: 2px solid blue;
+	
+	max-height: 80dvh;
+	overflow: auto;
 }
 
 .menu a {
