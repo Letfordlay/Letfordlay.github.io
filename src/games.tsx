@@ -14,7 +14,7 @@ export const games: Record<string, GameEntry> = {
                 <br />
 
                 <a href="https://github.com/nzp-team/nzp-team.github.io/tree/main">
-                    <img width="180px" alt="Original on Github" src="/img/github.png" />
+                    <img alt="Original on Github" src="/img/github.png" />
                 </a>
             </>
         )
@@ -42,11 +42,29 @@ export const games: Record<string, GameEntry> = {
                 <br />
 
                 <a href="https://github.com/RandomityGuy/MBHaxe">
-                    <img width="180px" alt="Original on Github" src="/img/github.png" />
+                    <img alt="Original on Github" src="/img/github.png" />
                 </a>
             </>
         )
     },
+	    "minecraft-beta-1-7-3": {
+        name: "Minecraft Beta 1.7.3",
+        content: (
+            <>
+                <iframe
+					src="/Games/Minecraft Beta 1.7.3/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	
     "minecraft-classic": {
         name: "Minecraft Classic",
         content: (
@@ -90,7 +108,7 @@ export const games: Record<string, GameEntry> = {
                 <br />
 
                 <a href="https://github.com/phoboslab/q1k3">
-                    <img width="180px" alt="Original on Github" src="/img/github.png" />
+                    <img alt="Original on Github" src="/img/github.png" />
                 </a>
             </>
         )
