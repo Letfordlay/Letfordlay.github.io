@@ -230,12 +230,9 @@ export const flashGames: Record<string, GameEntry> = {
     "happy-wheels": {
         name: "Happy Wheels",
         content: (
-            <iframe
-                src="/Games/Happy Wheels/index.html"
-                width="640"
-                height="485"
-                style={{ border: 0 }}
-            />
+            <object>
+                <embed src="/Games/happywheels.swf" width="900" height="500" />
+            </object>
         )
     },
     "interactive-buddy": {

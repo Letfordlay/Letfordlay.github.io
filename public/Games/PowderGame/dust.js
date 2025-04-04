@@ -1,7 +1,6 @@
 /*
  Copyright (C) 2007 ha55ii, http://dan-ball.jp/
  The games source code use is prohibition.
- LOLOL CRACKED By Kippykip!
 */
 var ba = 0,
     g = 416,
@@ -93,7 +92,7 @@ function Lb(a, b, c) {
         "0" == b && (rb = !0);
         c && (sb = c);
         Mb(Nb);
-		Mb("Cracked by Kippykip");
+		Mb("Layton was here");
         Ob.width = 400;
         Ob.height = 456;
         for (a = 0; 513 > a; a++) Pb[a] = Array(2);
@@ -2755,7 +2754,6 @@ var Lg = document,
     gc = setTimeout,
     //Qg = location.hostname;
 	Qg = "dan-ball.jp";
-	//Because I found out how to force it to run in dust2, it wasn't hard to crack this one ~Kippykip
 Mg.fff = Rg;
 
 function Rg(a, b, c, d, e, f, h) {
