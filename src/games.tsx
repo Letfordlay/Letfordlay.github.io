@@ -62,7 +62,7 @@ export const games: Record<string, GameEntry> = {
         name: "Minecraft",
         content: (
 			<>
-				</ Minecraft>
+				<Minecraft />
 			</>
         )
     },
