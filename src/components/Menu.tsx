@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { games, flashGames } from "@/games";
+import { games, flashGames, mcversions } from "@/games";
 
 export function Menu() {
     return (
@@ -28,5 +28,19 @@ export function Menu() {
                 <Link href="/videos">Videos</Link>
             </center>
         </aside>
+    );
+}
+
+export function Minecraft() {
+    return (
+            <center className="list">
+                <p className="list-title">Versions</p>
+
+                {Object.entries(mcversions).map(([slug, entry]) => (
+                    <>
+                        <Link href={`/game/${slug}`}>{entry.name}</Link>
+                    </>
+                ))}
+            </center>
     );
 }

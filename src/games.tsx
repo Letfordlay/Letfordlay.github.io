@@ -1,4 +1,4 @@
-import { Minecraft } from "@/components/Minecraft";
+import { Minecraft } from "@/components/Menu";
 
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
