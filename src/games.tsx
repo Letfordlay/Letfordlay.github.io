@@ -1,3 +1,5 @@
+import { Minecraft } from "@/components/Minecraft";
+
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
 
@@ -60,12 +62,7 @@ export const games: Record<string, GameEntry> = {
         name: "Minecraft",
         content: (
 			<>
-				<p>
-					<meta http-equiv="refresh" content="0; url=@/components/Minecraft" />
-				</p>
-				<p>
-					<a href="@/components/Minecraft">Redirect</a>
-				</p>
+				</ Minecraft>
 			</>
         )
     },
