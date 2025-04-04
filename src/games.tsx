@@ -59,8 +59,12 @@ export const games: Record<string, GameEntry> = {
 	"minecraft": {
         name: "Minecraft",
         content: (
-            <meta http-equiv="refresh" content="0; url=https://letfordlay.github.io/minecraft/" />
-			<p><a href="https://letfordlay.github.io/minecraft/">Redirect</a></p>
+            <p>
+				<meta http-equiv="refresh" content="0; url=https://letfordlay.github.io/minecraft/" />
+			</p>
+			<p>
+				<a href="https://letfordlay.github.io/minecraft/">Redirect</a>
+			</p>
         )
     },
     "powder-game": {
