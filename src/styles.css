@@ -35,6 +35,16 @@ a {
     animation: reverseColorRotate 1.5s linear 0s infinite;
 }
 
+.list {
+    padding: 4px 8px;
+	overflow: auto;
+}
+
+.list-title {
+    font-size: 20px;
+    animation: reverseColorRotate 1.5s linear 0s infinite;
+}
+
 .rainbow {
     animation: colorRotate 1.5s linear 0s infinite;
 }
