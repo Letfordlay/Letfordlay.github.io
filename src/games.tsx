@@ -59,7 +59,14 @@ export const games: Record<string, GameEntry> = {
 	"minecraft": {
         name: "Minecraft",
         content: (
-			import { Minecraft } from "@/components/Minecraft";
+			<>
+				<p>
+					<meta http-equiv="refresh" content="0; url=@/components/Minecraft" />
+				</p>
+				<p>
+					<a href="@/components/Minecraft">Redirect</a>
+				</p>
+			</>
         )
     },
     "powder-game": {
