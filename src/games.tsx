@@ -51,7 +51,10 @@ export const games: Record<string, GameEntry> = {
         name: "Minecraft Beta 1.7.3",
         content: (
             <>
-				<embed type="text/html" src="/Games/Minecraft Beta 1.7.3/index.html" width="66.66vw" height="37.5vw" />
+				<iframe
+					src="/Games/Minecraft Beta 1.7.3/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
 
                 <br />
 
