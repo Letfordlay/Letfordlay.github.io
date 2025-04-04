@@ -4,6 +4,7 @@ import { mcversions } from "@/games";
 
 export default function Minecraft() {
     return (
+		<>
             <p>
                 <Link href="/game/minecraft-1-12-2">Minecraft 1.12.2</Link>
             </p>
@@ -28,5 +29,6 @@ export default function Minecraft() {
 			<p>
                 <Link href="/game/minecraft-classic">Minecraft Classic</Link>
             </p>
+		<>
     );
 }
