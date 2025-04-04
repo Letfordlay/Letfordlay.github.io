@@ -22,7 +22,7 @@ export const games: Record<string, GameEntry> = {
     "cut-the-rope": {
         name: "Cut the Rope",
         content: (
-            <iframe class="yt-mini-app-container-view-model__iframe" sandbox="allow-scripts allow-same-origin allow-pointer-lock" allow="autoplay" tabindex="0"
+            <iframe className="yt-mini-app-container-view-model__iframe" sandbox="allow-scripts allow-same-origin allow-pointer-lock" allow="autoplay" tabindex="0"
                 src="/Games/Cut the Rope/index.html"
                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
             />
