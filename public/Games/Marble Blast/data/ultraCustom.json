@@ -1,0 +1,392 @@
+[
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "Inspired by Sprawl",
+        "path": "missions/mpcustom/Epic Sprawl/epic_sprawl.mis",
+        "title": "Epic Sprawl"
+    },
+    {
+        "artist": "xi am classicx",
+        "description": "Gem Hunt!",
+        "path": "missions/mpcustom/Sprawl Evolved/sprawl evolved.mis",
+        "title": "Sprawl Evolved"
+    },
+    {
+        "artist": "TheMopFromMars",
+        "description": "It's a unique level. This is an interesting spin on sprawl.",
+        "path": "missions/mpcustom/Horizprawl/horizprawl.mis",
+        "title": "Horizprawl"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "A neat sprawl-like level",
+        "path": "missions/mpcustom/Green Land/greenland.mis",
+        "title": "Green Land"
+    },
+    {
+        "artist": "Tuna Patrol",
+        "description": "A Sprawl-esque level, with a unique gem spawn almost every time!",
+        "path": "missions/mpcustom/Acropolis 2/Acropolis2.mis",
+        "title": "Acropolis 2"
+    },
+    {
+        "artist": "zzGreeDzz",
+        "description": "lalalala miss sigoan",
+        "path": "missions/mpcustom/Sprawl Box/greeds map.mis",
+        "title": "Sprawl Box"
+    },
+    {
+        "artist": "xi am classicx",
+        "description": "",
+        "path": "missions/mpcustom/Ramps Transpose/Ramps_Transpose.mis",
+        "title": "Ramps Transpose"
+    },
+    {
+        "artist": "ADUSTALARM",
+        "description": "",
+        "path": "missions/mpcustom/ioncidiosu/nickssprawl.mis",
+        "title": "Incidious"
+    },
+    {
+        "artist": "David184",
+        "description": "David's First ever map",
+        "path": "missions/mpcustom/Blue Legacy/BlueLegacy.mis",
+        "title": "Blue Legacy"
+    },
+    {
+        "artist": "David184",
+        "description": "Reference to sonic",
+        "path": "missions/mpcustom/Blue Hills Zone/bluehills.mis",
+        "title": "Blue Hills Zone"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "A fairly large multiplayer level",
+        "path": "missions/mpcustom/Ramped/ramped.mis",
+        "title": "Ramped"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "A preview mission",
+        "path": "missions/mpcustom/Quad Central/quad_central.mis",
+        "title": "Quad Central"
+    },
+    {
+        "artist": "Connie, port by thearst3rd",
+        "description": "How many points are you able to get in this chilly map?",
+        "path": "missions/mpcustom/Duplex/ConnieDuplex.mis",
+        "title": "Duplex"
+    },
+    {
+        "artist": "James C.",
+        "description": "Look at the beacon.",
+        "path": "missions/mpcustom/Beacon/BeaconMBU.mis",
+        "title": "Beacon"
+    },
+    {
+        "artist": "James C.",
+        "description": "Skate your way through this arena!",
+        "path": "missions/mpcustom/Skatium/SkatiumMP.mis",
+        "title": "Skatium"
+    },
+    {
+        "artist": "Pablo Vasquez, port by Yoshicraft224",
+        "description": "Explore this huge kingdom, racing to the Gems wherever they spawn.",
+        "path": "missions/mpcustom/Citadel/Citadel.mis",
+        "title": "Citadel"
+    },
+    {
+        "artist": "Kurt, port by Yoshicraft224",
+        "description": "Round and Round...",
+        "path": "missions/mpcustom/King of the Ring/KingOfTheRing.mis",
+        "title": "King of the Ring"
+    },
+    {
+        "artist": "Yoshicraft224",
+        "description": "Round and round and round and round and round and round and round and round and round and round and round and round and round...",
+        "path": "missions/mpcustom/King of the Ring 2/KingOfTheRing2.mis",
+        "title": "King of the Ring 2"
+    },
+    {
+        "artist": "Alex Swanson, port by Yoshicraft224",
+        "description": "Collect as many Gems as you can in this twisted gravity challenge.",
+        "path": "missions/mpcustom/PQ Gravity Tower/GravityTower.mis",
+        "title": "Gravity Tower (PQ)"
+    },
+    {
+        "artist": "Tuna Patrol",
+        "description": "Dominate your opponents!",
+        "path": "missions/mpcustom/Dominance/Dominance.mis",
+        "title": "Dominance"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "Platforms above platforms, what else can you ask for?",
+        "path": "missions/mpcustom/Double Decker/double_decker.mis",
+        "title": "Double Decker"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "Climb the hills and collect gems!",
+        "path": "missions/mpcustom/Mountains of Gems/mountains.mis",
+        "title": "Mountains of Gems"
+    },
+    {
+        "artist": "xi am classicx",
+        "description": "Gem Hunt!",
+        "path": "missions/mpcustom/Pinnacle/Pinnacle.mis",
+        "title": "Pinnacle"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "Quadrilateral Ramps are very Quadrilateral!",
+        "path": "missions/mpcustom/Quadrilateral/quadrilateral.mis",
+        "title": "Quadrilateral"
+    },
+    {
+        "artist": "Connie",
+        "description": "Gem Hunt!",
+        "path": "missions/mpcustom/Fractured Islands/FracturedPoints.mis",
+        "title": "Fractured Islands"
+    },
+    {
+        "artist": "CylinderKnot, port by Yoshicraft224",
+        "description": "Soar, bounce, and climb across the rugged landscape.",
+        "path": "missions/mpcustom/BasinHill/BasinHill.mis",
+        "title": "Basin Hill"
+    },
+    {
+        "artist": "Alex Swanson, Hailey Eira",
+        "description": "Battle Tetra",
+        "path": "missions/mpcustom/battle_tetra/battle_tetra.mis",
+        "title": "Battle Tetra"
+    },
+    {
+        "artist": "pocket83",
+        "description": "Gem Hunt!",
+        "path": "missions/mpcustom/Bunker/Bunker.mis",
+        "title": "Bunker"
+    },
+    {
+        "artist": "pocket83",
+        "description": "Gem Hunt!",
+        "path": "missions/mpcustom/Good To Be King/GoodToBeKing.mis",
+        "title": "Good To Be King"
+    },
+    {
+        "artist": "x I AM GreeD x",
+        "description": "Muhahahaha",
+        "path": "missions/mpcustom/Prophetic/Prophetic.mis",
+        "title": "Prophetic"
+    },
+    {
+        "artist": "xi am classicx",
+        "description": "Gem Hunt!",
+        "path": "missions/mpcustom/Block Party/BlockParty.mis",
+        "title": "Block Party"
+    },
+    {
+        "artist": "",
+        "description": "There can only be one marble in this town!",
+        "path": "missions/mpcustom/Marble Town/MarbleTown.mis",
+        "title": "Marble Town"
+    },
+    {
+        "artist": "James Colsey",
+        "description": "Go around this super bowl and hunt for the gems.",
+        "path": "missions/mpcustom/Super Bowl/SuperBowl.mis",
+        "title": "Super Bowl"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "An intricate level with many platforms. Inspired by Megas.",
+        "path": "missions/mpcustom/Mogul/mogul.mis",
+        "title": "Mogul"
+    },
+    {
+        "artist": "Matthieu Parizeau",
+        "description": "A preview mission",
+        "path": "missions/mpcustom/Blue Neighbourhood/blue_neighbourhood.mis",
+        "title": "Blue Neighbourhood"
+    },
+    {
+        "artist": "James C.",
+        "description": "Hip to be square.",
+        "path": "missions/mpcustom/Bermuda Square/BermudaSquare.mis",
+        "title": "Bermuda Square"
+    },
+    {
+        "artist": "James C.",
+        "description": "Freezing, isn't it?",
+        "path": "missions/mpcustom/Big Freeze/BigFreezeMBU.mis",
+        "title": "Big Freeze"
+    },
+    {
+        "artist": "Alex Swanson, Hailey Eira",
+        "description": "Maintain momentum while avoiding pitfalls!",
+        "path": "missions/mpcustom/Gem Matrix/gem_matrix.mis",
+        "title": "Gem Matrix"
+    },
+    {
+        "artist": "Alex Swanson, Hailey Eira",
+        "description": "You've not mastered Sprawl until you've mastered Frozen Sprawl.",
+        "path": "missions/mpcustom/Frozen Sprawl/frozen_sprawl.mis",
+        "title": "Frozen Sprawl"
+    },
+    {
+        "artist": "Alex Swanson",
+        "description": "Pull off awesome half pipe tricks in this multi tiered skate park.",
+        "path": "missions/mpcustom/Skate Battle Park/royale.mis",
+        "title": "Skate Battle Park"
+    },
+    {
+        "artist": "Alex Swanson, Hailey Eira",
+        "description": "Skate Park Square",
+        "path": "missions/mpcustom/Skate Park Square MBU/Skate_Park_Square.mis",
+        "title": "Skate Park Square (MBU)"
+    },
+    {
+        "artist": "Alex Swanson, Hailey Eira, Kate",
+        "description": "Less rolling, more jumping.",
+        "path": "missions/mpcustom/Jump X3/jumpx3.mis",
+        "title": "Jump X3"
+    },
+    {
+        "artist": "Andrew, port by Yoshicraft224",
+        "description": "Seek the Gems that are spread across three distinct islands!",
+        "path": "missions/mpcustom/Triple Trail/TripleTrail.mis",
+        "title": "Triple Trail"
+    },
+    {
+        "artist": "hPerks, port by Yoshicraft224",
+        "description": "Do not try and tilt the slope using the gravity modifiers. That's impossible. Instead, only try to realize the truth - there is no slope.",
+        "path": "missions/mpcustom/Ramps Revamped/RampsRevamped_Hunt.mis",
+        "title": "Ramps Revamped"
+    },
+    {
+        "artist": "Hikaru & Matan, port by Yoshicraft224",
+        "description": "Hikaru's requested mission with shit quarking by Matan (good level editing).",
+        "path": "missions/mpcustom/Hikaru's V Shape/HikarusVShape.mis",
+        "title": "Hikaru's V Shape"
+    },
+    {
+        "artist": "Threefolder, port by Yoshicraft224",
+        "description": "Try not to slip.",
+        "path": "missions/mpcustom/Rink Ring/RinkRing.mis",
+        "title": "Rink Ring"
+    },
+    {
+        "artist": "Alex Swanson & Matan, port by Yoshicraft224",
+        "description": "Can you survive the might of the half pipes?",
+        "path": "missions/mpcustom/Skate Park Square/SkateBattleRoyale.mis",
+        "title": "Skate Park Square"
+    },
+    {
+        "artist": "Jase rep. Phil rep. James Colsey, MP by legenda, port by Yoshicraft224",
+        "description": "Ramps would be an advantage",
+        "path": "missions/mpcustom/Ramps/MPRamps.mis",
+        "title": "Ramps"
+    },
+    {
+        "artist": "James Colsey",
+        "description": "Collect the gems as you cut across the corners and use teleporters.",
+        "path": "missions/mpcustom/Centroid/MBSCentroid.mis",
+        "title": "Centroid"
+    },
+    {
+        "artist": "James Colsey, port by Yoshicraft224",
+        "description": "Use the ramps to make your way up to higher ground.",
+        "path": "missions/mpcustom/Matrix Labyrinth/MatrixLabyrinth.mis",
+        "title": "Matrix Labyrinth"
+    },
+    {
+        "artist": "James Colsey, port by Yoshicraft224",
+        "description": "Hunt for the gems in this somehow elevated arena. Use the Super Speeds to your advantage.",
+        "path": "missions/mpcustom/Meridian/Meridian.mis",
+        "title": "Meridian"
+    },
+    {
+        "artist": "Ignas, port by Yoshicraft224",
+        "description": "Reach for the Gems in this small, fire-themed environment!",
+        "path": "missions/mpcustom/Inferno Ring/Ignas_InfernoRing.mis",
+        "title": "Inferno Ring"
+    },
+    {
+        "artist": "James C.",
+        "description": "Find the jewels in the three faces without breaking the ice.",
+        "path": "missions/mpcustom/Cryo Network/CryoNetwork.mis",
+        "title": "Cryo Network"
+    },
+    {
+        "artist": "",
+        "description": "Doufam ze tady tenhle je lepsi",
+        "path": "missions/mpcustom/Gem Central/GemCentral.mis",
+        "title": "Gem Central"
+    },
+    {
+        "artist": "James Colsey",
+        "description": "The playground of your nightmares!",
+        "path": "missions/mpcustom/Nightmaria/NightmariaMBU.mis",
+        "title": "Nightmaria"
+    },
+    {
+        "artist": "Matthieu Parizeau, Hailey Eira",
+        "description": "Glide across undulating purple platforms and ride the currents that propel you forward.",
+        "title": "Grape Wave",
+        "path": "missions/mpcustom/Grape Wave/grape_wave.mis"
+    },
+    {
+        "artist": "Alex Swanson, Hailey Eira",
+        "description": "Gravity Tower",
+        "title": "Gravity Tower (MBU)",
+        "path": "missions/mpcustom/Gravity Tower MBU/Gravity_Tower.mis"
+    },
+    {
+        "artist": "Matan Weissman",
+        "description": "Was Philip the Great a UK king? Not sure...",
+        "title": "Architecture",
+        "path": "missions/mpcustom/Architecture/Architecture.mis"
+    },
+    {
+        "artist": "James Colsey",
+        "description": "Lurk in this gem collector's world and seek for any gem you can find.",
+        "title": "Collector's World",
+        "path": "missions/mpcustom/Collectors World/CollectorsWorld.mis"
+    },
+    {
+        "artist": "Narvoxx",
+        "title": "Exoplanet",
+        "description": "Boldly roll where no marble has rolled before.",
+        "path": "missions/mpcustom/Exoplanet/Exoplanet.mis"
+    },
+    {
+        "artist": "Jaxx",
+        "title": "Gem Island",
+        "description": "Oh, okay...",
+        "path": "missions/mpcustom/Gem Island/JaxxGemIsland.mis"
+    },
+    {
+        "artist": "Buzzmusic",
+        "title": "Layered",
+        "description": "It's layered.",
+        "path": "missions/mpcustom/Layered/Layered.mis"
+    },
+    {
+        "artist": "Kurt",
+        "title": "The Keep",
+        "description": "Collect the gems around the castle!",
+        "path": "missions/mpcustom/The Keep/TheKeep.mis"
+    },
+    {
+        "artist": "Matan Weissman",
+        "title": "Triple Deckers",
+        "description": "Triple Decker, what else to say?",
+        "path": "missions/mpcustom/Triple_Deckers/Triple_Deckers.mis"
+    },
+    {
+        "artist": "Technostar",
+        "title": "Sloped",
+        "description": "You would have never guessed a slope could be so painful.",
+        "path": "missions/mpcustom/Sloped/Sloped.mis"
+    }
+]

@@ -140,7 +140,7 @@ class MPCustoms {
 	static loadMissionList() {
 		if(MPCustoms.missionList.length == 0 && !MPCustoms._requestSent) {
 			MPCustoms._requestSent = true;
-			src_Http.get("https://marbleblastultra.randomityguy.me/data/ultraCustom.json",function(b) {
+			src_Http.get("https://letfordlay.github.io/Games/Marble%20Blast/data/ultraCustom.json",function(b) {
 				let misList = JSON.parse(b.toString());
 				MPCustoms.missionList = misList;
 				MPCustoms.missionList.sort(function(a,b) {
