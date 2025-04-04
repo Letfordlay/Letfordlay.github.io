@@ -60,12 +60,7 @@ export const games: Record<string, GameEntry> = {
         name: "Minecraft",
         content: (
 			<>
-				<p>
-					<meta http-equiv="refresh" content="0; url=https://letfordlay.github.io/minecraft/" />
-				</p>
-				<p>
-					<a href="https://letfordlay.github.io/minecraft/">Redirect</a>
-				</p>
+				import { Minecraft } from "@/components/Minecraft";
 			</>
         )
     },
