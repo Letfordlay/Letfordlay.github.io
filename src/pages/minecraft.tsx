@@ -4,8 +4,8 @@ import { mcversions } from "@/games";
 
 export default function Home() {
     return (
-            <center className="menu">
-                <p className="menu-title">Versions</p>
+            <center className="list">
+                <p className="list-title">Versions</p>
 
                 {Object.entries(mcversions).map(([slug, entry]) => (
                     <>
