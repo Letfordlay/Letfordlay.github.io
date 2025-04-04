@@ -19,6 +19,15 @@ export const games: Record<string, GameEntry> = {
             </>
         )
     },
+    "cut-the-rope": {
+        name: "Cut the Rope",
+        content: (
+            <iframe
+                src="/Games/Cut the Rope/index.html"
+                style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+            />
+        )
+    },
     "google-pacman": {
         name: "Google Pacman",
         content: (
