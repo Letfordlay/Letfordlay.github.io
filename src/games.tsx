@@ -318,8 +318,9 @@ export const games: Record<string, GameEntry> = {
 				/>
 			</div>
         )
-    },
+    }
 	)
+	}
     "powder-game": {
         name: "Powder Game",
         content: (
