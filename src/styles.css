@@ -21,7 +21,7 @@ a {
 	
 	max-height: 80dvh;
 	overflow: auto;
-	scrollbar-color: blue;
+	scrollbar-color: purple blue;
 	scrollbar-width: thin;
 }
 
