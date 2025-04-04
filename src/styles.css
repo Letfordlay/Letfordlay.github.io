@@ -11,14 +11,6 @@ a {
     animation: colorRotate 1.5s linear 0s infinite;
 }
 
-::-webkit-scrollbar {
-	background-color: blue;
-}
-
-::-webkit-scrollbar-thumb {
-	animation: reverseColorRotate 1.5s linear 0s infinite;
-}
-
 .menu {
     position: fixed;
     top: 52px;
@@ -30,6 +22,16 @@ a {
 	max-height: 80dvh;
 	overflow: auto;
 	scrollbar-width: thin;
+	
+	::-webkit-scrollbar {
+		background-color: blue;
+	}
+	::-webkit-scrollbar-thumb {
+		animation: reverseColorRotate 1.5s linear 0s infinite;
+	}
+	::-webkit-scrollbar-button {
+		animation: reverseColorRotate 1.5s linear 0s infinite;
+	}
 }
 
 .menu a {
