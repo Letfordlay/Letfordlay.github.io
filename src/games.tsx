@@ -28,7 +28,7 @@ export const games: Record<string, GameEntry> = {
 				className="yt-mini-app-container-view-model__iframe"
 				sandbox="allow-scripts allow-same-origin allow-pointer-lock"
 				allow="autoplay"
-				tabIndex=0
+				tabIndex={0}
             />
         )
     },
