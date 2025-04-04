@@ -40,6 +40,11 @@ a {
 	overflow: auto;
 }
 
+.list a {
+    display: block;
+    margin: 2px 0;
+}
+
 .list-title {
     font-size: 20px;
     animation: reverseColorRotate 1.5s linear 0s infinite;
