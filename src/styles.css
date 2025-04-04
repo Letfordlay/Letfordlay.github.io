@@ -21,17 +21,8 @@ a {
 	
 	max-height: 80dvh;
 	overflow: auto;
+	scrollbar-color: blue purple;
 	scrollbar-width: thin;
-	
-	::-webkit-scrollbar {
-		background-color: blue;
-	}
-	::-webkit-scrollbar-thumb {
-		animation: reverseColorRotate 1.5s linear 0s infinite;
-	}
-	::-webkit-scrollbar-button {
-		animation: reverseColorRotate 1.5s linear 0s infinite;
-	}
 }
 
 .menu a {
