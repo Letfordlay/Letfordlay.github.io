@@ -25,10 +25,6 @@ export const games: Record<string, GameEntry> = {
             <iframe
                 src="/Games/Cut the Rope/index.html"
                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-				className="yt-mini-app-container-view-model__iframe"
-				sandbox="allow-scripts allow-same-origin allow-pointer-lock"
-				allow="autoplay"
-				tabIndex={0}
             />
         )
     },
@@ -190,6 +186,140 @@ export const games: Record<string, GameEntry> = {
 			</div>
         )
     },
+	"minecraft": {
+		name: "Minecraft",
+		content: (
+					"minecraft-1-12-2": {
+        name: "Minecraft 1.12.2",
+        content: (
+            <>
+				<iframe
+					src="/Games/Minecraft 1.12.2/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-1-8-8": {
+        name: "Minecraft 1.8.8",
+        content: (
+            <>
+				<iframe
+					src="/Games/Minecraft 1.8.8/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-1-5-2": {
+        name: "Minecraft 1.5.2",
+        content: (
+            <>
+				<iframe
+					src="/Games/Minecraft 1.5.2/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-beta-1-7-3": {
+        name: "Minecraft Beta 1.7.3",
+        content: (
+            <>
+				<iframe
+					src="/Games/Minecraft Beta 1.7.3/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-beta-1-3": {
+        name: "Minecraft Beta 1.3",
+        content: (
+            <>
+				<iframe
+					src="/Games/Minecraft Beta 1.3/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-alpha-1-2-6": {
+        name: "Minecraft Alpha 1.2.6",
+        content: (
+            <>
+				<iframe
+					src="/Games/Minecraft Alpha 1.2.6/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-indev": {
+        name: "Minecraft Indev",
+        content: (
+            <>
+				<iframe
+					src="/Games/Minecraft Indev/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+    "minecraft-classic": {
+        name: "Minecraft Classic",
+        content: (
+            <div className="responsive">
+				<iframe
+					src="/Games/Minecraft Classic/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+			</div>
+        )
+    },
+	)
     "powder-game": {
         name: "Powder Game",
         content: (
