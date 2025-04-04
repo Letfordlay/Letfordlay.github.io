@@ -59,9 +59,7 @@ export const games: Record<string, GameEntry> = {
 	"minecraft": {
         name: "Minecraft",
         content: (
-			<>
-				import { Minecraft } from "@/components/Minecraft"
-			</>
+			import { Minecraft } from "@/components/Minecraft";
         )
     },
     "powder-game": {
