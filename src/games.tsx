@@ -320,7 +320,7 @@ export const games: Record<string, GameEntry> = {
         )
     }
 	)
-	}
+	},
     "powder-game": {
         name: "Powder Game",
         content: (
