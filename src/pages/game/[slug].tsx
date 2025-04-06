@@ -33,6 +33,6 @@ export default function Game({ slug }: InferGetStaticPropsType<typeof getStaticP
             <p>{game.name}</p>
 
             {game.content}
-        </>
+        </center>
     );
 }
