@@ -7,6 +7,7 @@ export const getStaticPaths = (async () => {
 
     Object.keys(games).forEach((slug) => paths.push({ params: { slug: slug } }));
     Object.keys(flashGames).forEach((slug) => paths.push({ params: { slug: slug } }));
+	Object.keys(mcversions).forEach((slug) => paths.push({ params: { slug: slug } }));
 
     return {
         paths: paths,
@@ -21,7 +22,7 @@ export const getStaticProps = (async (context) => {
 }>;
 
 export default function Game({ slug }: InferGetStaticPropsType<typeof getStaticProps>) {
-    const game = games[slug] || flashGames[slug];
+    const game = games[slug] || flashGames[slug] || mcversions[slug];
 
     return (
         <>
