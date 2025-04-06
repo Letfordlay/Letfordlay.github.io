@@ -134,7 +134,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Bloons Tower Defense 3",
         content: (
             <object>
-                <embed src="/Games/bloonstowerdefense3.swf" width="600" height="452" />
+                <embed src="/Games/bloonstowerdefense3.swf" width="821" height="616" />
             </object>
         )
     },
