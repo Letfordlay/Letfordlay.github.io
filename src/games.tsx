@@ -134,7 +134,10 @@ export const flashGames: Record<string, GameEntry> = {
         name: "Bloons Tower Defense 3",
         content: (
             <object>
-                <embed src="/Games/bloonstowerdefense3.swf" width="821" height="616" />
+                <embed
+					src="/Games/bloonstowerdefense3.swf"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
             </object>
         )
     },
