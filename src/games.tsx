@@ -114,7 +114,7 @@ export const games: Record<string, GameEntry> = {
         name: "Twist",
         content: (
             <>
-                <iframe
+                <object
                     <canvas
 						class="emscripten"
 						id="canvas"
