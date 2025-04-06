@@ -19,6 +19,7 @@ a {
     padding: 4px 8px;
     border: 2px solid blue;
 	
+	line-height: 26px;
 	max-height: 80dvh;
 	overflow: auto;
 	scrollbar-color: purple blue;
@@ -36,6 +37,7 @@ a {
 }
 
 .list {
+    line-height: 26px;
     padding: 4px 8px;
 	overflow: auto;
 }
@@ -48,6 +50,10 @@ a {
 .list-title {
     font-size: 20px;
     animation: reverseColorRotate 1.5s linear 0s infinite;
+}
+
+.game {
+	margin-left: 200px;
 }
 
 .rainbow {
