@@ -3,6 +3,8 @@ body {
     background-color: black;
     background-repeat: repeat;
     background-size: 100px 100px;
+	
+	margin-left: 200px
 
     animation: colorRotate 1.5s linear 0s infinite;
 }
@@ -21,7 +23,6 @@ a {
 	
 	line-height: 26px;
 	max-height: 80dvh;
-	max-width: 10vw;
 	overflow: auto;
 	scrollbar-color: purple blue;
 	scrollbar-width: thin;
