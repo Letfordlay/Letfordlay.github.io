@@ -285,6 +285,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft 1.12.2/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
@@ -302,6 +303,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft 1.8.8/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
@@ -319,6 +321,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft 1.5.2/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
@@ -336,6 +339,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft Beta 1.7.3/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
@@ -353,6 +357,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft Beta 1.3/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
@@ -370,6 +375,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft Alpha 1.2.6/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
@@ -387,6 +393,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft Indev/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
@@ -404,6 +411,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <div className="responsive">
 				<iframe
+					oncontextmenu="return false"
 					src="/Games/Minecraft Classic/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
