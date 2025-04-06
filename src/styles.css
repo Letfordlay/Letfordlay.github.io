@@ -19,8 +19,9 @@ a {
     padding: 4px 8px;
     border: 2px solid blue;
 	
+	line-height: 20px;
 	max-height: 80dvh;
-	max-width: 5vw;
+	max-width: 10vw;
 	overflow: auto;
 	scrollbar-color: purple blue;
 	scrollbar-width: thin;
