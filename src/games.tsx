@@ -113,7 +113,7 @@ export const games: Record<string, GameEntry> = {
     twist: {
         name: "Twist",
         content: (
-            <object
+            <object>
                 <canvas class="emscripten"
 					id="canvas"
 					oncontextmenu="event.preventDefault()"
@@ -130,7 +130,7 @@ export const games: Record<string, GameEntry> = {
 				</script>
 				<script src="/Games/Twist/Release/UnityLoader.js"></script>
                 style={{ "border" : "0", "width" : "28.6458vw", "height" : "28.6458vw" }}
-            />
+            </object>
         )
     }
 };
