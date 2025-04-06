@@ -58,7 +58,7 @@ export const games: Record<string, GameEntry> = {
              </>
          )
      },
- 	"minecraft": {
+ 	minecraft: {
          name: "Minecraft",
          content: (
  			<>
@@ -86,7 +86,7 @@ export const games: Record<string, GameEntry> = {
  			/>
          )
      },
- 	"q1k3": {
+ 	q1k3: {
          name: "Q1K3",
          content: (
              <>

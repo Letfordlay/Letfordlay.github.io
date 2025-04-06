@@ -52,10 +52,6 @@ a {
     animation: reverseColorRotate 1.5s linear 0s infinite;
 }
 
-.game {
-	margin-left: 200px;
-}
-
 .rainbow {
     animation: colorRotate 1.5s linear 0s infinite;
 }
