@@ -25,7 +25,7 @@ export default function Game({ slug }: InferGetStaticPropsType<typeof getStaticP
     const game = games[slug] || flashGames[slug] || mcversions[slug];
 
     return (
-        <div style="padding-left:200px;">
+        <div style={{ "padding-left" : "200"}}>
             <Head>
                 <title>{game.name} - Letfordlay Gaming</title>
             </Head>
