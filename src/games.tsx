@@ -115,11 +115,11 @@ export const games: Record<string, GameEntry> = {
         content: (
             <>
                 <object
-                    <canvas
+                    <canvas>
 						class="emscripten"
 						id="canvas"
 						oncontextmenu="event.preventDefault()"
-					></canvas>
+					</canvas>
 					<script type="text/javascript">
 						var Module = {
 						TOTAL_MEMORY: 268435456,
