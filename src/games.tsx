@@ -136,7 +136,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/Games/bloonstowerdefense3.swf"
-					style={{ "border" : "0", "width" : "42.76vw", "height" : "57.037vw" }}
+					style={{ "border" : "0", "width" : "42.76vw", "height" : "32.08vw" }} width="821" height="616"
 				/>
             </object>
         )
