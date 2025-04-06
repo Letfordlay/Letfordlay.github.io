@@ -3,7 +3,7 @@ body {
     background-color: black;
     background-repeat: repeat;
     background-size: 100px 100px;
-	
+
     animation: colorRotate 1.5s linear 0s infinite;
 }
 
@@ -19,7 +19,6 @@ a {
     padding: 4px 8px;
     border: 2px solid blue;
 	
-	line-height: 26px;
 	max-height: 80dvh;
 	overflow: auto;
 	scrollbar-color: purple blue;
@@ -39,8 +38,6 @@ a {
 .list {
     padding: 4px 8px;
 	overflow: auto;
-	
-	line-height: 26px;
 }
 
 .list a {
@@ -52,8 +49,6 @@ a {
     font-size: 20px;
     animation: reverseColorRotate 1.5s linear 0s infinite;
 }
-
-
 
 .rainbow {
     animation: colorRotate 1.5s linear 0s infinite;
