@@ -52,6 +52,10 @@ a {
     animation: reverseColorRotate 1.5s linear 0s infinite;
 }
 
+.content {
+	padding-left: 200px;
+}
+
 .rainbow {
     animation: colorRotate 1.5s linear 0s infinite;
 }
