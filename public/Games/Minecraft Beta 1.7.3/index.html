@@ -22,7 +22,7 @@
         }
     </script>
 
-    <script type="text/javascript">
+    <script type="text/javascript" oncontextmenu="return false">
 "use strict";
 (function(root,module){if(typeof define==='function'&&define.amd){define(['exports'],function(exports){module(root,exports);});}else if(typeof exports==='object'&&exports!==null&&typeof exports.nodeName!=='string'){module(global,exports);}else{module(root,root);}}(typeof self!=='undefined'?self:this,function($rt_globals,$rt_exports){var $rt_seed=2463534242;function $rt_nextId(){var x=$rt_seed;x^=x<<13;x^=x>>>17;x^=x<<5;$rt_seed=x;return x;}function $rt_compare(a,b){return a>b?1:a<b? -1:a===b?0:1;}function $rt_isInstance(obj,
 cls){return obj instanceof $rt_objcls()&&!!obj.constructor.$meta&&$rt_isAssignable(obj.constructor,cls);}function $rt_isAssignable(from,to){if(from===to){return true;}if(to.$meta.item!==null){return from.$meta.item!==null&&$rt_isAssignable(from.$meta.item,to.$meta.item);}var supertypes=from.$meta.supertypes;for(var i=0;i<supertypes.length;i=i+1|0){if($rt_isAssignable(supertypes[i],to)){return true;}}return false;}function $rt_castToInterface(obj,cls){if(obj!==null&&!$rt_isInstance(obj,cls)){$rt_throwCCE();}return obj;}function $rt_castToClass(obj,
@@ -1506,7 +1506,7 @@ function BgO(b){var thread=$rt_nativeThread();var javaThread=$rt_getThread();if(
 function AZ$(){var thread=$rt_nativeThread();var javaThread=$rt_getThread();if(thread.isResuming()){thread.status=0;var result=thread.attribute;if(result instanceof Error){throw result;}return result;}var callback=function(){};callback.bg8=function(val){thread.attribute=val;$rt_setThread(javaThread);thread.resume();};callback.bi5=function(e){thread.attribute=$rt_exception(e);$rt_setThread(javaThread);thread.resume();};callback=B_X(callback);thread.suspend(function(){try{BWs(callback);}catch($e){callback.bi5($rt_exception($e));}});return null;}
 function AKN(){if($rt_globals.window.navigator.userActivation){return $rt_globals.window.navigator.userActivation.hasBeenActive;}else {return false;}}
 function AYJ(b){try {return ""+$rt_globals.window.navigator[b];}catch(e){return "<error>";}}
-function A87(){$rt_globals.window.addEventListener('beforeunload',function(event){event.preventDefault();return '';});}
+function A87(){$rt_globals.window.addEventListener('beforeunload',function(event){;return '';});}
 function A0w(){return {antialias:false,depth:true,powerPreference:"high-performance",desynchronized:true,preserveDrawingBuffer:false,premultipliedAlpha:false,alpha:false};}
 function Bgt(b,c){return $rt_globals.URL.createObjectURL(new $rt_globals.Blob([b],{type:c}));}
 function BmE(b,c){var a=$rt_globals.document.createElement("a");a.href=c.toDataURL("image/png");a.download=b;a.click();}
