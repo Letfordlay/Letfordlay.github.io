@@ -4,124 +4,130 @@ import { Minecraft } from "@/components/Menu";
 export type GameEntry = { name: string; content: React.ReactNode };
 
 export const games: Record<string, GameEntry> = {
-	"call-of-duty-zombies": {
-        name: "Call of Duty: Zombies",
-        content: (
-            <>
-				<iframe
-					src="/Games/Call of Duty Zombies/index.html"
-					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-				/>
-
-                <br />
-
-                <a href="https://github.com/nzp-team/nzp-team.github.io/tree/main">
-                    <img alt="Original on Github" src="/img/github.png" />
-                </a>
-            </>
-        )
-    },
-    "cut-the-rope": {
-        name: "Cut the Rope",
-        content: (
-            <iframe
-                src="/Games/Cut the Rope/index.html"
-                style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-            />
-        )
-    },
-    "google-pacman": {
-        name: "Google Pacman",
-        content: (
-            <iframe
-                src="/Games/Google Pacman/GooglePacman.html"
-                height="600"
-                width="1050"
-                style={{ "border" : "0", "width" : "31.25vw", "height" : "54.6875vw" }}
-            />
-        )
-    },
-    "marble-blast-ultra": {
-        name: "Marble Blast Ultra",
-        content: (
-            <>
-                <iframe
-					src="/Games/Marble Blast Ultra/index.html"
-					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-				/>
-
-                <br />
-
-                <a href="https://github.com/RandomityGuy/MBHaxe">
-                    <img alt="Original on Github" src="/img/github.png" />
-                </a>
-            </>
-        )
-    },
-	"minecraft": {
-        name: "Minecraft",
-        content: (
-			<>
-				<Minecraft />
-			</>
-        )
-    },
-    "powder-game": {
-        name: "Powder Game",
-        content: (
-            <iframe
-                src="/Games/PowderGame/powdergame.html"
-                style={{ "border" : "0", "width" : "22.9166vw", "height" : "25.8333vw" }}
-            />
-        )
-    },
-	"q1-infinity": {
-        name: "Q1 Infinity",
-        content: (
-			<iframe
-				src="/Games/Q1 Infinity/index.html"
-				style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-			/>
-        )
-    },
-	"q1k3": {
-        name: "Q1K3",
-        content: (
-            <>
-				<iframe
-					src="/Games/Q1K3/index.html"
-					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-				/>
-
-                <br />
-
-                <a href="https://github.com/phoboslab/q1k3">
-                    <img alt="Original on Github" src="/img/github.png" />
-                </a>
-            </>
-        )
-    },
-    "stick-ranger": {
-        name: "Stick Ranger",
-        content: (
-            <iframe
-                src="/Games/StickRanger/StickRanger.html"
-                style={{ "border" : "0", "width" : "36.4583vw", "height" : "36.4583vw" }}
-            />
-        )
-    },
-    twist: {
-        name: "Twist",
-        content: (
-            <>
-                <iframe
-                    src="/Games/Twist/index.html"
-                    style={{ "border" : "0", "width" : "28.6458vw", "height" : "28.6458vw" }}
-                />
-            </>
-        )
-    }
-};
+ 	"call-of-duty-zombies": {
+         name: "Call of Duty: Zombies",
+         content: (
+             <>
+ 				<iframe
+ 					src="/Games/Call of Duty Zombies/index.html"
+ 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+ 				/>
+ 
+                 <br />
+ 
+                 <a href="https://github.com/nzp-team/nzp-team.github.io/tree/main">
+                     <img alt="Original on Github" src="/img/github.png" />
+                 </a>
+             </>
+         )
+     },
+     "cut-the-rope": {
+         name: "Cut the Rope",
+         content: (
+             <iframe
+                 src="/Games/Cut the Rope/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+     "google-pacman": {
+         name: "Google Pacman",
+         content: (
+             <iframe
+                 src="/Games/Google Pacman/GooglePacman.html"
+                 height="400"
+                 width="700"
+                 style={{ border: 0 }}
+             />
+         )
+     },
+     "marble-blast-ultra": {
+         name: "Marble Blast Ultra",
+         content: (
+             <>
+                 <iframe
+ 					src="/Games/Marble Blast Ultra/index.html"
+ 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+ 				/>
+ 
+                 <br />
+ 
+                 <a href="https://github.com/RandomityGuy/MBHaxe">
+                     <img alt="Original on Github" src="/img/github.png" />
+                 </a>
+             </>
+         )
+     },
+ 	"minecraft": {
+         name: "Minecraft",
+         content: (
+ 			<>
+ 				<Minecraft />
+ 			</>
+         )
+     },
+     "powder-game": {
+         name: "Powder Game",
+         content: (
+             <iframe
+                 src="/Games/PowderGame/powdergame.html"
+                 width="440"
+                 height="496"
+                 style={{ border: 0 }}
+             />
+         )
+     },
+ 	"q1-infinity": {
+         name: "Q1 Infinity",
+         content: (
+ 			<iframe
+ 				src="/Games/Q1 Infinity/index.html"
+ 				style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+ 			/>
+         )
+     },
+ 	"q1k3": {
+         name: "Q1K3",
+         content: (
+             <>
+ 				<iframe
+ 					src="/Games/Q1K3/index.html"
+ 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+ 				/>
+ 
+                 <br />
+ 
+                 <a href="https://github.com/phoboslab/q1k3">
+                     <img alt="Original on Github" src="/img/github.png" />
+                 </a>
+             </>
+         )
+     },
+     "stick-ranger": {
+         name: "Stick Ranger",
+         content: (
+             <iframe
+                 src="/Games/StickRanger/StickRanger.html"
+                 height="700"
+                 width="700"
+                 style={{ border: 0 }}
+             />
+         )
+     },
+     twist: {
+         name: "Twist",
+         content: (
+             <>
+                 <iframe
+                     src="/Games/Twist/index.html"
+                     width="550"
+                     height="550"
+                     style={{ border: 0 }}
+                 />
+             </>
+         )
+     }
+ };
 
 export const flashGames: Record<string, GameEntry> = {
     "bloons-tower-defense-3": {
