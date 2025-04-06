@@ -25,14 +25,14 @@ export default function Game({ slug }: InferGetStaticPropsType<typeof getStaticP
     const game = games[slug] || flashGames[slug] || mcversions[slug];
 
     return (
-        <>
+        <className="game">
             <Head>
                 <title>{game.name} - Letfordlay Gaming</title>
             </Head>
 
             <p>{game.name}</p>
 
-            <p className="game">{game.content}</p>
+            {game.content}
         </>
     );
 }
