@@ -30,9 +30,9 @@ export default function Game({ slug }: InferGetStaticPropsType<typeof getStaticP
                 <title>{game.name} - Letfordlay Gaming</title>
             </Head>
 
-            <p className="game">{game.name}</p>
+            <p>{game.name}</p>
 
-            {game.content}
+            <p className="game">{game.content}</p>
         </>
     );
 }
