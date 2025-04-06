@@ -35,8 +35,8 @@ export const games: Record<string, GameEntry> = {
          content: (
              <iframe
                  src="/Games/Google Pacman/GooglePacman.html"
-                 height="400"
-                 width="700"
+                 height="287"
+                 width="582"
                  style={{ border: 0 }}
              />
          )

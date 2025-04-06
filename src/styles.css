@@ -20,6 +20,7 @@ a {
     border: 2px solid blue;
 	
 	max-height: 80dvh;
+	max-width: 5vw;
 	overflow: auto;
 	scrollbar-color: purple blue;
 	scrollbar-width: thin;
