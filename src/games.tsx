@@ -41,12 +41,12 @@ export const games: Record<string, GameEntry> = {
             />
         )
     },
-    "marble-blast": {
-        name: "Marble Blast",
+    "marble-blast-ultra": {
+        name: "Marble Blast Ultra",
         content: (
             <>
                 <iframe
-					src="/Games/Marble Blast/index.html"
+					src="/Games/Marble Blast Ultra/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
