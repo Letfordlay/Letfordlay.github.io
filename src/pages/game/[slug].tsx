@@ -1,4 +1,4 @@
-import { flashGames, games } from "@/games";
+import { flashGames, games, mcversions } from "@/games";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 
