@@ -35,9 +35,9 @@ export const games: Record<string, GameEntry> = {
         content: (
             <iframe
                 src="/Games/Google Pacman/GooglePacman.html"
-                height="400"
-                width="700"
-                style={{ border: 0 }}
+                height="600"
+                width="1050"
+                style={{ "border" : "0", "width" : "31.25vw", "height" : "54.6875vw" }}
             />
         )
     },
@@ -71,9 +71,7 @@ export const games: Record<string, GameEntry> = {
         content: (
             <iframe
                 src="/Games/PowderGame/powdergame.html"
-                width="440"
-                height="496"
-                style={{ border: 0 }}
+                style={{ "border" : "0", "width" : "22.9166vw", "height" : "25.8333vw" }}
             />
         )
     },
@@ -108,9 +106,7 @@ export const games: Record<string, GameEntry> = {
         content: (
             <iframe
                 src="/Games/StickRanger/StickRanger.html"
-                height="700"
-                width="700"
-                style={{ border: 0 }}
+                style={{ "border" : "0", "width" : "36.4583vw", "height" : "36.4583vw" }}
             />
         )
     },
@@ -120,9 +116,7 @@ export const games: Record<string, GameEntry> = {
             <>
                 <iframe
                     src="/Games/Twist/index.html"
-                    width="550"
-                    height="550"
-                    style={{ border: 0 }}
+                    style={{ "border" : "0", "width" : "28.6458vw", "height" : "28.6458vw" }}
                 />
             </>
         )
