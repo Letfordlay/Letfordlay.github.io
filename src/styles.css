@@ -22,7 +22,7 @@ a {
 	line-height: 26px;
 	max-height: 80dvh;
 	overflow: auto;
-	scrollbar-color: purple blue;
+	scrollbar-color: #43007c blue;
 	scrollbar-width: thin;
 }
 
