@@ -348,8 +348,7 @@ export const flashGames: Record<string, GameEntry> = {
 				/>
             </object>
         )
-    }
-};
+    },
     "the-worlds-hardest-game": {
         name: "The World's Hardest Game",
         content: (
