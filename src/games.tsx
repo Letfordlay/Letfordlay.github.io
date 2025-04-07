@@ -262,7 +262,7 @@ export const flashGames: Record<string, GameEntry> = {
         name: "McGruff's Brick Smash",
         content: (
             <iframe
-                <embed src="/Games/McGruff Bricksmash/index.html"/>
+                src="/Games/McGruff Bricksmash/index.html"
                 style={{ "border" : "0", "width" : "36.875vw", "height" : "28.3854vw" }}
             />
         )
