@@ -245,7 +245,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/Games/ducklife2.swf"
-					style={{ "border" : "0", "width" : "53.6979vw", "height" : "30.15625vw" }}
+					style={{ "border" : "0", "width" : "40.2vw", "height" : "30.15625vw" }}
 				/>
             </object>
         )
@@ -344,7 +344,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed 
 					src="/Games/run2.swf"
-					style={{ "border" : "0", "width" : "36.4583vw", "height" : "28.2552vw" }}
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "26.6vw" }}
 				/>
             </object>
         )
