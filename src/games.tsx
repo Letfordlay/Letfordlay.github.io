@@ -108,8 +108,7 @@ export const games: Record<string, GameEntry> = {
          content: (
              <iframe
                  src="/Games/Soccer Physics/index.html"
-                 width="900"
-                 height="500"
+				 scrolling="no"
                  style={{ "border" : "0", "width" : "46.875vw", "height" : "26.0416vw" }}
              />
          )
@@ -339,6 +338,18 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "run-2": {
+        name: "Run 2",
+        content: (
+            <object>
+                <embed 
+					src="/Games/run2.swf"
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "28.2552vw" }}
+				/>
+            </object>
+        )
+    }
+};
     "the-worlds-hardest-game": {
         name: "The World's Hardest Game",
         content: (
