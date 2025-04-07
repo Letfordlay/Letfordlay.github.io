@@ -103,6 +103,17 @@ export const games: Record<string, GameEntry> = {
              </>
          )
      },
+     "soccer-physics": {
+         name: "Soccer Physics",
+         content: (
+             <iframe
+                 src="/Games/Soccer Physics/index.html"
+                 width="900"
+                 height="500"
+                 style={{ "border" : "0", "width" : "46.875vw", "height" : "26.0416vw" }}
+             />
+         )
+     },
      "stick-ranger": {
          name: "Stick Ranger",
          content: (
@@ -225,6 +236,17 @@ export const flashGames: Record<string, GameEntry> = {
                 <embed
 					src="/Games/doublewires.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "20.8333vw" }}
+				/>
+            </object>
+        )
+    },
+	"duck-life-2": {
+        name: "Duck Life 2",
+        content: (
+            <object>
+                <embed
+					src="/Games/ducklife2.swf"
+					style={{ "border" : "0", "width" : "53.6979vw", "height" : "30.15625vw" }}
 				/>
             </object>
         )
