@@ -11,7 +11,7 @@ export default function Document() {
             <body>
                 <Menu />
 
-                <center className="game">
+                <center className="content">
                     <p>Welcome to Letfordlay Gaming!</p>
 
                     <Main />

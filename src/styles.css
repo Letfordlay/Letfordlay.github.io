@@ -52,8 +52,8 @@ a {
     animation: reverseColorRotate 1.5s linear 0s infinite;
 }
 
-.game {
-	padding-left: 200px;
+.content {
+	padding-left: 220px;
 }
 
 .rainbow {
