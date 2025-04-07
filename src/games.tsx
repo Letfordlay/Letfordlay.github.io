@@ -290,7 +290,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed 
 					src="/Games/McGruff Bricksmash/bricksmash.swf"
-					style={{ "border" : "0", "width" : "36.875vw", "height" : "28.3854vw" }}
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
 				/>
             </object>
         )
