@@ -99,6 +99,7 @@ export function Jetpack() {
                 </center>
 				<NextScript />
             </body>
+			</Html>
      );
 
 }
