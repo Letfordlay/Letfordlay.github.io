@@ -24,6 +24,7 @@ a {
 	overflow: auto;
 	scrollbar-color: #43007c blue;
 	scrollbar-width: thin;
+	z-index: 1000;
 }
 
 .menu a {
