@@ -86,7 +86,7 @@ System.register([], function (_export, _context) {
       var promise = Promise.resolve();
       jsList.forEach(function (jsListFile) {
         promise = promise.then(function () {
-          return loadJsListFile("src/".concat(jsListFile));
+          return loadJsListFile("/Games/Jetpack Joyride/src/".concat(jsListFile));
         });
       });
       return promise;
