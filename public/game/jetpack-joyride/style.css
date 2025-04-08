@@ -1,7 +1,6 @@
 
 
 #Cocos2dGameContainer {
-  position: absolute;
   margin: 0;
   overflow: hidden;
   left: 0px;
@@ -50,13 +49,6 @@ h1 {
 }
 
 #GameDiv {
-    margin: 0 auto;
-    position:relative;
-    /*
-	top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-	*/
 }
 
 #Cocos3dGameContainer, #GameCanvas {
