@@ -1,5 +1,5 @@
 import { Menu } from "@/components/Menu";
-export function Menu() {
+export function Jetpack() {
     return (
             <Head>
 				<link rel="stylesheet" href="styles.css">
