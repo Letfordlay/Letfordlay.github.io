@@ -1,31 +1,4 @@
-body {
-  cursor: default;
-  padding: 0;
-  border: 0;
-  margin: 0;
 
-  text-align: center;
-  background-color: white;
-  
-  overflow:hidden;
-}
-
-body, canvas, div {
-  outline: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -khtml-user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-/* Remove spin of input type number */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-  -webkit-appearance: none;
-  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
 
 #Cocos2dGameContainer {
   position: absolute;
@@ -35,21 +8,7 @@ input::-webkit-inner-spin-button {
   top: 0px;
 }
 
-a:link, a:visited {
-  color: #000;
-}
 
-a:active, a:hover {
-  color: #666;
-}
-
-p.header {
-  font-size: small;
-}
-
-p.footer {
-  font-size: x-small;
-}
 
 .progress-bar {
     background-color: #1a1a1a;
