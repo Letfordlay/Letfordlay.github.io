@@ -41,6 +41,15 @@ export const games: Record<string, GameEntry> = {
              />
          )
      },
+     "jetpack-joyride": {
+         name: "Jetpack Joyride",
+         content: (
+             <iframe
+                 src="/Games/Jetpack Joyride/index.html"
+                 style={{ "border" : "0", "width" : "85.4166vw", "height" : "36.3541vw" }}
+             />
+         )
+     },
      "marble-blast-ultra": {
          name: "Marble Blast Ultra",
          content: (
