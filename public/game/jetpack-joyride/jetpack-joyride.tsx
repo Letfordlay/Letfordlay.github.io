@@ -4,8 +4,8 @@ export function Jetpack() {
 	<>
 		<Menu />
 		<iframe
-                 src="/game/Cut the Rope/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+                 src="./index.html"
+                 style={{ "border" : "0", "width" : "85.4166vw", "height" : "36.3541vw" }}
         />
 		<NextScript />
 		</>
