@@ -1,32 +1,37 @@
-<!DOCTYPE html>
-<div>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>Jetpack Joyride</title>
-	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
-	<meta name="mobile-mobile-web-app-capable" content="yes"/>
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-	<meta name="format-detection" content="telephone=no"/>
-	<meta name="full-screen" content="yes"/>
-	<meta name="screen-orientation" content="landscape"/>
-	<meta name="x5-fullscreen" content="true"/>
-	<meta name="360-fullscreen" content="true"/>
-	<meta name="renderer" content="webkit"/>
-	<meta name="force-rendering" content="webkit"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-	<link rel="icon" href="favicon.ico"/>
-	<!-- YT PLAYABLES -->
-	<script src="ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
-	<!-- <script src="ytfake.js"></script> -->
-	<!-- Import map -->
-	<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
+import { Menu } from "@/components/Menu";
+<Html lang="en">
+            <Head>
+				<meta charset="utf-8">
+				<title>Jetpack Joyride</title>
+				<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
+				<meta name="mobile-mobile-web-app-capable" content="yes"/>
+				<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+				<meta name="format-detection" content="telephone=no"/>
+				<meta name="full-screen" content="yes"/>
+				<meta name="screen-orientation" content="landscape"/>
+				<meta name="x5-fullscreen" content="true"/>
+				<meta name="360-fullscreen" content="true"/>
+				<meta name="renderer" content="webkit"/>
+				<meta name="force-rendering" content="webkit"/>
+				<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                <link rel="icon" href="/favicon.ico" />
+                <script src="https://unpkg.com/@ruffle-rs/ruffle" async />
+				<!-- YT PLAYABLES -->
+				<script src="ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
+				<!-- <script src="ytfake.js"></script> -->
+				<!-- Import map -->
+				<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
 	
-	<!-- #FASTLIB# -->
-	<script defer src="fastLib/_importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
-</head>
-<body>
-	<div id="GameDiv">
+				<!-- #FASTLIB# -->
+				<script defer src="fastLib/_importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
+            </Head>
+            <body>
+                <Menu />
+
+                <center className="content">
+                    <p>Welcome to Letfordlay Gaming!</p>
+
+                    <div id="GameDiv">
 		<div id="Cocos3dGameContainer">
 			<canvas id="GameCanvas"></canvas>
 		</div>
@@ -97,7 +102,6 @@
 			}.bind(this));
 		}
 	</script>
-</body>
-</html>
-
-</div>
+                </center>
+            </body>
+        </Html>
