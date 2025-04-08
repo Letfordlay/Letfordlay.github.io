@@ -30397,7 +30397,7 @@ System.register([], (function(e, t) {
 				function o() {
 					i.parentNode.removeChild(i), i.removeEventListener("load", r, !1), i.removeEventListener("error", o, !1), n && n(new Error(L(4928, e)))
 				}
-				return "file:/Games/Jetpack Joyride" !== window.location.protocol && (i.crossOrigin = "anonymous"), i.async = t.scriptAsyncLoading || !1, i.src = e, i.addEventListener("load", r, !1), i.addEventListener("error", o, !1), document.body.appendChild(i), i
+				return "/Games/Jetpack Joyride/file:" !== window.location.protocol && (i.crossOrigin = "anonymous"), i.async = t.scriptAsyncLoading || !1, i.src = e, i.addEventListener("load", r, !1), i.addEventListener("error", o, !1), document.body.appendChild(i), i
 			}
 			var BN = /^(?:\w+:\/\/|\.+\/).+/,
 				MN = function(e, t, n) {
