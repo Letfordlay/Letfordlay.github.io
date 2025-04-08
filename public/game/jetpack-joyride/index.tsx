@@ -1,4 +1,5 @@
 import { Menu } from "@/components/Menu";
+import { Html, Head, Main, NextScript } from "next/document";
 export function Jetpack() {
     return (
             <Head>
@@ -100,6 +101,7 @@ export function Jetpack() {
 		}
 	</script>
                 </center>
+				<NextScript />
             </body>
      );
 
