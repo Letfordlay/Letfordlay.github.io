@@ -3,7 +3,7 @@ import { Minecraft } from "@/components/Menu";
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
 
-export const game: Record<string, GameEntry> = {
+export const games: Record<string, GameEntry> = {
  	"call-of-duty-zombies": {
          name: "Call of Duty: Zombies",
          content: (
