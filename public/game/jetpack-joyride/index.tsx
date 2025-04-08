@@ -1,99 +1,97 @@
 import { Menu } from "@/components/Menu";
 import { Html, Head, Main, NextScript } from "next/document";
 export function Jetpack() {
-return (
-<Html lang="en">
-	<Head>
-		<link rel="stylesheet" href="styles.css">
-		<meta charset="utf-8">
-		<title>Jetpack Joyride</title>
-		<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
-		<meta name="mobile-mobile-web-app-capable" content="yes"/>
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-		<meta name="format-detection" content="telephone=no"/>
-		<meta name="full-screen" content="yes"/>
-		<meta name="screen-orientation" content="landscape"/>
-		<meta name="x5-fullscreen" content="true"/>
-		<meta name="360-fullscreen" content="true"/>
-		<meta name="renderer" content="webkit"/>
-		<meta name="force-rendering" content="webkit"/>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-		<link rel="icon" href="/favicon.ico" />
-		<script src="./ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
-		<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
-		<script defer src="fastLib/_importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
-	</Head>
-	<body>
-		<Menu />
-		<center className="content">
-			<p>Welcome to Letfordlay Gaming!</p>
-			<p>Jetpack Joyride</p>
-			<div id="GameDiv">
-				<div id="Cocos3dGameContainer">
-					<canvas id="GameCanvas"></canvas>
-				</div>
-			</div>
-			<!-- start-fast-library -->
-			<script type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ">
-				document.addEventListener('fastloaded', function(e)
-				{
-					window.fast.gameReady = function()
-					{
-						window.fast.goGame({
-							prepare:prepareGame,
-							head:['style.css'],
-							body:["src/polyfills.bundle.js", "src/system.bundle.js"],
-							init:function(){ window.gameStart() },
-							resize:function(){ window.fastResizeCanvas() },
-							//docvisible:function(){ window.pauseMeSoftly(), window.fastManageAudioContext() }
-						});
-						console.log("inside [gameReady] -> "+window.fast.lang);
-					}
-					window.fast.stageElements(window.fast.gameReady, {fsbehind:true, nostats:true});
-				}, false);
-			</script>
-			<!-- end-fast-library -->
-			<script nonce="YSbyIrXuAKKunaSD290CJQ">
-				async function prepareGame()
-				{
-					//check audio
-					window.fast.gameAudio = ytgame.system.isAudioEnabled();
-					//check lang
-					await ytgame.system.getLanguage().then(function(lang)
-					{
-						//strip the tag and default to english if not supported
-						lang = lang.split('-')[0];
-						lang = (window.fast.info.languages.indexOf(lang)>-1) ? lang : window.fast.info.languages[0];
-						console.log('set lang to '+lang);
-						window.fast.lang = lang;
-						return new Promise((resolve, reject) => { resolve() });
-					});
-				}
-				window.gameStart = function()
-				{
-					//load the savedata first, then boot the game
-					ytgame.game.loadData().then(function(data)
-					{
-						console.log('progress loaded');
-						//console.log(data);
-						window.gameSaveData = data || "";
-						window.fast.gmg.create();
+	return (
+		<Html lang="en">
+			<Head>
+				<link rel="stylesheet" href="styles.css">
+				<meta charset="utf-8">
+				<title>Jetpack Joyride</title>
+				<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
+				<meta name="mobile-mobile-web-app-capable" content="yes"/>
+				<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+				<meta name="format-detection" content="telephone=no"/>
+				<meta name="full-screen" content="yes"/>
+				<meta name="screen-orientation" content="landscape"/>
+				<meta name="x5-fullscreen" content="true"/>
+				<meta name="360-fullscreen" content="true"/>
+				<meta name="renderer" content="webkit"/>
+				<meta name="force-rendering" content="webkit"/>
+				<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+				<link rel="icon" href="/favicon.ico" />
+				<script src="./ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
+				<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
+				<script defer src="fastLib/_importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
+			</Head>
+			<body>
+				<Menu />
+				<center className="content">
+					<p>Welcome to Letfordlay Gaming!</p>
+					<p>Jetpack Joyride</p>
+					<div id="GameDiv">
+						<div id="Cocos3dGameContainer">
+							<canvas id="GameCanvas"></canvas>
+						</div>
+					</div>
+					<script type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ">
+						document.addEventListener('fastloaded', function(e)
+						{
+							window.fast.gameReady = function()
+							{
+								window.fast.goGame({
+									prepare:prepareGame,
+									head:['style.css'],
+									body:["src/polyfills.bundle.js", "src/system.bundle.js"],
+									init:function(){ window.gameStart() },
+									resize:function(){ window.fastResizeCanvas() },
+									//docvisible:function(){ window.pauseMeSoftly(), window.fastManageAudioContext() }
+								});
+								console.log("inside [gameReady] -> "+window.fast.lang);
+							}
+							window.fast.stageElements(window.fast.gameReady, {fsbehind:true, nostats:true});
+						}, false);
+					</script>
+					<script nonce="YSbyIrXuAKKunaSD290CJQ">
+						async function prepareGame()
+						{
+							//check audio
+							window.fast.gameAudio = ytgame.system.isAudioEnabled();
+							//check lang
+							await ytgame.system.getLanguage().then(function(lang)
+							{
+								//strip the tag and default to english if not supported
+								lang = lang.split('-')[0];
+								lang = (window.fast.info.languages.indexOf(lang)>-1) ? lang : window.fast.info.languages[0];
+								console.log('set lang to '+lang);
+								window.fast.lang = lang;
+								return new Promise((resolve, reject) => { resolve() });
+							});
+						}
+						window.gameStart = function()
+						{
+							//load the savedata first, then boot the game
+							ytgame.game.loadData().then(function(data)
+							{
+								console.log('progress loaded');
+								//console.log(data);
+								window.gameSaveData = data || "";
+								window.fast.gmg.create();
 						
-						System.import('./index.js').then(function(){ }).catch(function(err) { console.error(err); });
-					}.bind(this), function(error)
-					{
-						console.log(error);
-						console.log('empty progress loaded');
-						window.gameSaveData = "";
-						window.fast.gmg.create();
-						
-						System.import('./index.js').then(function(){ }).catch(function(err) { console.error(err); });
-					}.bind(this));
-				}
-			</script>
-		</center>
-		<NextScript />
-	</body>
-</Html>
-);
+								System.import('./index.js').then(function(){ }).catch(function(err) { console.error(err); });
+							}.bind(this), function(error)
+							{
+								console.log(error);
+								console.log('empty progress loaded');
+								window.gameSaveData = "";
+								window.fast.gmg.create();
+								
+								System.import('./index.js').then(function(){ }).catch(function(err) { console.error(err); });
+							}.bind(this));
+						}
+					</script>
+				</center>
+				<NextScript />
+			</body>
+		</Html>
+	);
 }
