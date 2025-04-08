@@ -18,13 +18,8 @@ export function Jetpack() {
 				<meta name="force-rendering" content="webkit"/>
 				<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
                 <link rel="icon" href="/favicon.ico" />
-				<!-- YT PLAYABLES -->
 				<script src="./ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
-				<!-- <script src="ytfake.js"></script> -->
-				<!-- Import map -->
 				<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
-	
-				<!-- #FASTLIB# -->
 				<script defer src="fastLib/_importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
             </Head>
             <body>
