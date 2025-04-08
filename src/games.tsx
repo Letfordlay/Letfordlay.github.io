@@ -44,11 +44,11 @@ export const games: Record<string, GameEntry> = {
      "jetpack-joyride": {
          name: "Jetpack Joyride",
          content: (
-             <iframe
-				sandbox="allow-scripts allow-same-origin"
-                src="/game/Jetpack Joyride/index.html"
-                style={{ "border" : "0", "width" : "85.4166vw", "height" : "36.3541vw" }}
-             />
+		 source: '/',
+        destination: '/index.html',
+             <>
+			 <meta http-equiv="refresh" content="0; url=https://letfordlay.github.io/game/jetpack-joyride/index.html" />
+			 </>
          )
      },
      "marble-blast-ultra": {
