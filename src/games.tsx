@@ -41,7 +41,7 @@ export const games: Record<string, GameEntry> = {
              />
          )
      },
-     "jetpack-joyride": {
+     "jetpack--joyride": {
          name: "Jetpack Joyride",
          content: (
              <>
