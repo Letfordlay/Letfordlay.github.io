@@ -3,13 +3,13 @@ import { Minecraft } from "@/components/Menu";
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
 
-export const games: Record<string, GameEntry> = {
+export const game: Record<string, GameEntry> = {
  	"call-of-duty-zombies": {
          name: "Call of Duty: Zombies",
          content: (
              <>
  				<iframe
- 					src="/Games/Call of Duty Zombies/index.html"
+ 					src="/game/Call of Duty Zombies/index.html"
  					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
  				/>
  
@@ -25,7 +25,7 @@ export const games: Record<string, GameEntry> = {
          name: "Cut the Rope",
          content: (
              <iframe
-                 src="/Games/Cut the Rope/index.html"
+                 src="/game/Cut the Rope/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -34,7 +34,7 @@ export const games: Record<string, GameEntry> = {
          name: "Google Pacman",
          content: (
              <iframe
-                 src="/Games/Google Pacman/GooglePacman.html"
+                 src="/game/Google Pacman/GooglePacman.html"
                  height="287"
                  width="582"
                  style={{ border: 0 }}
@@ -46,7 +46,7 @@ export const games: Record<string, GameEntry> = {
          content: (
              <iframe
 				sandbox="allow-scripts allow-same-origin"
-                src="/Games/Jetpack Joyride/index.html"
+                src="/game/Jetpack Joyride/index.html"
                 style={{ "border" : "0", "width" : "85.4166vw", "height" : "36.3541vw" }}
              />
          )
@@ -56,7 +56,7 @@ export const games: Record<string, GameEntry> = {
          content: (
              <>
                  <iframe
- 					src="/Games/Marble Blast Ultra/index.html"
+ 					src="/game/Marble Blast Ultra/index.html"
  					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
  				/>
  
@@ -80,7 +80,7 @@ export const games: Record<string, GameEntry> = {
          name: "Powder Game",
          content: (
              <iframe
-                 src="/Games/PowderGame/powdergame.html"
+                 src="/game/PowderGame/powdergame.html"
                  width="440"
                  height="496"
                  style={{ border: 0 }}
@@ -91,7 +91,7 @@ export const games: Record<string, GameEntry> = {
          name: "Q1 Infinity",
          content: (
  			<iframe
- 				src="/Games/Q1 Infinity/index.html"
+ 				src="/game/Q1 Infinity/index.html"
  				style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
  			/>
          )
@@ -101,7 +101,7 @@ export const games: Record<string, GameEntry> = {
          content: (
              <>
  				<iframe
- 					src="/Games/Q1K3/index.html"
+ 					src="/game/Q1K3/index.html"
  					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
  				/>
  
@@ -117,7 +117,7 @@ export const games: Record<string, GameEntry> = {
          name: "Soccer Physics",
          content: (
              <iframe
-                 src="/Games/Soccer Physics/index.html"
+                 src="/game/Soccer Physics/index.html"
 				 scrolling="no"
                  style={{ "border" : "0", "width" : "46.875vw", "height" : "26.0416vw" }}
              />
@@ -127,7 +127,7 @@ export const games: Record<string, GameEntry> = {
          name: "Stick Ranger",
          content: (
              <iframe
-                 src="/Games/StickRanger/StickRanger.html"
+                 src="/game/StickRanger/StickRanger.html"
                  height="700"
                  width="700"
                  style={{ border: 0 }}
@@ -139,7 +139,7 @@ export const games: Record<string, GameEntry> = {
          content: (
              <>
                  <iframe
-                     src="/Games/Twist/index.html"
+                     src="/game/Twist/index.html"
                      width="550"
                      height="550"
                      style={{ border: 0 }}
@@ -149,13 +149,13 @@ export const games: Record<string, GameEntry> = {
      }
  };
 
-export const flashGames: Record<string, GameEntry> = {
+export const flashgame: Record<string, GameEntry> = {
     "bloons-tower-defense-3": {
         name: "Bloons Tower Defense 3",
         content: (
             <object>
                 <embed
-					src="/Games/bloonstowerdefense3.swf"
+					src="/game/bloonstowerdefense3.swf"
 					style={{ "border" : "0", "width" : "42.76vw", "height" : "32.08vw" }}
 				/>
             </object>
@@ -166,7 +166,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/bloonstowerdefense4.swf"
+					src="/game/bloonstowerdefense4.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "36.4583vw" }}
 				/>
             </object>
@@ -177,7 +177,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/bloonstowerdefense5.swf"
+					src="/game/bloonstowerdefense5.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "28.31597vw" }}
 				/>
             </object>
@@ -188,7 +188,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/boombot.swf"
+					src="/game/boombot.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
 				/>
             </object>
@@ -199,7 +199,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/boombot2.swf"
+					src="/game/boombot2.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
 				/>
             </object>
@@ -210,7 +210,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/bowman2.swf"
+					src="/game/bowman2.swf"
 					style={{ "border" : "0", "width" : "35.3125vw", "height" : "22.2916vw" }}
 				/>
             </object>
@@ -221,7 +221,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/catmario.swf"
+					src="/game/catmario.swf"
 					style={{ "border" : "0", "width" : "39.0625vw", "height" : "34.375vw" }}
 				/>
             </object>
@@ -232,7 +232,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/cubefield.swf"
+					src="/game/cubefield.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "28.2552vw" }}
 				/>
             </object>
@@ -243,7 +243,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/doublewires.swf"
+					src="/game/doublewires.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "20.8333vw" }}
 				/>
             </object>
@@ -254,7 +254,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/ducklife2.swf"
+					src="/game/ducklife2.swf"
 					style={{ "border" : "0", "width" : "40.2vw", "height" : "30.15625vw" }}
 				/>
             </object>
@@ -265,7 +265,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/dunebuggy.swf"
+					src="/game/dunebuggy.swf"
 					style={{ "border" : "0", "width" : "37.1875vw", "height" : "26.0416vw" }}
 				/>
             </object>
@@ -276,7 +276,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/freerider2.swf"
+					src="/game/freerider2.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "29.13738vw" }}
 				/>
             </object>
@@ -287,7 +287,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/happywheels.swf"
+					src="/game/happywheels.swf"
 					style={{ "border" : "0", "width" : "46.875vw", "height" : "26.0416vw" }}
 				/>
             </object>
@@ -298,7 +298,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed
-					src="/Games/interactivebuddy.swf"
+					src="/game/interactivebuddy.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "26.49305vw" }}
 				/>
             </object>
@@ -309,7 +309,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/linerider2.swf"
+					src="/game/linerider2.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "26.0416vw" }}
 				/>
             </object>
@@ -320,7 +320,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/McGruff Bricksmash/bricksmash.swf"
+					src="/game/McGruff Bricksmash/bricksmash.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
 				/>
             </object>
@@ -331,7 +331,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/portal.swf"
+					src="/game/portal.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "20.5208vw" }}
 				/>
             </object>
@@ -342,7 +342,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/raftwars.swf"
+					src="/game/raftwars.swf"
 					style={{ "border" : "0", "width" : "34.6875vw", "height" : "26.0416vw" }}
 				/>
             </object>
@@ -353,7 +353,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/run2.swf"
+					src="/game/run2.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "26.6vw" }}
 				/>
             </object>
@@ -364,7 +364,7 @@ export const flashGames: Record<string, GameEntry> = {
         content: (
             <object>
                 <embed 
-					src="/Games/theworldshardestgame.swf"
+					src="/game/theworldshardestgame.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "28.2552vw" }}
 				/>
             </object>
@@ -378,7 +378,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/Games/Minecraft 1.12.2/index.html"
+					src="/game/Minecraft 1.12.2/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -395,7 +395,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/Games/Minecraft 1.8.8/index.html"
+					src="/game/Minecraft 1.8.8/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -412,7 +412,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/Games/Minecraft 1.5.2/index.html"
+					src="/game/Minecraft 1.5.2/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -429,7 +429,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/Games/Minecraft Beta 1.7.3/index.html"
+					src="/game/Minecraft Beta 1.7.3/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -446,7 +446,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/Games/Minecraft Beta 1.3/index.html"
+					src="/game/Minecraft Beta 1.3/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -463,7 +463,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/Games/Minecraft Alpha 1.2.6/index.html"
+					src="/game/Minecraft Alpha 1.2.6/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -480,7 +480,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/Games/Minecraft Indev/index.html"
+					src="/game/Minecraft Indev/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -497,7 +497,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <div className="responsive">
 				<iframe
-					src="/Games/Minecraft Classic/index.html"
+					src="/game/Minecraft Classic/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 			</div>
