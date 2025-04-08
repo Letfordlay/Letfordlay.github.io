@@ -65,6 +65,10 @@ a {
   height: 36.3541vw;
 }
 
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+
 .rainbow {
     animation: colorRotate 1.5s linear 0s infinite;
 }
