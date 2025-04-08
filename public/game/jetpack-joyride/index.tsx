@@ -2,6 +2,7 @@ import { Menu } from "@/components/Menu";
 import { Html, Head, Main, NextScript } from "next/document";
 export function Jetpack() {
     return (
+		<Html lang="en">
             <Head>
 				<link rel="stylesheet" href="styles.css">
 				<meta charset="utf-8">
