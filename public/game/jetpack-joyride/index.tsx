@@ -1,5 +1,6 @@
 import { Menu } from "@/components/Menu";
-<Html lang="en">
+export function Menu() {
+    return (
             <Head>
 				<link rel="stylesheet" href="styles.css">
 				<meta charset="utf-8">
@@ -25,7 +26,7 @@ import { Menu } from "@/components/Menu";
 				<!-- #FASTLIB# -->
 				<script defer src="fastLib/_importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
             </Head>
-            <body className="content">
+            <body>
                 <Menu />
 
                 <center className="content">
@@ -100,4 +101,6 @@ import { Menu } from "@/components/Menu";
 	</script>
                 </center>
             </body>
-        </Html>
+     );
+
+}
