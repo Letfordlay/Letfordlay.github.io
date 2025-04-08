@@ -45,87 +45,9 @@ export const games: Record<string, GameEntry> = {
          name: "Jetpack Joyride",
          content: (
              <center
-					<!-- YT PLAYABLES -->
-	<script src="/Games/Jetpack Joyride/ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
-	<!-- <script src="ytfake.js"></script> -->
-	<!-- Import map -->
-	<script src="/Games/Jetpack Joyride/src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
-	
-	<!-- #FASTLIB# -->
-	<script defer src="/Games/Jetpack Joyride/fastLib/_importer.js" data-fast="/Games/Jetpack Joyride/fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
-</head>
-<body>
-	<div id="GameDiv">
-		<div id="Cocos3dGameContainer">
-			<canvas id="GameCanvas"></canvas>
-		</div>
-	</div>
-	
-	<!-- start-fast-library -->
-	<script type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ">
-		document.addEventListener('fastloaded', function(e)
-		{
-			window.fast.gameReady = function()
-			{
-				window.fast.goGame({
-					prepare:prepareGame,
-					head:['/Games/Jetpack Joyride/style.css'],
-					body:["/Games/Jetpack Joyridesrc/polyfills.bundle.js", "/src/system.bundle.js"],
-					init:function(){ window.gameStart() },
-					resize:function(){ window.fastResizeCanvas() },
-					//docvisible:function(){ window.pauseMeSoftly(), window.fastManageAudioContext() }
-				});
-				console.log("inside [gameReady] -> "+window.fast.lang);
-			}
-			window.fast.stageElements(window.fast.gameReady, {fsbehind:true, nostats:true});
-		}, false);
-	</script>
-	<!-- end-fast-library -->
-	
-	<script nonce="YSbyIrXuAKKunaSD290CJQ">
-		async function prepareGame()
-		{
-			//check audio
-			window.fast.gameAudio = ytgame.system.isAudioEnabled();
-			//check lang
-			await ytgame.system.getLanguage().then(function(lang)
-			{
-				//strip the tag and default to english if not supported
-				lang = lang.split('-')[0];
-				lang = (window.fast.info.languages.indexOf(lang)>-1) ? lang : window.fast.info.languages[0];
-				console.log('set lang to '+lang);
-				window.fast.lang = lang;
-				return new Promise((resolve, reject) => { resolve() });
-			});
-		}
-		//onchangeaudio
-		ytgame.system.onAudioEnabledChange(function(isAudioEnabled)
-		{
-			if(window.fast) window.fast.gameAudio = isAudioEnabled;
-			if(typeof window.fastEnableAudio==="function") window.fastEnableAudio(isAudioEnabled);
-		});
-		window.gameStart = function()
-		{
-			//load the savedata first, then boot the game
-			ytgame.game.loadData().then(function(data)
-			{
-				console.log('progress loaded');
-				//console.log(data);
-				window.gameSaveData = data || "";
-				window.fast.gmg.create();
-				
-				System.import('/Games/Jetpack Joyride/index.js').then(function(){ }).catch(function(err) { console.error(err); });
-			}.bind(this), function(error)
-			{
-				console.log(error);
-				console.log('empty progress loaded');
-				window.gameSaveData = "";
-				window.fast.gmg.create();
-				
-				System.import('/Games/Jetpack Joyride/index.js').then(function(){ }).catch(function(err) { console.error(err); });
-			}.bind(this));
-		}
-	</script>
+				sandbox="allow-scripts allow-same-origin"
+                src="/Games/Jetpack Joyride/index.html"
+                style={{ "border" : "0", "width" : "85.4166vw", "height" : "36.3541vw" }}
              />
          )
      },
