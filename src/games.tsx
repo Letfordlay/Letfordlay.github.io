@@ -149,7 +149,7 @@ export const games: Record<string, GameEntry> = {
      }
  };
 
-export const flashgame: Record<string, GameEntry> = {
+export const flashGames: Record<string, GameEntry> = {
     "bloons-tower-defense-3": {
         name: "Bloons Tower Defense 3",
         content: (
