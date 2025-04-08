@@ -101,7 +101,6 @@ h1 {
 }
 
 #Cocos3dGameContainer, #GameCanvas {
-  padding-left: 220px;
   width: 85.4166vw;
   height: 36.3541vw;
 }
