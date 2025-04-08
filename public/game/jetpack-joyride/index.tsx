@@ -1,5 +1,5 @@
 import { Menu } from "@/components/Menu";
-import { Html, Head, Main, NextScript } from "next/document";
+import { Html, Head, Main, NextScript } from "next/head";
 export function Jetpack() {
 	return (
 		<Html lang="en">
