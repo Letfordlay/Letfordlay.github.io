@@ -56,6 +56,11 @@ a {
 	padding-left: 220px;
 }
 
+.container {
+  width: 85.4166vw;
+  height: 36.3541vw;
+}
+
 .rainbow {
     animation: colorRotate 1.5s linear 0s infinite;
 }

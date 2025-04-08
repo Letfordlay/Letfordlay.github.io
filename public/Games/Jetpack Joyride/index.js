@@ -1,4 +1,4 @@
-System.register(["/Games/Jetpack Joyride/application.js"], function (_export, _context) {
+System.register(["./application.js"], function (_export, _context) {
   "use strict";
 
   var createApplication;

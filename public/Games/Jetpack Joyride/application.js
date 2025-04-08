@@ -86,14 +86,14 @@ System.register([], function (_export, _context) {
       var promise = Promise.resolve();
       jsList.forEach(function (jsListFile) {
         promise = promise.then(function () {
-          return loadJsListFile("/Games/Jetpack Joyride/src/".concat(jsListFile));
+          return loadJsListFile("src/".concat(jsListFile));
         });
       });
       return promise;
     }
 
     function loadSettingsJson(cc) {
-      var settings = '/Games/Jetpack Joyride/src/settings.json';
+      var settings = 'src/settings.json';
       return new Promise(function (resolve, reject) {
         if (typeof fsUtils !== 'undefined' && !settings.startsWith('http')) {
           var result = fsUtils.readJsonSync(settings);
