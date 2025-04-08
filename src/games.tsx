@@ -44,10 +44,8 @@ export const games: Record<string, GameEntry> = {
      "jetpack-joyride": {
          name: "Jetpack Joyride",
          content: (
-		 source: '/',
-        destination: '/index.html',
              <>
-			 <meta http-equiv="refresh" content="0; url=https://letfordlay.github.io/game/jetpack-joyride/index.html" />
+				<meta http-equiv="refresh" content="0; url=https://letfordlay.github.io/game/jetpack-joyride/index.html" />
 			 </>
          )
      },
