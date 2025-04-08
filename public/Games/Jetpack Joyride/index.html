@@ -16,13 +16,13 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 	<link rel="icon" href="favicon.ico"/>
 	<!-- YT PLAYABLES -->
-	<script src="./ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
+	<script src="/Games/Jetpack Joyride/ytgame.js" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
 	<!-- <script src="ytfake.js"></script> -->
 	<!-- Import map -->
-	<script src="/src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
+	<script src="/Games/Jetpack Joyride/src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="YSbyIrXuAKKunaSD290CJQ"> </script>
 	
 	<!-- #FASTLIB# -->
-	<script defer src="/fastLib/_importer.js" data-fast="/fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
+	<script defer src="/Games/Jetpack Joyride/fastLib/_importer.js" data-fast="/Games/Jetpack Joyride/fastLib/fastHeader.js" type="text/javascript" nonce="YSbyIrXuAKKunaSD290CJQ"></script>
 </head>
 <body>
 	<div id="GameDiv">
@@ -39,8 +39,8 @@
 			{
 				window.fast.goGame({
 					prepare:prepareGame,
-					head:['./style.css'],
-					body:["/src/polyfills.bundle.js", "/src/system.bundle.js"],
+					head:['/Games/Jetpack Joyride/style.css'],
+					body:["/Games/Jetpack Joyridesrc/polyfills.bundle.js", "/src/system.bundle.js"],
 					init:function(){ window.gameStart() },
 					resize:function(){ window.fastResizeCanvas() },
 					//docvisible:function(){ window.pauseMeSoftly(), window.fastManageAudioContext() }
@@ -84,7 +84,7 @@
 				window.gameSaveData = data || "";
 				window.fast.gmg.create();
 				
-				System.import('./index.js').then(function(){ }).catch(function(err) { console.error(err); });
+				System.import('/Games/Jetpack Joyride/index.js').then(function(){ }).catch(function(err) { console.error(err); });
 			}.bind(this), function(error)
 			{
 				console.log(error);
@@ -92,7 +92,7 @@
 				window.gameSaveData = "";
 				window.fast.gmg.create();
 				
-				System.import('./index.js').then(function(){ }).catch(function(err) { console.error(err); });
+				System.import('/Games/Jetpack Joyride/index.js').then(function(){ }).catch(function(err) { console.error(err); });
 			}.bind(this));
 		}
 	</script>
