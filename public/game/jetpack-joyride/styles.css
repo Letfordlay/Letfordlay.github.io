@@ -53,13 +53,11 @@ a {
     animation: reverseColorRotate 1.5s linear 0s infinite;
 }
 
-.centered{
-  width: 85.4166vw;
-  height: 36.3541vw;
-}
 
 .content {
 	padding-left: 220px;
+	width: 85.4166vw;
+	height: 36.3541vw;
 }
 
 .container {
