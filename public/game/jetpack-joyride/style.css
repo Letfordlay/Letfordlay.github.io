@@ -2,7 +2,6 @@
 
 #Cocos2dGameContainer {
   margin: 0;
-  overflow: hidden;
   left: 0px;
   top: 0px;
 }
