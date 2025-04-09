@@ -21,11 +21,29 @@ export const games: Record<string, GameEntry> = {
              </>
          )
      },
+     "crossy-road": {
+         name: "Crossy Road",
+         content: (
+             <iframe
+                 src="https://1ayt0n.github.io/Games/Crossy%20Road/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
      "cut-the-rope": {
          name: "Cut the Rope",
          content: (
              <iframe
-                 src="/game/Cut the Rope/index.html"
+                 src="https://1ayt0n.github.io/Games/Cut%20the%20Rope/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+     "fruit-ninja": {
+         name: "Fruit Ninja",
+         content: (
+             <iframe
+                 src="https://1ayt0n.github.io/Games/Fruit%20Ninja/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -41,12 +59,22 @@ export const games: Record<string, GameEntry> = {
              />
          )
      },
-     "jetpack--joyride": {
+	 "hill-climb-racing": {
+         name: "Hill Climb Racing Lite",
+         content: (
+             <iframe
+                 src="https://1ayt0n.github.io/Games/Hill%20Climb%20Racing/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+     "jetpack-joyride": {
          name: "Jetpack Joyride",
          content: (
-             <>
-				<meta http-equiv="refresh" content="0; url=https://letfordlay.github.io/game/jetpack-joyride/" />
-			 </>
+             <iframe
+                 src="https://1ayt0n.github.io/Games/Jetpack%20Joyride/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
          )
      },
      "marble-blast-ultra": {
@@ -72,6 +100,24 @@ export const games: Record<string, GameEntry> = {
  			<>
  				<Minecraft />
  			</>
+         )
+     },
+	 "pac-man-superfast": {
+         name: "Pac-Man SuperFast",
+         content: (
+             <iframe
+                 src="https://1ayt0n.github.io/Games/Pac-Man%20SuperFast/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+	 pou: {
+         name: "Pou",
+         content: (
+             <iframe
+                 src="https://1ayt0n.github.io/Games/Pou/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
          )
      },
      "powder-game": {
@@ -129,6 +175,15 @@ export const games: Record<string, GameEntry> = {
                  height="700"
                  width="700"
                  style={{ border: 0 }}
+             />
+         )
+     },
+	 "tomb-of-the-mask": {
+         name: "Tomb of the Mask",
+         content: (
+             <iframe
+                 src="https://1ayt0n.github.io/Games/Tomb%20of%20the%20Mask/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
      },
