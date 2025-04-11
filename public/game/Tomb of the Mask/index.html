@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Tomb of the Mask</title>
+  <link rel="stylesheet" href="style.css" nonce="_uYKnDJpW-vgx4y7sZ0axw">
+  <script src="./ytgame.js" nonce="_uYKnDJpW-vgx4y7sZ0axw"></script>
+</head>
+<body class="dark">
+<div id="unity-container" class="unity-desktop">
+  <canvas id="unity-canvas"></canvas>
+</div>
+<script nonce="_uYKnDJpW-vgx4y7sZ0axw">
+  const isPlayable = checkIfPlayable();
+  var gameInstance = null;
+
+  function checkIsFramed() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  function checkIfPlayable() {
+    const isFramed = checkIsFramed();
+    // Check if the YouTube Playables SDK is loaded.
+    const isPlayablesSDKLoaded = typeof ytgame !== 'undefined';
+    // Framed + SDK = running as a YouTube Playable.
+    return isFramed && isPlayablesSDKLoaded;
+  }
+
+  function YTInitialize() {
+    console.log('[YouTubeSDK] Initialize');
+    if (isPlayable) {
+      // Hold the YouTube Playable pause/resume callbacks.
+      ytgame.system.onPause(() => {
+        if (gameInstance) {
+          console.log('[YouTubeSDK] SendMessage OnGamePausedChange');
+          gameInstance.SendMessage('YouTubeSDK', 'OnGamePausedChange', 1);
+        }
+      });
+      ytgame.system.onResume(() => {
+        if (gameInstance) {
+          console.log('[YouTubeSDK] SendMessage OnGamePausedChange');
+          gameInstance.SendMessage('YouTubeSDK', 'OnGamePausedChange', 0);
+        }
+      });
+
+      // Handle the audio changing state from YouTube.
+      ytgame.system.onAudioEnabledChange((isAudioEnabled) => {
+        if (gameInstance) {
+          console.log('[YouTubeSDK] SendMessage OnAudioEnabledChange');
+          gameInstance.SendMessage('YouTubeSDK', 'OnAudioEnabledChange', isAudioEnabled ? 1 : 0);
+        }
+      });
+    }
+  }
+
+  function YTSendFirstFrameReady () {
+    console.log('[YouTubeSDK] SendFirstFrameReady');
+    if (isPlayable) {
+      ytgame.game.firstFrameReady();
+    }
+  }
+
+  function YTSendGameReady () {
+    console.log('[YouTubeSDK] SendGameReady');
+    if (isPlayable) {
+      ytgame.game.gameReady();
+    }
+  }
+
+  function YTLoadData () {
+    console.log('[YouTubeSDK] LoadData');
+    if (isPlayable) {
+      ytgame.game.loadData().then((data) => {
+        // Process data to resume game state.
+        if (data === null || data === '') {
+          data = '{}';
+        }
+        console.log('[YouTubeSDK] Data Loaded: ' + data);
+        if (gameInstance) {
+          console.log('[YouTubeSDK] SendMessage OnGameDataLoaded');
+          gameInstance.SendMessage('YouTubeSDK', 'OnGameDataLoaded', data);
+        }
+      });
+    }
+  }
+
+  function YTSaveData (gameData) {
+    console.log('[YouTubeSDK] SaveData: ' + gameData);
+    if (isPlayable) {
+      ytgame.game.saveData(gameData).then(() => {
+        console.log('[YouTubeSDK] Data Saved');
+        // Handle data save success.
+      }, (e) => {
+        // Handle data save failure.
+        console.error(e);
+        // Send an error to YouTube when this happens.
+        ytgame.health.logError();
+      });
+    }
+  }
+
+  function YTSendScore (score) {
+    console.log('[YouTubeSDK] SendScore: ' + score);
+    if (isPlayable) {
+      ytgame.engagement.sendScore({value: score});
+    }
+  }
+
+  const buildUrl = "Build";
+  const loaderUrl = buildUrl + "/totm.loader.js";
+  const config = {
+    dataUrl: buildUrl + "/totm.data.unityweb",
+    frameworkUrl: buildUrl + "/totm.framework.js.unityweb",
+    codeUrl: buildUrl + "/totm.wasm.unityweb",
+    streamingAssetsUrl: "StreamingAssets",
+    companyName: "Playgendary",
+    productName: "Tomb of the Mask",
+    productVersion: "1.0",
+  };
+
+  const container = document.querySelector("#unity-container");
+  const canvas = document.querySelector("#unity-canvas");
+
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    container.className = "unity-mobile";
+    config.devicePixelRatio = 1;
+  }
+  
+  const script = document.createElement("script");
+  script.src = loaderUrl;
+  script.onload = () => {
+    createUnityInstance(canvas, config).then((unityInstance) => {
+      console.log('[YouTubeSDK] unityInstance: ' + unityInstance);
+      gameInstance = unityInstance;
+      console.log('[YouTubeSDK] SendMessage InitializeSDK');
+      gameInstance.SendMessage('YouTubeSDK', 'InitializeSDK');
+    }).catch((message) => {
+      console.error(message);
+    });
+  };
+  document.body.appendChild(script);
+</script>
+</body>
+</html>

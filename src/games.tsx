@@ -25,7 +25,7 @@ export const games: Record<string, GameEntry> = {
          name: "Crossy Road",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Crossy%20Road/index.html"
+                 src="/game/Crossy Road/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -34,7 +34,7 @@ export const games: Record<string, GameEntry> = {
          name: "Cut the Rope",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Cut%20the%20Rope/index.html"
+                 src="/game/Cut the Rope/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -43,7 +43,7 @@ export const games: Record<string, GameEntry> = {
          name: "Fruit Ninja",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Fruit%20Ninja/index.html"
+                 src="/game/Fruit Ninja/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -63,7 +63,7 @@ export const games: Record<string, GameEntry> = {
          name: "Hill Climb Racing Lite",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Hill%20Climb%20Racing/index.html"
+                 src="/game/Hill Climb Racing/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -72,7 +72,7 @@ export const games: Record<string, GameEntry> = {
          name: "Jetpack Joyride",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Jetpack%20Joyride/index.html"
+                 src="/game/Jetpack Joyride/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -106,7 +106,7 @@ export const games: Record<string, GameEntry> = {
          name: "Pac-Man SuperFast",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Pac-Man%20SuperFast/index.html"
+                 src="/game/Pac-Man SuperFast/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -115,7 +115,7 @@ export const games: Record<string, GameEntry> = {
          name: "Pou",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Pou/index.html"
+                 src="/game/Pou/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -182,7 +182,7 @@ export const games: Record<string, GameEntry> = {
          name: "Tomb of the Mask",
          content: (
              <iframe
-                 src="https://1ayt0n.github.io/Games/Tomb%20of%20the%20Mask/index.html"
+                 src="/game/Tomb of the Mask/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -431,7 +431,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft 1.12.2/index.html"
+					src="/game/Minecraft/minecraft1.12.2.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -448,7 +448,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft 1.8.8/index.html"
+					src="/game/Minecraft/minecraft1.8.8.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -465,7 +465,24 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft 1.5.2/index.html"
+					src="/game/Minecraft/minecraft1.5.2.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-1-2-5": {
+        name: "Minecraft 1.2.5",
+        content: (
+            <>
+				<iframe
+					src="/game/Minecraft/minecraft1.2.5.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -482,7 +499,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft Beta 1.7.3/index.html"
+					src="/game/Minecraft/ninecraftbeta1.7.3.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -499,7 +516,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft Beta 1.3/index.html"
+					src="/game/Minecraft/ninecraftbeta1.3.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -516,7 +533,24 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft Alpha 1.2.6/index.html"
+					src="/game/Minecraft/minecraftalpha1.2.6.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-infdev": {
+        name: "Minecraft Infdev",
+        content: (
+            <>
+				<iframe
+					src="/game/Minecraft/minecraftinfdev.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -533,7 +567,24 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft Indev/index.html"
+					src="/game/Minecraft/minecraftindev.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
+	"minecraft-0-30": {
+        name: "Minecraft 0.30",
+        content: (
+            <>
+				<iframe
+					src="/game/Minecraft/minecraft0.30.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -550,7 +601,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <div className="responsive">
 				<iframe
-					src="/game/Minecraft Classic/index.html"
+					src="/game/Minecraft/Minecraft Classic/index.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 			</div>
