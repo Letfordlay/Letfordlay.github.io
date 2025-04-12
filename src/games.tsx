@@ -1,4 +1,5 @@
 import { Minecraft } from "@/components/Menu";
+import { In-Progress } from "@/components/Menu";
 
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
@@ -21,33 +22,6 @@ export const games: Record<string, GameEntry> = {
              </>
          )
      },
-     "crossy-road": {
-         name: "Crossy Road",
-         content: (
-             <iframe
-                 src="/game/Crossy Road/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-     "cut-the-rope": {
-         name: "Cut the Rope",
-         content: (
-             <iframe
-                 src="/game/Cut the Rope/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-     "fruit-ninja": {
-         name: "Fruit Ninja",
-         content: (
-             <iframe
-                 src="/game/Fruit Ninja/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
      "google-pacman": {
          name: "Google Pacman",
          content: (
@@ -56,24 +30,6 @@ export const games: Record<string, GameEntry> = {
                  height="287"
                  width="582"
                  style={{ border: 0 }}
-             />
-         )
-     },
-	 "hill-climb-racing": {
-         name: "Hill Climb Racing Lite",
-         content: (
-             <iframe
-                 src="/game/Hill Climb Racing/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-     "jetpack-joyride": {
-         name: "Jetpack Joyride",
-         content: (
-             <iframe
-                 src="/game/Jetpack Joyride/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
      },
@@ -107,15 +63,6 @@ export const games: Record<string, GameEntry> = {
          content: (
              <iframe
                  src="/game/Pac-Man SuperFast/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-	 pou: {
-         name: "Pou",
-         content: (
-             <iframe
-                 src="/game/Pou/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
@@ -198,6 +145,14 @@ export const games: Record<string, GameEntry> = {
                      style={{ border: 0 }}
                  />
              </>
+         )
+     },
+ 	minecraft: {
+         name: "In-Progress",
+         content: (
+ 			<div className="colorWarning-title">
+ 				<In-Progress />
+ 			</div>
          )
      }
  };
@@ -607,4 +562,61 @@ export const mcversions: Record<string, GameEntry> = {
 			</div>
         )
     }
+};
+
+export const inprogress: Record<string, GameEntry> = {
+     "crossy-road": {
+         name: "Crossy Road",
+         content: (
+             <iframe
+                 src="/game/Crossy Road/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+     "cut-the-rope": {
+         name: "Cut the Rope",
+         content: (
+             <iframe
+                 src="/game/Cut the Rope/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+     "fruit-ninja": {
+         name: "Fruit Ninja",
+         content: (
+             <iframe
+                 src="/game/Fruit Ninja/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+	 "hill-climb-racing": {
+         name: "Hill Climb Racing Lite",
+         content: (
+             <iframe
+                 src="/game/Hill Climb Racing/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+     "jetpack-joyride": {
+         name: "Jetpack Joyride",
+         content: (
+             <iframe
+                 src="/game/Jetpack Joyride/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+	 pou: {
+         name: "Pou",
+         content: (
+             <iframe
+                 src="/game/Pou/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     }
 };

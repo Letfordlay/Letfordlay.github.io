@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { games, flashGames, mcversions } from "@/games";
+import { games, flashGames, mcversions, inprogress } from "@/games";
 
 export function Menu() {
     return (
@@ -37,6 +37,20 @@ export function Minecraft() {
                 <p className="list-title">Versions</p>
 
                 {Object.entries(mcversions).map(([slug, entry]) => (
+                    <>
+                        <Link href={`/game/${slug}`}>{entry.name}</Link>
+                    </>
+                ))}
+            </center>
+    );
+}
+
+export function In-Progress() {
+    return (
+            <center className="warning">
+                <p className="warning-title">These games are currently in progress of being added to the website and may have issues running currently.</p>
+
+                {Object.entries(inprogress).map(([slug, entry]) => (
                     <>
                         <Link href={`/game/${slug}`}>{entry.name}</Link>
                     </>
