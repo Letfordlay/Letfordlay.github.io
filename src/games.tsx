@@ -1,5 +1,4 @@
 import { Minecraft } from "@/components/Menu";
-import { In-Progress } from "@/components/Menu";
 
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
@@ -145,14 +144,6 @@ export const games: Record<string, GameEntry> = {
                      style={{ border: 0 }}
                  />
              </>
-         )
-     },
- 	minecraft: {
-         name: "In-Progress",
-         content: (
- 			<div className="colorWarning-title">
- 				<In-Progress />
- 			</div>
          )
      }
  };

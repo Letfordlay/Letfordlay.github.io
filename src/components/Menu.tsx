@@ -23,6 +23,14 @@ export function Menu() {
                     </>
                 ))}
 
+                <p className="colorWarning-title">In-Progress Games</p>
+
+{               Object.entries(inprogress).map(([slug, entry]) => (
+                    <>
+                        <Link href={`/game/${slug}`} className="colorWarning">{entry.name}</Link>
+                    </>
+                ))}
+
                 <p className="menu-title">General</p>
 
                 <Link href="/videos">Videos</Link>
@@ -37,20 +45,6 @@ export function Minecraft() {
                 <p className="list-title">Versions</p>
 
                 {Object.entries(mcversions).map(([slug, entry]) => (
-                    <>
-                        <Link href={`/game/${slug}`}>{entry.name}</Link>
-                    </>
-                ))}
-            </center>
-    );
-}
-
-export function In-Progress() {
-    return (
-            <center className="warning">
-                <p className="warning-title">"These games are currently in progress of being added to the website and may have issues running currently."</p>
-
-                {Object.entries(inprogress).map(([slug, entry]) => (
                     <>
                         <Link href={`/game/${slug}`}>{entry.name}</Link>
                     </>
