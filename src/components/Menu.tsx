@@ -48,7 +48,7 @@ export function Minecraft() {
 export function In-Progress() {
     return (
             <center className="warning">
-                <p className="warning-title">These games are currently in progress of being added to the website and may have issues running currently.</p>
+                <p className="warning-title">"These games are currently in progress of being added to the website and may have issues running currently."</p>
 
                 {Object.entries(inprogress).map(([slug, entry]) => (
                     <>
