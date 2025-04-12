@@ -445,7 +445,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft/ninecraftbeta1.7.3.html"
+					src="/game/Minecraft/minecraftbeta1.7.3.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 
@@ -569,8 +569,8 @@ export const inprogress: Record<string, GameEntry> = {
          name: "Cut the Rope",
          content: (
              <iframe
-                 src="/game/Cut the Rope/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+                src="/game/Cut the Rope/index.html"
+                style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
      },
