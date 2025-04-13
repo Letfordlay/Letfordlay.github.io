@@ -462,7 +462,7 @@ export const mcversions: Record<string, GameEntry> = {
         content: (
             <>
 				<iframe
-					src="/game/Minecraft/ninecraftbeta1.3.html"
+					src="/game/Minecraft/minecraftbeta1.3.html"
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 

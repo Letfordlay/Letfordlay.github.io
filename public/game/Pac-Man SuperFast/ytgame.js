@@ -2285,7 +2285,7 @@
 		constructor() {
 			this.j = Qd;
 			this.m = new Dd("AUDIO_EVENT", {
-				H: !1
+				H: 1
 				//!1 or 1 can flip the audio being enabled or disabled depending on the method used by the game. Change this depending on the games default
 			});
 			this.o = !1;
