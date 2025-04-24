@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta name='robots' content='noindex'>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>JellyCar Worlds</title>
+	
+<meta name="robots" content="noindex,nofollow" />
+<body style="display: flex;justify-content: center;">
+	<div id="gameContainer">
+		<canvas id="unity-canvas" data-pixel-art=""></canvas>
+		<script src="Build/jcw_webgl.loader.js"></script>
+		<script>
+			var canvas = document.querySelector("#unity-canvas");
+			var config = {
+				dataUrl: "Build/jcw_webgl.data.unityweb",
+				frameworkUrl: "Build/jcw_webgl.framework.js.unityweb",
+				codeUrl: "Build/jcw_webgl.wasm.unityweb",
+				streamingAssetsUrl: "StreamingAssets",
+				companyName: "Walaber",
+				productName: "JellyCar Worlds - Play it now at CoolmathGames.com",
+				productVersion: "1.2.0",
+			};
+			var scaleToFit;
+			try {
+				scaleToFit = !!JSON.parse("");
+			} catch (e) {
+				scaleToFit = true;
+			}
+			function progressHandler(progress) {
+				var percent = progress * 100 + '%';
+				canvas.style.background = 'linear-gradient(to right, white, white ' + percent + ', transparent ' + percent + ', transparent) no-repeat center';
+				canvas.style.backgroundSize = '100% 1rem';
+			}
+			function onResize() {
+				var container = canvas.parentElement;
+				var w;
+				var h;
+
+				if (scaleToFit) {
+					w = window.innerWidth;
+					h = window.innerHeight;
+
+					var r = 600 / 800;
+
+					if (w * r > window.innerHeight) {
+						w = Math.min(w, Math.ceil(h / r));
+					}
+					h = Math.floor(w * r);
+				} else {
+					w = 800;
+					h = 600;
+				}
+
+				container.style.width = canvas.style.width = w + "px";
+				container.style.height = canvas.style.height = h + "px";
+				container.style.top = Math.floor((window.innerHeight - h) / 2) + "px";
+				container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
+			}
+			createUnityInstance(canvas, config, progressHandler).then(function (instance) {
+				gameInstance = instance;
+				canvas = instance.Module.canvas;
+				onResize();
+			});
+			window.addEventListener('resize', onResize);
+			onResize();
+
+			if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+				// Mobile device style: fill the whole browser client area with the game canvas:
+				const meta = document.createElement('meta');
+				meta.name = 'viewport';
+				meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+				document.getElementsByTagName('head')[0].appendChild(meta);
+			}
+		</script>
+	</div>
+<script>function fnSendMsg(evt){
+          // if(typeof window.parent.postMessage == 'function') {
+          //   window.parent.postMessage('keypress-from-game', '*');
+          // } else if(typeof window.top.postMessage == 'function' && window.top != window.self) {
+          //   window.top.postMessage('keypress-from-game', '*');
+          // }
+        }
+        document.body.addEventListener('click', function(event) {
+          // fnSendMsg(event);
+        });
+        document.addEventListener('keypress', function(event) {
+        	 // fnSendMsg(event);
+        });
+        document.addEventListener('keydown', function (e) {
+        	 // fnSendMsg(event);
+        });
+        document.addEventListener('keyup', function (e) {
+        	  // fnSendMsg(event);
+        });
+        </script></body>
+
+</html>

@@ -123,7 +123,7 @@
 			if (a.searchParams.has("environment") && a.searchParams.has("bundle") && a.searchParams.has("key") && (a.searchParams.get("environment") !== "prod" || a.searchParams.get("bundle") !== "public")) throw document.write('<script src="' + a.toString() + '">\x3c/script>'), Error("Exiting SDK: Purposefully exiting to load a different SDK version.");
 		}
 	};
-	if (!window.loadYTGame) {
+	if (window.loadYTGame) {
 		window.getLocationHash = () => window.location.hash;
 		const a = document.currentScript.src;
 		window.getCurrentSdkUrl = () => a != "" ? new URL(a) : null;
@@ -1819,7 +1819,7 @@
 			this.navigator = a;
 			typeof performance.getEntriesByType === "function" && "encodedBodySize" in PerformanceResourceTiming.prototype && "decodedBodySize" in PerformanceResourceTiming.prototype && "transferSize" in PerformanceResourceTiming.prototype && ((new PerformanceObserver(b => {
 				b.getEntries().forEach(c => {
-					if (c.entryType === "resource" && !c.name.includes("https://letfordlay.github.io/game")) {
+					if (c.entryType === "resource" && !c.name.includes("letfordlay")) {
 						this.o++;
 						this.j += c.encodedBodySize;
 						c.transferSize === 0 && c.decodedBodySize > 0 && this.m++;
@@ -2285,7 +2285,7 @@
 		constructor() {
 			this.j = Qd;
 			this.m = new Dd("AUDIO_EVENT", {
-				H: 1
+				H: !1
 				//!1 or 1 can flip the audio being enabled or disabled depending on the method used by the game. Change this depending on the games default
 			});
 			this.o = !1;

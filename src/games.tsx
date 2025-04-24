@@ -32,6 +32,18 @@ export const games: Record<string, GameEntry> = {
              />
          )
      },
+     "jellycar-worlds": {
+         name: "JellyCar Worlds",
+         content: (
+             <>
+                <iframe
+					src="/game/JellyCar Worlds/index.html"
+ 					style={{ "border" : "0", "width" : "41.6666vw", "height" : "31.25vw" }}
+                    scrolling="no"
+ 				/>
+             </>
+         )
+     },
      "marble-blast-ultra": {
          name: "Marble Blast Ultra",
          content: (
