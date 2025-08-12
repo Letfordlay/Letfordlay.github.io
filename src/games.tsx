@@ -61,6 +61,17 @@ export const games: Record<string, GameEntry> = {
              </>
          )
      },
+     "mari0": {
+         name: "Mari0",
+         content: (
+             <>
+                 <iframe
+ 					src="/game/Mari0/index.html"
+ 					style={{ "border" : "0", "width" : 800, "height" : 600 }}
+ 				/>
+             </>
+         )
+     },
  	minecraft: {
          name: "Minecraft",
          content: (
