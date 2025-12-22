@@ -12660,7 +12660,7 @@ oi("Array.prototype.values", function(ea) {
 			this.qn = 1;
 			this.Ur();
 			null != a ? (this.canvas = window.document.getElementById(a), null == this.canvas && (this.canvas = window.document.createElement("canvas"), this.canvas.id = a, window.document.body.appendChild(this.canvas))) :
-				(this.canvas = window.document.createElement("canvas"), this.canvas.id = "gfx", this.canvas.style.position = "absolute", this.canvas.style.width = "100%", this.canvas.style.height = "100%", this.canvas.style.touchAction = "none", this.canvas.style.userSelect = "none", this.canvas.style.outline = "none", this.canvas.style.setProperty("-webkit-user-select", "none"), this.canvas.style.zIndex = "0", window.document.body.appendChild(this.canvas), this.canvas.tabIndex = 1, this.canvas.focus())
+				(this.canvas = window.document.createElement("canvas"), this.canvas.id = "gfx", this.canvas.style.position = "absolute", this.canvas.style.width = "66.66vw", this.canvas.style.height = "37.5vw", this.canvas.style.touchAction = "none", this.canvas.style.userSelect = "none", this.canvas.style.outline = "none", this.canvas.style.setProperty("-webkit-user-select", "none"), this.canvas.style.zIndex = "0", window.document.body.center.appendChild(this.canvas), this.canvas.tabIndex = 1, this.canvas.focus())
 		}
 		ik() {
 			return window.devicePixelRatio

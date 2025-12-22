@@ -591,10 +591,11 @@ export const inprogress: Record<string, GameEntry> = {
      "cut-the-rope": {
          name: "Cut the Rope",
          content: (
-             <iframe
-                src="/game/Cut the Rope/index.html"
-                style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
+            <div id = "game">
+		        <script src="/game/cut-the-rope/ytgame.js" nonce="OkKiuaUW84wvpuqQi7rBbQ"></script>
+		        <script src="/game/cut-the-rope/ctrr.js" nonce="OkKiuaUW84wvpuqQi7rBbQ"></script>
+		        <script nonce="OkKiuaUW84wvpuqQi7rBbQ">Ctrr.main()</script>
+            </div>
          )
      },
      "fruit-ninja": {
