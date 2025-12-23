@@ -1,7 +1,38 @@
 import { Minecraft } from "@/components/Menu";
+import { useEffect } from "react";
 
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
+
+function CutTheRopeGame() {
+  useEffect(() => {
+    const loadScript = (src: string) =>
+      new Promise<void>((resolve) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = () => resolve();
+        document.body.appendChild(script);
+      });
+
+    (async () => {
+      await loadScript("/game/cut-the-rope/ytgame.js");
+      await loadScript("/game/cut-the-rope/ctrr.js");
+
+      // @ts-ignore – legacy global
+      if (window.Ctrr?.main) {
+        // @ts-ignore
+        window.Ctrr.main();
+      }
+    })();
+  }, []);
+
+  return (
+    <div
+      id="game"
+      suppressHydrationWarning
+    />
+  );
+}
 
 export const games: Record<string, GameEntry> = {
  	"call-of-duty-zombies": {
@@ -20,6 +51,10 @@ export const games: Record<string, GameEntry> = {
                  </a>
              </>
          )
+     },
+    "cut-the-rope": {
+         name: "Cut the Rope",
+         content: <CutTheRopeGame />
      },
      "google-pacman": {
          name: "Google Pacman",
@@ -586,16 +621,6 @@ export const inprogress: Record<string, GameEntry> = {
                  src="/game/Crossy Road/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
-         )
-     },
-     "cut-the-rope": {
-         name: "Cut the Rope",
-         content: (
-            <div id = "game">
-		        <script src="/game/cut-the-rope/ytgame.js" nonce="OkKiuaUW84wvpuqQi7rBbQ"></script>
-		        <script src="/game/cut-the-rope/ctrr.js" nonce="OkKiuaUW84wvpuqQi7rBbQ"></script>
-		        <script nonce="OkKiuaUW84wvpuqQi7rBbQ">Ctrr.main()</script>
-            </div>
          )
      },
      "fruit-ninja": {
