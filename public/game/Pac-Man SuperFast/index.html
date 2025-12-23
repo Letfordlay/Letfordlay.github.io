@@ -1,11 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        (function() {
+            try {
+                document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
+                document.addEventListener("webkitvisibilitychange", e => e.stopImmediatePropagation(), true);
+                document.hasFocus = () => true;
+            } catch {}
+        })();
+    </script>
+
+    <!-- 2. ytgame stub -->
+    <script>
+        /**
+         * Full ytgame compatibility stub
+         * Allows YT-Playables-built games to run standalone / in iframe
+         */
+        window.ytgame = {
+            system: {
+                // audio / state
+                isAudioEnabled: () => true,
+                onAudioEnabledChange: () => {},
+
+                // lifecycle
+                onPause: () => {},
+                onResume: () => {},
+
+                // visibility / environment
+                getLanguage: () => Promise.resolve("en"),
+                getEnvironment: () => Promise.resolve("web"),
+
+                // analytics (no-ops)
+                trackEvent: () => {},
+                trackScreen: () => {},
+                log: () => {},
+            },
+
+            game: {
+                // save / load
+                loadData: () => Promise.resolve(""),
+                saveData: () => Promise.resolve(""),
+
+                // lifecycle hooks REQUIRED by this build
+                firstFrameReady: () => {},
+                gameReady: () => {},
+
+                // pause / resume
+                pause: () => {},
+                resume: () => {},
+            }
+        };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pac-Man</title>
-
-    <script src="./ytgame.js" nonce="PM3PGgAk5Axa-59Ecu5UKQ"></script>
     <style>
         @font-face {
             font-family: 'Lexend Deca';

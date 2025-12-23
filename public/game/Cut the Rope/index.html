@@ -1,13 +1,7 @@
-<!--
-Game Bootstrapper
-
-New - Jon A Bellini 11/4/2024
- 
--->
-<!doctype HTML>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <script>
+	<head>
+		<script>
         (function() {
             try {
                 document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
@@ -58,29 +52,19 @@ New - Jon A Bellini 11/4/2024
             }
         };
     </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Crossy Road</title>
-
-  <!-- Load game's CSS file. -->
-  <link rel="stylesheet" href="style.css" nonce="VzPMpYuQch5uszBNvQGlmA">
-
-   <!-- Core libraries like Three.js -->
-  <script src="scripts/three.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
-
-  <!-- Main game script -->
-  <script src="scripts/game.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
-
-  <!-- Additional scripts -->
-  <script src="scripts/extra.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
-  <script src="scripts/bootstrap.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
-</head>
-
-<body>
-  <canvas id="canvas"></canvas>
-  <div id="build-number"></div>  <!-- delete this when not in testing -->
-
-  
-</body>
+		<title>Cut The Rope</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, width=1280" />
+		<style>
+			body {
+				margin: 0px;
+				overflow: hidden;
+				background-color: black;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="ctrr.js" nonce="OkKiuaUW84wvpuqQi7rBbQ"></script>
+		<script nonce="OkKiuaUW84wvpuqQi7rBbQ">Ctrr.main()</script>
+	</body> 
 </html>

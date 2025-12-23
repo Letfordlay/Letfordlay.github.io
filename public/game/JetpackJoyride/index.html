@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        (function() {
+            try {
+                document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
+                document.addEventListener("webkitvisibilitychange", e => e.stopImmediatePropagation(), true);
+                document.hasFocus = () => true;
+            } catch {}
+        })();
+    </script>
+
+    <!-- 2. ytgame stub -->
+    <script>
+        /**
+         * Full ytgame compatibility stub
+         * Allows YT-Playables-built games to run standalone / in iframe
+         */
+        window.ytgame = {
+            system: {
+                // audio / state
+                isAudioEnabled: () => true,
+                onAudioEnabledChange: () => {},
+
+                // lifecycle
+                onPause: () => {},
+                onResume: () => {},
+
+                // visibility / environment
+                getLanguage: () => Promise.resolve("en"),
+                getEnvironment: () => Promise.resolve("web"),
+
+                // analytics (no-ops)
+                trackEvent: () => {},
+                trackScreen: () => {},
+                log: () => {},
+            },
+
+            game: {
+                // save / load
+                loadData: () => Promise.resolve(""),
+                saveData: () => Promise.resolve(""),
+
+                // lifecycle hooks REQUIRED by this build
+                firstFrameReady: () => {},
+                gameReady: () => {},
+
+                // pause / resume
+                pause: () => {},
+                resume: () => {},
+            }
+        };
+    </script>
+    <meta charset="utf-8">
+    <title>Jetpack Joyride</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true" />
+    <meta name="mobile-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="full-screen" content="yes" />
+    <meta name="screen-orientation" content="landscape" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <!-- YT PLAYABLES -->
+    <!-- <script src="ytfake.js"></script> -->
+    <!-- Import map -->
+    <script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="oS4dxTnYB3FjM5okaIntiA"> </script>
+
+    <!-- #FASTLIB# -->
+    <script defer src="fastLib/importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="oS4dxTnYB3FjM5okaIntiA"></script>
+</head>
+
+<body>
+    <div id="GameDiv">
+        <div id="Cocos3dGameContainer">
+            <canvas id="GameCanvas"></canvas>
+        </div>
+    </div>
+
+    <!-- start-fast-library -->
+    <script type="text/javascript" nonce="oS4dxTnYB3FjM5okaIntiA">
+        document.addEventListener('fastloaded', function(e) {
+            window.fast.gameReady = function() {
+                window.fast.goGame({
+                    prepare: prepareGame,
+                    head: ['style.css'],
+                    body: ["src/polyfills.bundle.js", "src/system.bundle.js"],
+                    init: function() {
+                        window.gameStart()
+                    },
+                    resize: function() {
+                        window.fastResizeCanvas()
+                    },
+                    //docvisible:function(){ window.pauseMeSoftly(), window.fastManageAudioContext() }
+                });
+                console.log("inside [gameReady] -> " + window.fast.lang);
+            }
+            window.fast.stageElements(window.fast.gameReady, {
+                fsbehind: true,
+                nostats: true
+            });
+        }, false);
+    </script>
+    <!-- end-fast-library -->
+
+    <script nonce="oS4dxTnYB3FjM5okaIntiA">
+        async function prepareGame() {
+            // enable audio by default
+            window.fast.gameAudio = true;
+
+            // force language
+            window.fast.lang = window.fast.info.languages ?
+                window.fast.info.languages[0] :
+                "en";
+        }
+
+        //onchangeaudio
+        Object.defineProperty(document, "hidden", {
+            get: () => false
+        });
+        Object.defineProperty(document, "visibilityState", {
+            get: () => "visible"
+        });
+        document.hasFocus = () => true;
+        window.gameStart = function() {
+            //load the savedata first, then boot the game
+            window.gameSaveData = "";
+            window.fast.gmg.create();
+            System.import('./index.js').catch(console.error);
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,38 +1,7 @@
 import { Minecraft } from "@/components/Menu";
-import { useEffect } from "react";
 
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
-
-function CutTheRopeGame() {
-  useEffect(() => {
-    const loadScript = (src: string) =>
-      new Promise<void>((resolve) => {
-        const script = document.createElement("script");
-        script.src = src;
-        script.onload = () => resolve();
-        document.body.appendChild(script);
-      });
-
-    (async () => {
-      await loadScript("/game/cut-the-rope/ytgame.js");
-      await loadScript("/game/cut-the-rope/ctrr.js");
-
-      // @ts-ignore – legacy global
-      if (window.Ctrr?.main) {
-        // @ts-ignore
-        window.Ctrr.main();
-      }
-    })();
-  }, []);
-
-  return (
-    <div
-      id="game"
-      suppressHydrationWarning
-    />
-  );
-}
 
 export const games: Record<string, GameEntry> = {
  	"call-of-duty-zombies": {
@@ -52,9 +21,32 @@ export const games: Record<string, GameEntry> = {
              </>
          )
      },
+     "crossy-road": {
+         name: "Crossy Road",
+         content: (
+             <iframe
+                 src="/game/Crossy Road/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
     "cut-the-rope": {
          name: "Cut the Rope",
-         content: <CutTheRopeGame />
+         content: (
+             <iframe
+                 src="/game/Cut the Rope/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+     "fruit-ninja": {
+         name: "Fruit Ninja",
+         content: (
+             <iframe
+                 src="/game/Fruit Ninja/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
      },
      "google-pacman": {
          name: "Google Pacman",
@@ -64,6 +56,15 @@ export const games: Record<string, GameEntry> = {
                  height="325"
                  width="582"
                  style={{ border: 0 }}
+             />
+         )
+     },
+	 "hill-climb-racing": {
+         name: "Hill Climb Racing Lite",
+         content: (
+             <iframe
+                 src="/game/Hill Climb Racing/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
      },
@@ -77,6 +78,15 @@ export const games: Record<string, GameEntry> = {
                     scrolling="no"
  				/>
              </>
+         )
+     },
+     "jetpack-joyride": {
+         name: "Jetpack Joyride",
+         content: (
+             <iframe
+                 src="/game/JetpackJoyride/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
          )
      },
      "marble-blast-ultra": {
@@ -121,6 +131,15 @@ export const games: Record<string, GameEntry> = {
              <iframe
                  src="/game/Pac-Man SuperFast/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+         )
+     },
+	 pou: {
+         name: "Pou",
+         content: (
+             <iframe
+                 src="/game/Pou/index.html"
+                 style={{ "border" : "0", "width" : "31.75vw", "height" : "37.5vw" }}
              />
          )
      },
@@ -614,49 +633,12 @@ export const mcversions: Record<string, GameEntry> = {
 };
 
 export const inprogress: Record<string, GameEntry> = {
-     "crossy-road": {
-         name: "Crossy Road",
+	 NONE: {
+         name: "NONE",
          content: (
-             <iframe
-                 src="/game/Crossy Road/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-     "fruit-ninja": {
-         name: "Fruit Ninja",
-         content: (
-             <iframe
-                 src="/game/Fruit Ninja/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-	 "hill-climb-racing": {
-         name: "Hill Climb Racing Lite",
-         content: (
-             <iframe
-                 src="/game/Hill Climb Racing/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-     "jetpack-joyride": {
-         name: "Jetpack Joyride",
-         content: (
-             <iframe
-                 src="/game/Jetpack Joyride/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
-         )
-     },
-	 pou: {
-         name: "Pou",
-         content: (
-             <iframe
-                 src="/game/Pou/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-             />
+            <body>
+                
+            </body>
          )
      }
 };

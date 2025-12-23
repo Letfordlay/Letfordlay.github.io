@@ -1,6 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<script>
+        (function() {
+            try {
+                document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
+                document.addEventListener("webkitvisibilitychange", e => e.stopImmediatePropagation(), true);
+                document.hasFocus = () => true;
+            } catch {}
+        })();
+    </script>
+
+    <!-- 2. ytgame stub -->
+    <script>
+        /**
+         * Full ytgame compatibility stub
+         * Allows YT-Playables-built games to run standalone / in iframe
+         */
+        window.ytgame = {
+            system: {
+                // audio / state
+                isAudioEnabled: () => true,
+                onAudioEnabledChange: () => {},
+
+                // lifecycle
+                onPause: () => {},
+                onResume: () => {},
+
+                // visibility / environment
+                getLanguage: () => Promise.resolve("en"),
+                getEnvironment: () => Promise.resolve("web"),
+
+                // analytics (no-ops)
+                trackEvent: () => {},
+                trackScreen: () => {},
+                log: () => {},
+            },
+
+            game: {
+                // save / load
+                loadData: () => Promise.resolve(""),
+                saveData: () => Promise.resolve(""),
+
+                // lifecycle hooks REQUIRED by this build
+                firstFrameReady: () => {},
+                gameReady: () => {},
+
+                // pause / resume
+                pause: () => {},
+                resume: () => {},
+            }
+        };
+    </script>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0 minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui, shrink-to-fit=no" />
@@ -11,8 +62,6 @@
     <!-- For apple devices -->
     <link rel="apple-touch-icon" type="image/png" href="assets/icon.png" />
     <link rel="stylesheet" href="assets/css/app.css" type="text/css" nonce="wHg0caMYl5WlyID1IrUMlQ" />
-	<!-- YT PLAYABLES -->
-	<script src="./ytgame.js" nonce="wHg0caMYl5WlyID1IrUMlQ"></script>
 	
 	<!-- #FASTLIB# -->
 	<script defer src="fastLib/importer.js" data-fast="fastLib/fastHeader.js" data-fast-options="{'checkbrowser':false}" type="text/javascript" nonce="wHg0caMYl5WlyID1IrUMlQ"></script>

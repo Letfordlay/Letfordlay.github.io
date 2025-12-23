@@ -581,14 +581,7 @@
 			}
 		} else k = 4294967295, b & 1 || (h = g && a[g - 1], Ha(h) ? (g--, k = g, q = 0) : h = void 0);
 		r = void 0;
-		for (let y = 0; y < g; y++) {
-			let L = a[y];
-			if (L != null && (L = c(L, d)) != null)
-				if (y >= k) {
-					var ka = void 0;
-					((ka = r) != null ? ka : r = {})[y - -1] = L
-				} else f[y] = L
-		}
+
 		if (h)
 			for (let y in h)
 				if (a = h[y], a != null && (a = c(a, d)) != null)
