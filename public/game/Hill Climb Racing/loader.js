@@ -1,3 +1,46 @@
+(function () {
+    const SAVE_KEY = "hillclimbracing_save";
+
+    window.ytgame = {
+        system: {
+            isAudioEnabled: () => true,
+            onAudioEnabledChange: () => {},
+            onPause: () => {},
+            onResume: () => {},
+            getLanguage: () => Promise.resolve("en"),
+            getEnvironment: () => Promise.resolve("web"),
+            trackEvent: () => {},
+            trackScreen: () => {},
+            log: () => {}
+        },
+
+        game: {
+            saveData: (data) => {
+                try {
+                    localStorage.setItem(SAVE_KEY, data);
+                    return Promise.resolve();
+                } catch (e) {
+                    return Promise.reject(e);
+                }
+            },
+
+            loadData: () => {
+                try {
+                    const data = localStorage.getItem(SAVE_KEY);
+                    return Promise.resolve(data || "");
+                } catch (e) {
+                    return Promise.resolve("");
+                }
+            },
+
+            firstFrameReady: () => {},
+            gameReady: () => {},
+            pause: () => {},
+            resume: () => {}
+        }
+    };
+})();
+
 // loader.js
 
 // Function to load dmloader.js dynamically

@@ -3,56 +3,40 @@
 
 <head>
     <script>
-        (function() {
-            try {
-                document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
-                document.addEventListener("webkitvisibilitychange", e => e.stopImmediatePropagation(), true);
-                document.hasFocus = () => true;
-            } catch {}
-        })();
-    </script>
+  const SAVE_KEY = "jetpackjoyride_save";
 
-    <!-- 2. ytgame stub -->
-    <script>
-        /**
-         * Full ytgame compatibility stub
-         * Allows YT-Playables-built games to run standalone / in iframe
-         */
-        window.ytgame = {
-            system: {
-                // audio / state
-                isAudioEnabled: () => true,
-                onAudioEnabledChange: () => {},
+  window.ytgame = {
+    system: {
+      isAudioEnabled: () => true,
+      onAudioEnabledChange: () => {},
+      onPause: () => {},
+      onResume: () => {},
+      getLanguage: () => Promise.resolve("en"),
+      getEnvironment: () => Promise.resolve("web"),
+      trackEvent: () => {},
+      trackScreen: () => {},
+      log: () => {},
+    },
 
-                // lifecycle
-                onPause: () => {},
-                onResume: () => {},
+    game: {
+      loadData: () => {
+        return Promise.resolve(
+          localStorage.getItem(SAVE_KEY) || ""
+        );
+      },
 
-                // visibility / environment
-                getLanguage: () => Promise.resolve("en"),
-                getEnvironment: () => Promise.resolve("web"),
+      saveData: (data) => {
+        localStorage.setItem(SAVE_KEY, data);
+        return Promise.resolve();
+      },
 
-                // analytics (no-ops)
-                trackEvent: () => {},
-                trackScreen: () => {},
-                log: () => {},
-            },
-
-            game: {
-                // save / load
-                loadData: () => Promise.resolve(""),
-                saveData: () => Promise.resolve(""),
-
-                // lifecycle hooks REQUIRED by this build
-                firstFrameReady: () => {},
-                gameReady: () => {},
-
-                // pause / resume
-                pause: () => {},
-                resume: () => {},
-            }
-        };
-    </script>
+      firstFrameReady: () => {},
+      gameReady: () => {},
+      pause: () => {},
+      resume: () => {},
+    }
+  };
+</script>
     <meta charset="utf-8">
     <title>Jetpack Joyride</title>
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true" />
@@ -127,13 +111,14 @@
             get: () => "visible"
         });
         document.hasFocus = () => true;
-        window.gameStart = function() {
-            //load the savedata first, then boot the game
-            window.gameSaveData = "";
-            window.fast.gmg.create();
-            System.import('./index.js').catch(console.error);
+        window.gameStart = function () {
+  // Inject save BEFORE game loads
+  window.gameSaveData =
+    localStorage.getItem(SAVE_KEY) || "";
 
-        }
+  window.fast.gmg.create();
+  System.import('./index.js').catch(console.error);
+};
     </script>
 </body>
 

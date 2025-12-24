@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-	    <script>
-        (function() {
-            try {
-                document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
-                document.addEventListener("webkitvisibilitychange", e => e.stopImmediatePropagation(), true);
-                document.hasFocus = () => true;
-            } catch {}
-        })();
-    </script>
-
     <!-- 2. ytgame stub -->
     <script>
         /**
@@ -38,9 +28,6 @@
             },
 
             game: {
-                // save / load
-                loadData: () => Promise.resolve(""),
-                saveData: () => Promise.resolve(""),
 
                 // lifecycle hooks REQUIRED by this build
                 firstFrameReady: () => {},
@@ -51,6 +38,55 @@
                 resume: () => {},
             }
         };
+(function () {
+    const SAVE_KEY = "fruitninja_save";
+
+    window.ytgame = {
+        system: {
+            isAudioEnabled: () => true,
+            onAudioEnabledChange: () => {},
+            onPause: () => {},
+            onResume: () => {},
+            getLanguage: () => Promise.resolve("en"),
+            getEnvironment: () => Promise.resolve("web"),
+            trackEvent: () => {},
+            trackScreen: () => {},
+            log: () => {},
+        },
+
+        game: {
+            loadData: () => {
+                return new Promise((resolve) => {
+                    let data = "";
+                    try {
+                        data = localStorage.getItem(SAVE_KEY) || "";
+                    } catch {}
+
+                    // 🔴 THIS is what the engine actually reads
+                    window.gameSaveData = data;
+
+                    resolve(data);
+                });
+            },
+
+            saveData: (data) => {
+                return new Promise((resolve) => {
+                    try {
+                        if (typeof data === "string") {
+                            localStorage.setItem(SAVE_KEY, data);
+                        }
+                    } catch {}
+                    resolve();
+                });
+            },
+
+            firstFrameReady: () => {},
+            gameReady: () => {},
+            pause: () => {},
+            resume: () => {},
+        }
+    };
+})();
     </script>
 	<meta charset="utf-8">
 	<title>Fruit Ninja</title>
@@ -117,13 +153,12 @@
             get: () => "visible"
         });
         document.hasFocus = () => true;
-        window.gameStart = function() {
-            //load the savedata first, then boot the game
-            window.gameSaveData = "";
-            window.fast.gmg.create();
-            System.import('./index.js').catch(console.error);
+        window.gameStart = async function() {
+    await window.ytgame.game.loadData(); // 🔴 MUST happen first
+    window.fast.gmg.create();
+    System.import('./index.js').catch(console.error);
+}
 
-        }
 	</script>
 </body>
 </html>

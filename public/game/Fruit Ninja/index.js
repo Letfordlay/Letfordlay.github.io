@@ -3,6 +3,22 @@ System.register(["./application.js"], function (_export, _context) {
 
   var createApplication;
 
+  (function () {
+    const hook = () => {
+        if (!window.cc || !cc.js || !cc.Component) return;
+
+        if (!cc.js.getClassByName('cc.MotionStreak')) {
+            class MotionStreak extends cc.Component {}
+            cc.js.setClassName('cc.MotionStreak', MotionStreak);
+        }
+    };
+
+    const i = setInterval(() => {
+        hook();
+        if (window.cc && cc.js && cc.Component) clearInterval(i);
+    }, 1);
+})();
+
   function loadJsListFile(url) {
     return new Promise(function (resolve, reject) {
       var err;
