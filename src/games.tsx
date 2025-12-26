@@ -336,6 +336,39 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "civiballs": {
+        name: "Civiballs",
+        content: (
+            <object>
+                <embed
+					src="/game/civiballs.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "civiballs-2": {
+        name: "Civiballs 2",
+        content: (
+            <object>
+                <embed
+					src="/game/civiballs2.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "civiballs-x-mas-levels-pack": {
+        name: "Civiballs: Xmas Levels Pack",
+        content: (
+            <object>
+                <embed
+					src="/game/civiballsxmaslevelspack.swf"
+					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
+				/>
+            </object>
+        )
+    },
     cubefield: {
         name: "Cubefield",
         content: (
@@ -408,7 +441,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/game/hamu.swf"
-					style={{ "border" : "0", "width" : "35vw", "height" : "35vw" }}
+					style={{ "border" : "0", "width" : "35vw", "height" : "34.45vw" }}
 				/>
             </object>
         )
