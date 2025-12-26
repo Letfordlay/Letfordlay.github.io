@@ -2,21 +2,6 @@
 <html lang="en">
 <head>
     <script>
-        (function() {
-            try {
-                document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
-                document.addEventListener("webkitvisibilitychange", e => e.stopImmediatePropagation(), true);
-                document.hasFocus = () => true;
-            } catch {}
-        })();
-    </script>
-
-    <!-- 2. ytgame stub -->
-    <script>
-        /**
-         * Full ytgame compatibility stub
-         * Allows YT-Playables-built games to run standalone / in iframe
-         */
         window.ytgame = {
             system: {
                 // audio / state

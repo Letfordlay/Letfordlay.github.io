@@ -84,7 +84,7 @@ export const games: Record<string, GameEntry> = {
          name: "Jetpack Joyride",
          content: (
              <iframe
-                 src="/game/JetpackJoyride/index.html"
+                 src="/game/Jetpack Joyride/index.html"
                  style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
