@@ -259,6 +259,17 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    bloxorz: {
+        name: "Bloxorz",
+        content: (
+            <object>
+                <embed
+					src="/game/bloxorz.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "22vw" }}
+				/>
+            </object>
+        )
+    },
     boombot: {
         name: "Boombot",
         content: (
@@ -288,6 +299,28 @@ export const flashGames: Record<string, GameEntry> = {
                 <embed
 					src="/game/bowman2.swf"
 					style={{ "border" : "0", "width" : "35.3125vw", "height" : "22.2916vw" }}
+				/>
+            </object>
+        )
+    },
+    "boxhead-2play-rooms": {
+        name: "Boxhead: 2Play Rooms",
+        content: (
+            <object>
+                <embed
+					src="/game/boxhead2play.swf"
+					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
+				/>
+            </object>
+        )
+    },
+    "cargo-bridge": {
+        name: "Cargo Bridge",
+        content: (
+            <object>
+                <embed
+					src="/game/cargobridge.swf"
+					style={{ "border" : "0", "width" : "800px", "height" : "550px" }}
 				/>
             </object>
         )
@@ -347,6 +380,17 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "fireboy-and-watergirl": {
+        name: "Fireboy & Watergirl",
+        content: (
+            <object>
+                <embed
+					src="/game/fireboyandwatergirl.swf"
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.3vw" }}
+				/>
+            </object>
+        )
+    },
     "free-rider-2": {
         name: "Free Rider 2",
         content: (
@@ -354,6 +398,17 @@ export const flashGames: Record<string, GameEntry> = {
                 <embed
 					src="/game/freerider2.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "29.13738vw" }}
+				/>
+            </object>
+        )
+    },
+    hamu: {
+        name: "Hamu",
+        content: (
+            <object>
+                <embed
+					src="/game/hamu.swf"
+					style={{ "border" : "0", "width" : "35vw", "height" : "35vw" }}
 				/>
             </object>
         )
