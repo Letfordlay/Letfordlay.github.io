@@ -369,6 +369,17 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "crush-the-castle": {
+        name: "Crush the Castle",
+        content: (
+            <object>
+                <embed
+					src="/game/crushthecastle.swf"
+					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
+				/>
+            </object>
+        )
+    },
     cubefield: {
         name: "Cubefield",
         content: (
