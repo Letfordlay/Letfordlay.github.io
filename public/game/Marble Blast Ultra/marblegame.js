@@ -22882,37 +22882,11 @@ class gui_MainMenuGui extends gui_GuiImage {
 		this.btnList.addButton(2,"Achievements",function(e) {
 			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_AchievementsGui());
 		});
-		this.btnList.addButton(3,"Replays",function(sender) {
-			hxd_File.browse(function(replayToLoad) {
-				replayToLoad.load(function(replayData) {
-					let replay = new src_Replay("");
-					if(!replay.read(replayData)) {
-						(js_Boot.__cast(_gthis.parent , gui_Canvas)).pushDialog(new gui_MessageBoxOkDlg("Cannot load replay."));
-					} else {
-						let repmis = replay.mission;
-						repmis = StringTools.replace(repmis,"data/","");
-						if(src_MissionList.missions == null) {
-							src_MissionList.buildMissionList();
-						}
-						let mi = replay.customId == 0 ? src_MissionList.missions.h[repmis] : src_Marbleland.missions.h[replay.customId];
-						if(mi.isClaMission) {
-							mi.download(function() {
-								src_MarbleGame.instance.watchMissionReplay(mi,replay,gui_MainMenuGui);
-							});
-						} else if(mi != null) {
-							(js_Boot.__cast(_gthis.parent , gui_Canvas)).marbleGame.watchMissionReplay(mi,replay,gui_MainMenuGui);
-						} else {
-							(js_Boot.__cast(_gthis.parent , gui_Canvas)).pushDialog(new gui_MessageBoxOkDlg("Cannot load replay."));
-						}
-					}
-				});
-			},{ title : "Select replay file", fileTypes : [{ name : "Replay (*.mbr)", extensions : ["mbr"]}]});
-		});
 		this.btnList.addButton(3,"Help & Options",function(sender) {
 			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_OptionsListGui());
 		});
-		this.btnList.addButton(2,"Changelog",function(sender) {
-			src_MarbleGame.canvas.setContent(new gui_VersionGui());
+		this.btnList.addButton(4,"Return to Arcade",function(sender) {
+			window.top.location.href = "https://letfordlay.github.io";
 		});
 		let loadButtonImages = function(path) {
 			let normal = src_ResourceLoader.getResource("" + path + "_n.png",src_ResourceLoader.getImage,_gthis.imageResources).toTile();
