@@ -136,74 +136,6 @@ class Lambda {
 }
 $hxClasses["Lambda"] = Lambda;
 Lambda.__name__ = "Lambda";
-class MPCustoms {
-	static loadMissionList() {
-		if(MPCustoms.missionList.length == 0 && !MPCustoms._requestSent) {
-			MPCustoms._requestSent = true;
-			src_Http.get("https://letfordlay.github.io/Games/Marble%20Blast/data/ultraCustom.json",function(b) {
-				let misList = JSON.parse(b.toString());
-				MPCustoms.missionList = misList;
-				MPCustoms.missionList.sort(function(a,b) {
-					let a1 = a.title.toLowerCase();
-					let b1 = b.title.toLowerCase();
-					if(a1 < b1) {
-						return -1;
-					} else if(a1 > b1) {
-						return 1;
-					} else {
-						return 0;
-					}
-				});
-				src_Console.instance.addEntry("log","Loaded " + misList.length + " custom missions.");
-				MPCustoms._requestSent = false;
-			},function(e) {
-				src_Console.instance.addEntry("log","Error getting custom list from marbleland.");
-				MPCustoms._requestSent = false;
-			});
-		}
-	}
-	static download(mission,onFinish,onFail) {
-		let lastSlashIdx = mission.path.lastIndexOf("/");
-		let s = HxOverrides.substr(mission.path,0,lastSlashIdx);
-		let dlPath = "https://marbleblastultra.randomityguy.me/" + encodeURIComponent(s) + ".zip";
-		src_Http.get(dlPath,function(zipData) {
-			let reader = new haxe_zip_Reader(new haxe_io_BytesInput(zipData));
-			let entries = null;
-			try {
-				let _g = [];
-				let _g_head = reader.read().h;
-				while(_g_head != null) {
-					let val = _g_head.item;
-					_g_head = _g_head.next;
-					let x = val;
-					_g.push(x);
-				}
-				entries = _g;
-			} catch( _g ) {
-			}
-			src_ResourceLoader.loadZip(entries,"missions/mpcustom/");
-			if(entries != null) {
-				onFinish();
-			} else {
-				src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
-				onFail();
-			}
-		},function(e) {
-			src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
-			onFail();
-		});
-	}
-	static play(mission,onFinish,onFail) {
-		MPCustoms.download(mission,function() {
-			let f = src_ResourceLoader.getFileEntry(mission.path);
-			let mis = src_MissionList.parseMisHeader(f.entry.getBytes().toString(),mission.path);
-			src_MarbleGame.instance.playMission(mis,true);
-			onFinish();
-		},onFail);
-	}
-}
-$hxClasses["MPCustoms"] = MPCustoms;
-MPCustoms.__name__ = "MPCustoms";
 class h3d_IDrawable {
 }
 $hxClasses["h3d.IDrawable"] = h3d_IDrawable;
@@ -326,6 +258,12 @@ class Main extends hxd_App {
 		super.init();
 		this.s3d.set_renderer(new src_Renderer());
 		this.s3d.checkPasses = false;
+		Main.isDiscord = window.location.href.indexOf("discord") != -1;
+		if(Main.isDiscord) {
+			src_Analytics.setURL(".proxy/analytics/api/send");
+			src_Leaderboards.setHost(".proxy/lb");
+			net_MasterServerClient.setServerIp(".proxy/mbomaster");
+		}
 		let zoomRatio;
 		if(src_Util.isTouchDevice()) {
 			let reg = new EReg("iPad|tablet","gm");
@@ -367,11 +305,12 @@ class Main extends hxd_App {
 		});
 		src_Settings.init();
 		src_Gamepad.init();
-		MPCustoms.loadMissionList();
+		src_MPCustoms.loadMissionList();
 		let _gthis = this;
 		src_ResourceLoader.init(this.s2d,function() {
 			src_AudioManager.init();
 			src_AudioManager.playShell();
+			src_Marbleland.init();
 			_gthis.marbleGame = new src_MarbleGame(_gthis.s2d,_gthis.s3d);
 			src_MarbleGame.canvas.setContent(new gui_PresentsGui());
 			src_MissionList.buildMissionList();
@@ -11052,7 +10991,11 @@ class fs_ManifestEntry extends hxd_fs_FileEntry {
 				onReady();
 			}
 		} else {
-			window.fetch(this.file).then(function(res) {
+			let prefix = "";
+			if(Main.isDiscord) {
+				prefix = ".proxy/";
+			}
+			window.fetch(prefix + this.file).then(function(res) {
 				return res.arrayBuffer();
 			}).then(function(buf) {
 				_gthis.loaded = true;
@@ -11060,6 +11003,16 @@ class fs_ManifestEntry extends hxd_fs_FileEntry {
 				if(onReady != null) {
 					onReady();
 				}
+			}).catch(function(e) {
+				return window.fetch(prefix + "data/" + _gthis.originalFile).then(function(res) {
+					return res.arrayBuffer();
+				}).then(function(buf) {
+					_gthis.loaded = true;
+					_gthis.bytes = haxe_io_Bytes.ofData(buf);
+					if(onReady != null) {
+						onReady();
+					}
+				});
 			});
 		}
 	}
@@ -12986,7 +12939,7 @@ class gui_AboutMenuOptionsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		if(pauseGui) {
 			backButton.pressedAction = function(e) {
@@ -13173,7 +13126,7 @@ class gui_AchievementsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		if(isPause) {
 			backButton.pressedAction = function(e) {
@@ -13191,7 +13144,7 @@ class gui_AchievementsGui extends gui_GuiImage {
 		nextButton.vertSizing = gui_VertSizing.Bottom;
 		nextButton.horizSizing = gui_HorizSizing.Right;
 		nextButton.accelerators = [13];
-		nextButton.gamepadAccelerator = ["X"];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
 		nextButton.pressedAction = function(e) {
 			let desc = "Select an achievement from the list.";
 			let selection = curSelection;
@@ -13875,6 +13828,343 @@ Object.assign(gui_ConsoleDlg.prototype, {
 	,cmdHistory: null
 	,cmdHistoryIndex: null
 });
+class gui_ControllerBindingsGui extends gui_GuiImage {
+	constructor(pauseGui) {
+		gui_GuiControl._hx_skip_constructor = true;
+		super();
+		gui_GuiControl._hx_skip_constructor = false;
+		this._hx_constructor(pauseGui);
+	}
+	_hx_constructor(pauseGui) {
+		if(pauseGui == null) {
+			pauseGui = false;
+		}
+		this.selectedColumn = 0;
+		let res = src_ResourceLoader.getImage("data/ui/xbox/BG_fadeOutSoftEdge.png").resource.toTile();
+		super._hx_constructor(res);
+		let domcasual32fontdata = src_ResourceLoader.getFileEntry("data/font/DomCasualD.fnt");
+		let domcasual32b = new hxd_res_BitmapFont(domcasual32fontdata.entry);
+		domcasual32b.loader = src_ResourceLoader.loader;
+		domcasual32b.toSdfFont(42 * src_Settings.uiScale,4);
+		this.horizSizing = gui_HorizSizing.Width;
+		this.vertSizing = gui_VertSizing.Height;
+		this.position = new h3d_Vector();
+		this.extent = new h3d_Vector(640,480);
+		let getConflictingBinding = function(bindingName,key) {
+			if(["Menu OK","Menu Back","Menu Alt 1","Menu Alt 2"].indexOf(bindingName) != -1) {
+				if(src_Settings.gamepadSettings.ok == key && bindingName != "Menu OK") {
+					return "Menu OK";
+				}
+				if(src_Settings.gamepadSettings.back == key && bindingName != "Menu Back") {
+					return "Menu Back";
+				}
+				if(src_Settings.gamepadSettings.alt1 == key && bindingName != "Menu Alt 1") {
+					return "Menu Alt 1";
+				}
+				if(src_Settings.gamepadSettings.alt2 == key && bindingName != "Menu Alt 2") {
+					return "Menu Alt 2";
+				}
+			} else {
+				if(src_Settings.gamepadSettings.jump[0] == key && bindingName != "Jump") {
+					return "Jump";
+				}
+				if(src_Settings.gamepadSettings.jump[1] == key && bindingName != "Jump") {
+					return "Jump";
+				}
+				if(src_Settings.gamepadSettings.blast[0] == key && bindingName != "Blast") {
+					return "Blast";
+				}
+				if(src_Settings.gamepadSettings.blast[1] == key && bindingName != "Blast") {
+					return "Blast";
+				}
+				if(src_Settings.gamepadSettings.powerup[0] == key && bindingName != "Use Powerup") {
+					return "Use Powerup";
+				}
+				if(src_Settings.gamepadSettings.powerup[1] == key && bindingName != "Use Powerup") {
+					return "Use Powerup";
+				}
+				if(src_Settings.gamepadSettings.rewind[0] == key && bindingName != "Rewind") {
+					return "Rewind";
+				}
+				if(src_Settings.gamepadSettings.rewind[1] == key && bindingName != "Rewind") {
+					return "Rewind";
+				}
+			}
+			return null;
+		};
+		let remapFunc = function(bindingName,bindingFunc,ctrl) {
+			let remapDlg = new gui_RemapDlg(bindingName,true);
+			src_MarbleGame.canvas.pushDialog(remapDlg);
+			remapDlg.controllerRemapCallback = function(key) {
+				src_MarbleGame.canvas.popDialog(remapDlg);
+				if(key == "escape") {
+					return;
+				}
+				let conflicting = getConflictingBinding(bindingName,key);
+				if(conflicting == null) {
+					ctrl.buttonText.text.set_text("" + bindingName + ": " + key);
+					bindingFunc(key);
+				} else {
+					let yesNoDlg = new gui_MessageBoxYesNoDlg("\"" + key + "\" is already bound to \"" + conflicting + "\"!<br/>Do you want to undo this mapping?",function() {
+						ctrl.buttonText.text.set_text("" + bindingName + ": " + key);
+						bindingFunc(key);
+					},function() {
+					});
+					src_MarbleGame.canvas.pushDialog(yesNoDlg);
+				}
+			};
+		};
+		let scene2d = src_MarbleGame.instance.scene2d;
+		let offsetX = (scene2d.width - 1280) / 2;
+		let offsetY = (scene2d.height - 720) / 2;
+		let subX = 640 - (scene2d.width - offsetX) * 640 / scene2d.width;
+		let subY = 480 - (scene2d.height - offsetY) * 480 / scene2d.height;
+		this.innerCtrl = new gui_GuiControl();
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.innerCtrl.horizSizing = gui_HorizSizing.Width;
+		this.innerCtrl.vertSizing = gui_VertSizing.Height;
+		this.addChild(this.innerCtrl);
+		let coliseumfontdata = src_ResourceLoader.getFileEntry("data/font/ColiseumRR.fnt");
+		let coliseumb = new hxd_res_BitmapFont(coliseumfontdata.entry);
+		coliseumb.loader = src_ResourceLoader.loader;
+		let coliseum = coliseumb.toSdfFont(44 * src_Settings.uiScale,4);
+		let rootTitle = new gui_GuiText(coliseum);
+		rootTitle.position = new h3d_Vector(100,30);
+		rootTitle.extent = new h3d_Vector(1120,80);
+		rootTitle.text.set_textColor(16777215);
+		rootTitle.text.set_text("CONTROLLER BINDINGS");
+		rootTitle.text.alpha = 0.5;
+		this.innerCtrl.addChild(rootTitle);
+		this.btnListLeft = new gui_GuiXboxList();
+		this.btnListLeft.position = new h3d_Vector(70 - offsetX,135);
+		this.btnListLeft.horizSizing = gui_HorizSizing.Left;
+		this.btnListLeft.extent = new h3d_Vector(502,500);
+		this.btnListLeft.active = false;
+		this.innerCtrl.addChild(this.btnListLeft);
+		this.btnListRight = new gui_GuiXboxList();
+		this.btnListRight.position = new h3d_Vector(-400 - offsetX,135);
+		this.btnListRight.horizSizing = gui_HorizSizing.Left;
+		this.btnListRight.extent = new h3d_Vector(502,500);
+		this.innerCtrl.addChild(this.btnListRight);
+		let b1 = this.btnListRight.addButton(0,"Menu OK: " + src_Settings.gamepadSettings.ok,function(e) {
+		});
+		b1.pressedAction = function(e) {
+			remapFunc("Menu OK",function(key) {
+				src_Settings.gamepadSettings.ok = key;
+			},b1);
+		};
+		let b2 = this.btnListLeft.addButton(0,"Menu Back: " + src_Settings.gamepadSettings.back,function(e) {
+		});
+		b2.pressedAction = function(e) {
+			remapFunc("Menu Back",function(key) {
+				src_Settings.gamepadSettings.back = key;
+			},b2);
+		};
+		let b3 = this.btnListRight.addButton(0,"Menu Alt 1: " + src_Settings.gamepadSettings.alt1,function(e) {
+		});
+		b3.pressedAction = function(e) {
+			remapFunc("Menu Alt 1",function(key) {
+				src_Settings.gamepadSettings.alt1 = key;
+			},b3);
+		};
+		let b4 = this.btnListLeft.addButton(0,"Menu Alt 2: " + src_Settings.gamepadSettings.alt2,function(e) {
+		});
+		b4.pressedAction = function(e) {
+			remapFunc("Move Right",function(key) {
+				src_Settings.gamepadSettings.alt2 = key;
+			},b4);
+		};
+		let b5 = this.btnListRight.addButton(0,"Jump: " + src_Settings.gamepadSettings.jump[0],function(e) {
+		});
+		b5.pressedAction = function(e) {
+			remapFunc("Jump",function(key) {
+				src_Settings.gamepadSettings.jump[0] = key;
+			},b5);
+		};
+		let b51 = this.btnListLeft.addButton(0,"Jump: " + src_Settings.gamepadSettings.jump[1],function(e) {
+		});
+		b51.pressedAction = function(e) {
+			remapFunc("Jump",function(key) {
+				src_Settings.gamepadSettings.jump[1] = key;
+			},b51);
+		};
+		let b6 = this.btnListRight.addButton(0,"Blast: " + src_Settings.gamepadSettings.blast[0],function(e) {
+		});
+		b6.pressedAction = function(e) {
+			remapFunc("Blast",function(key) {
+				src_Settings.gamepadSettings.blast[0] = key;
+			},b6);
+		};
+		let b61 = this.btnListLeft.addButton(0,"Blast: " + src_Settings.gamepadSettings.blast[1],function(e) {
+		});
+		b61.pressedAction = function(e) {
+			remapFunc("Blast",function(key) {
+				src_Settings.gamepadSettings.blast[1] = key;
+			},b61);
+		};
+		let b11 = this.btnListRight.addButton(0,"Use Powerup: " + src_Settings.gamepadSettings.powerup[0],function(e) {
+		});
+		b11.pressedAction = function(e) {
+			remapFunc("Use Powerup",function(key) {
+				src_Settings.gamepadSettings.powerup[0] = key;
+			},b11);
+		};
+		let b111 = this.btnListLeft.addButton(0,"Use Powerup: " + src_Settings.gamepadSettings.powerup[1],function(e) {
+		});
+		b111.pressedAction = function(e) {
+			remapFunc("Use Powerup",function(key) {
+				src_Settings.gamepadSettings.powerup[1] = key;
+			},b111);
+		};
+		let b12 = this.btnListRight.addButton(0,"Rewind: " + src_Settings.gamepadSettings.rewind[0],function(e) {
+		});
+		b12.pressedAction = function(e) {
+			remapFunc("Rewind",function(key) {
+				src_Settings.gamepadSettings.rewind[0] = key;
+			},b12);
+		};
+		let bottomBar = new gui_GuiControl();
+		bottomBar.position = new h3d_Vector(0,590);
+		bottomBar.extent = new h3d_Vector(640,200);
+		bottomBar.horizSizing = gui_HorizSizing.Width;
+		bottomBar.vertSizing = gui_VertSizing.Bottom;
+		this.innerCtrl.addChild(bottomBar);
+		let backButton = new gui_GuiXboxButton("Back",160);
+		backButton.position = new h3d_Vector(400,0);
+		backButton.vertSizing = gui_VertSizing.Bottom;
+		backButton.horizSizing = gui_HorizSizing.Right;
+		backButton.gamepadAccelerator = ["B"];
+		backButton.accelerators = [27,8];
+		let _gthis = this;
+		if(pauseGui) {
+			backButton.pressedAction = function(e) {
+				src_MarbleGame.canvas.popDialog(_gthis);
+				src_MarbleGame.canvas.pushDialog(new gui_InputSelectGui(true));
+			};
+		} else {
+			backButton.pressedAction = function(e) {
+				src_MarbleGame.canvas.setContent(new gui_InputSelectGui());
+			};
+		}
+		bottomBar.addChild(backButton);
+	}
+	update(dt,mouseState) {
+		super.update(dt,mouseState);
+		let prevSelected = this.selectedColumn;
+		if(hxd_Key.isPressed(39) || src_Gamepad.isPressed(["dpadRight"])) {
+			this.selectedColumn++;
+		}
+		if(hxd_Key.isPressed(37) || src_Gamepad.isPressed(["dpadLeft"])) {
+			this.selectedColumn++;
+		}
+		if(this.selectedColumn < 0) {
+			this.selectedColumn = 1;
+		}
+		if(this.selectedColumn > 1) {
+			this.selectedColumn = 0;
+		}
+		if(this.selectedColumn == 1) {
+			this.btnListLeft.active = true;
+			this.btnListRight.active = false;
+		} else {
+			this.btnListLeft.active = false;
+			this.btnListRight.active = true;
+		}
+		if(prevSelected == 0 && this.selectedColumn == 1) {
+			this.btnListLeft.selected = this.btnListRight.selected;
+			if(this.btnListLeft.selected > this.btnListLeft.buttons.length - 1) {
+				this.btnListLeft.selected = this.btnListLeft.buttons.length - 1;
+			}
+		}
+		if(prevSelected == 1 && this.selectedColumn == 0) {
+			this.btnListRight.selected = this.btnListLeft.selected;
+			if(this.btnListRight.selected > this.btnListRight.buttons.length - 1) {
+				this.btnListRight.selected = this.btnListRight.buttons.length - 1;
+			}
+		}
+		let tmp;
+		if(this._prevMousePosition != null) {
+			let _this = this._prevMousePosition;
+			let v = mouseState.position;
+			tmp = !(_this.x == v.x && _this.y == v.y && _this.z == v.z && _this.w == v.w);
+		} else {
+			tmp = true;
+		}
+		if(tmp) {
+			let _g = 0;
+			let _g1 = this.btnListLeft.buttons.length;
+			while(_g < _g1) {
+				let i = _g++;
+				let btn = this.btnListLeft.buttons[i];
+				let renderRect = btn.getHitTestRect();
+				let _this = renderRect.position;
+				let v_x = 24;
+				let v_y = 20;
+				renderRect.position = new h3d_Vector(_this.x + v_x,_this.y + v_y,_this.z,_this.w + 1.);
+				let _this1 = renderRect.extent;
+				_this1.x = 439;
+				_this1.y = 53;
+				_this1.z = 0.;
+				_this1.w = 1.;
+				if(renderRect.inRect(mouseState.position)) {
+					this.selectedColumn = 1;
+					this.btnListLeft.selected = i;
+					this.btnListLeft.active = true;
+					this.btnListRight.active = false;
+					break;
+				}
+			}
+			let _g2 = 0;
+			let _g3 = this.btnListRight.buttons.length;
+			while(_g2 < _g3) {
+				let i = _g2++;
+				let btn = this.btnListRight.buttons[i];
+				let renderRect = btn.getHitTestRect();
+				let _this = renderRect.position;
+				let v_x = 24;
+				let v_y = 20;
+				renderRect.position = new h3d_Vector(_this.x + v_x,_this.y + v_y,_this.z,_this.w + 1.);
+				let _this1 = renderRect.extent;
+				_this1.x = 439;
+				_this1.y = 53;
+				_this1.z = 0.;
+				_this1.w = 1.;
+				if(renderRect.inRect(mouseState.position)) {
+					this.selectedColumn = 0;
+					this.btnListRight.selected = i;
+					this.btnListRight.active = true;
+					this.btnListLeft.active = false;
+					break;
+				}
+			}
+			let _this = mouseState.position;
+			this._prevMousePosition = new h3d_Vector(_this.x,_this.y,_this.z,_this.w);
+		}
+	}
+	onResize(width,height) {
+		let offsetX = (width - 1280) / 2;
+		let offsetY = (height - 720) / 2;
+		let subX = 640 - (width - offsetX) * 640 / width;
+		let subY = 480 - (height - offsetY) * 480 / height;
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.btnListLeft.position = new h3d_Vector(70 - offsetX,135);
+		this.btnListLeft.position = new h3d_Vector(-400 - offsetX,135);
+		super.onResize(width,height);
+	}
+}
+$hxClasses["gui.ControllerBindingsGui"] = gui_ControllerBindingsGui;
+gui_ControllerBindingsGui.__name__ = "gui.ControllerBindingsGui";
+gui_ControllerBindingsGui.__super__ = gui_GuiImage;
+Object.assign(gui_ControllerBindingsGui.prototype, {
+	__class__: gui_ControllerBindingsGui
+	,innerCtrl: null
+	,btnListLeft: null
+	,btnListRight: null
+	,selectedColumn: null
+	,_prevMousePosition: null
+});
 class gui_CreateMatchGui extends gui_GuiImage {
 	constructor() {
 		let res = src_ResourceLoader.getImage("data/ui/xbox/BG_fadeOutSoftEdge.png").resource.toTile();
@@ -13946,7 +14236,7 @@ class gui_CreateMatchGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		backButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_MultiplayerGui());
@@ -13956,7 +14246,7 @@ class gui_CreateMatchGui extends gui_GuiImage {
 		nextButton.position = new h3d_Vector(960,0);
 		nextButton.vertSizing = gui_VertSizing.Bottom;
 		nextButton.horizSizing = gui_HorizSizing.Right;
-		nextButton.gamepadAccelerator = ["A"];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		nextButton.accelerators = [13];
 		nextButton.pressedAction = function(e) {
 			net_Net.hostServer("" + src_Settings.highscoreName + "'s Server",maxPlayers,privateSlots,privateGame,function() {
@@ -14024,6 +14314,9 @@ class gui_DifficultySelectGui extends gui_GuiImage {
 		this.btnList.addButton(0,"Gem Hunt",function(e) {
 			src_MarbleGame.canvas.setContent(new gui_LevelSelectGui("multiplayer"));
 		},20);
+		this.btnList.addButton(0,"Custom Levels",function(e) {
+			src_MarbleGame.canvas.setContent(new gui_SPCustomsGui());
+		});
 		let bottomBar = new gui_GuiControl();
 		bottomBar.position = new h3d_Vector(0,590);
 		bottomBar.extent = new h3d_Vector(640,200);
@@ -14034,7 +14327,7 @@ class gui_DifficultySelectGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		backButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
@@ -14061,7 +14354,7 @@ Object.assign(gui_DifficultySelectGui.prototype, {
 	,btnList: null
 });
 class gui_EndGameGui extends gui_GuiImage {
-	constructor(continueFunc,restartFunc,nextLevelFunc,mission,score,scoreType,replayData) {
+	constructor(continueFunc,restartFunc,mission,score,scoreType,replayData) {
 		let res = src_ResourceLoader.getImage("data/ui/xbox/BG_fadeOutSoftEdge.png").resource.toTile();
 		super(res);
 		this.horizSizing = gui_HorizSizing.Width;
@@ -14070,7 +14363,6 @@ class gui_EndGameGui extends gui_GuiImage {
 		this.extent = new h3d_Vector(640,480);
 		this.mission = mission;
 		this.retryFunc = restartFunc;
-		this.nextFunc = nextLevelFunc;
 		this.continueFunc = continueFunc;
 		let _gthis = this;
 		let scene2d = src_MarbleGame.instance.scene2d;
@@ -14117,7 +14409,11 @@ class gui_EndGameGui extends gui_GuiImage {
 		egResultLeft.position = new h3d_Vector(28,26);
 		egResultLeft.extent = new h3d_Vector(180,100);
 		if(scoreType == modes_ScoreType.Time) {
-			egResultLeft.text.set_text("<p align=\"right\"><font color=\"" + (beatPar ? "#8DFF8D" : "#FF7575") + "\">Time:</font><br/><font color=\"#88BCEE\">Par Time:</font><br/><font color=\"#EBEBEB\">Rating:</font><br/><font color=\"#EBEBEB\">My Best Time:</font></p>");
+			if(mission.isClaMission) {
+				egResultLeft.text.set_text("<p align=\"right\"><font color=\"" + (beatPar ? "#8DFF8D" : "#FF7575") + "\">Time:</font><br/><font color=\"#88BCEE\">Par Time:</font><br/><font color=\"#EBEBEB\">My Best Time:</font></p>");
+			} else {
+				egResultLeft.text.set_text("<p align=\"right\"><font color=\"" + (beatPar ? "#8DFF8D" : "#FF7575") + "\">Time:</font><br/><font color=\"#88BCEE\">Par Time:</font><br/><font color=\"#EBEBEB\">Rating:</font><br/><font color=\"#EBEBEB\">My Best Time:</font></p>");
+			}
 		}
 		if(scoreType == modes_ScoreType.Score) {
 			egResultLeft.text.set_text("<p align=\"right\"><font color=\"#8DFF8D\">Score:</font><br/><font color=\"#EBEBEB\">My Best Score:</font></p>");
@@ -14130,9 +14426,9 @@ class gui_EndGameGui extends gui_GuiImage {
 			}
 			let timeBonus = 0;
 			if(t < parTime) {
-				timeBonus = Math.floor(parTime / t) * 1000;
+				timeBonus = Math.floor(parTime / t * 1000);
 			} else {
-				timeBonus = Math.floor(parTime / t) * 500;
+				timeBonus = Math.floor(parTime / t * 500);
 			}
 			return (1000 + timeBonus) * difficulty;
 		};
@@ -14156,7 +14452,11 @@ class gui_EndGameGui extends gui_GuiImage {
 			egResultRight.text.set_text("<font color=\"#8DFF8D\">" + ("" + scoreInt) + "</font><br/><font color=\"#EBEBEB\">" + ("" + scoreInt1) + "</font>");
 		}
 		if(scoreType == modes_ScoreType.Time) {
-			egResultRight.text.set_text("<font color=\"" + (beatPar ? "#8DFF8D" : "#FF7575") + "\">" + src_Util.formatTime(score) + "</font><br/><font color=\"#88BCEE\">" + src_Util.formatTime(mission.qualifyTime) + "</font><br/><font color=\"#EBEBEB\">" + rating + "</font><br/><font color=\"#EBEBEB\">" + src_Util.formatTime(bestScore.time) + "</font>");
+			if(mission.isClaMission) {
+				egResultRight.text.set_text("<font color=\"" + (beatPar ? "#8DFF8D" : "#FF7575") + "\">" + src_Util.formatTime(score) + "</font><br/><font color=\"#88BCEE\">" + src_Util.formatTime(mission.qualifyTime) + "</font><br/><font color=\"#EBEBEB\">" + src_Util.formatTime(bestScore.time) + "</font>");
+			} else {
+				egResultRight.text.set_text("<font color=\"" + (beatPar ? "#8DFF8D" : "#FF7575") + "\">" + src_Util.formatTime(score) + "</font><br/><font color=\"#88BCEE\">" + src_Util.formatTime(mission.qualifyTime) + "</font><br/><font color=\"#EBEBEB\">" + rating + "</font><br/><font color=\"#EBEBEB\">" + src_Util.formatTime(bestScore.time) + "</font>");
+			}
 		}
 		this.endGameWnd.addChild(egResultRight);
 		let bottomBar = new gui_GuiControl();
@@ -14170,7 +14470,7 @@ class gui_EndGameGui extends gui_GuiImage {
 			retryButton.position = new h3d_Vector(400,0);
 			retryButton.vertSizing = gui_VertSizing.Bottom;
 			retryButton.horizSizing = gui_HorizSizing.Right;
-			retryButton.gamepadAccelerator = ["B"];
+			retryButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 			retryButton.accelerators = [27,8];
 			retryButton.pressedAction = function(e) {
 				if(src_MarbleGame.canvas.children.length == 1) {
@@ -14183,7 +14483,7 @@ class gui_EndGameGui extends gui_GuiImage {
 		nextButton.position = new h3d_Vector(960,0);
 		nextButton.vertSizing = gui_VertSizing.Bottom;
 		nextButton.horizSizing = gui_HorizSizing.Right;
-		nextButton.gamepadAccelerator = ["A"];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		nextButton.accelerators = [13];
 		nextButton.pressedAction = function(e) {
 			if(src_MarbleGame.canvas.children.length == 1) {
@@ -14191,13 +14491,15 @@ class gui_EndGameGui extends gui_GuiImage {
 			}
 		};
 		bottomBar.addChild(nextButton);
+		let rewindUsed = src_MarbleGame.instance.world.rewindUsed;
+		let misPath = mission.isClaMission ? "custom/mbu/" + mission.id : mission.path;
 		let submitScore = function() {
 			let lbScoreValue = score;
 			if(scoreType == modes_ScoreType.Score) {
 				lbScoreValue = 1000 - score;
 			}
-			src_Leaderboards.submitScore(mission.path,lbScoreValue,src_MarbleGame.instance.world.rewindUsed,function(needsReplay,ref) {
-				if(needsReplay) {
+			src_Leaderboards.submitScore(misPath,lbScoreValue,rewindUsed,function(needsReplay,ref) {
+				if(needsReplay && !mission.isClaMission) {
 					src_Leaderboards.submitReplay(ref,replayData);
 				}
 			});
@@ -14213,7 +14515,7 @@ class gui_EndGameGui extends gui_GuiImage {
 				submitScore();
 			}
 		} else {
-			src_Leaderboards.getScores(mission.path,0,function(lbscores) {
+			src_Leaderboards.getScores(misPath,rewindUsed ? 1 : 2,function(lbscores) {
 				let foundScore = false;
 				let foundLBScore = 0;
 				let _g = 0;
@@ -14253,7 +14555,6 @@ Object.assign(gui_EndGameGui.prototype, {
 	,innerCtrl: null
 	,endGameWnd: null
 	,retryFunc: null
-	,nextFunc: null
 	,continueFunc: null
 });
 class gui_EnterNameDlg extends gui_GuiImage {
@@ -14305,7 +14606,7 @@ class gui_EnterNameDlg extends gui_GuiImage {
 		okButton.extent = new h3d_Vector(120,94);
 		okButton.vertSizing = gui_VertSizing.Top;
 		okButton.accelerators = [13];
-		okButton.gamepadAccelerator = ["A"];
+		okButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		okButton.pressedAction = function(sender) {
 			src_Settings.highscoreName = HxOverrides.substr(textInput.text.text,0,15);
 			src_Settings.save();
@@ -14317,7 +14618,7 @@ class gui_EnterNameDlg extends gui_GuiImage {
 		cancelButton.extent = new h3d_Vector(120,94);
 		cancelButton.vertSizing = gui_VertSizing.Top;
 		cancelButton.accelerators = [13];
-		cancelButton.gamepadAccelerator = ["A"];
+		cancelButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		cancelButton.pressedAction = function(sender) {
 			src_MarbleGame.canvas.setContent(new gui_MultiplayerGui());
 		};
@@ -14379,7 +14680,7 @@ class gui_EnterNamePopupDlg extends gui_GuiImage {
 		okButton.extent = new h3d_Vector(120,94);
 		okButton.vertSizing = gui_VertSizing.Top;
 		okButton.accelerators = [13];
-		okButton.gamepadAccelerator = ["A"];
+		okButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		let _gthis = this;
 		okButton.pressedAction = function(sender) {
 			src_Settings.highscoreName = HxOverrides.substr(textInput.text.text,0,15);
@@ -16313,6 +16614,9 @@ class gui_GuiConsoleScrollCtrl extends gui_GuiControl {
 		this._hx_constructor(scrollBar);
 	}
 	_hx_constructor(scrollBar) {
+		this.momentumActive = false;
+		this.lastMoveStamp = 0;
+		this.scrollVelocity = 0;
 		this.dirty = true;
 		this.pressed = false;
 		this.scrollToBottom = true;
@@ -16512,6 +16816,9 @@ class gui_GuiConsoleScrollCtrl extends gui_GuiControl {
 			this.dirty = true;
 			this.updateScrollVisual();
 			this.prevMousePos = mouseState.position;
+			this.scrollVelocity = 0;
+			this.momentumActive = false;
+			this.lastMoveStamp = HxOverrides.now() / 1000;
 		}
 	}
 	onMouseRelease(mouseState) {
@@ -16519,16 +16826,56 @@ class gui_GuiConsoleScrollCtrl extends gui_GuiControl {
 			this.pressed = false;
 			this.dirty = true;
 			this.updateScrollVisual();
+			this.momentumActive = Math.abs(this.scrollVelocity) > 0.01;
+			this.lastMoveStamp = 0;
+		}
+	}
+	onMouseLeave(mouseState) {
+		if(src_Util.isTouchDevice()) {
+			this.pressed = false;
+			this.dirty = true;
+			this.updateScrollVisual();
+			this.momentumActive = Math.abs(this.scrollVelocity) > 0.01;
+			this.lastMoveStamp = 0;
 		}
 	}
 	onMouseMove(mouseState) {
 		if(src_Util.isTouchDevice()) {
 			super.onMouseMove(mouseState);
 			if(this.pressed) {
-				let dy = mouseState.position.y - this.prevMousePos.y;
+				let renderRect = this.getRenderRectangle();
+				let scrollExtentY = renderRect.extent.y - 34 * src_Settings.uiScale;
+				let dy = (mouseState.position.y - this.prevMousePos.y) / (this.maxScrollY * src_Settings.uiScale / scrollExtentY);
 				this.scrollY -= dy;
 				this.prevMousePos = mouseState.position;
+				let now = HxOverrides.now() / 1000;
+				if(this.lastMoveStamp > 0) {
+					let dt = now - this.lastMoveStamp;
+					if(dt > 0) {
+						this.scrollVelocity = -dy / dt;
+					}
+				}
+				this.lastMoveStamp = now;
+				this.momentumActive = false;
 				this.updateScrollVisual();
+			}
+		}
+	}
+	update(dt,mouseState) {
+		super.update(dt,mouseState);
+		if(!this.pressed && this.momentumActive) {
+			let damping = Math.exp(-8. * dt);
+			this.scrollVelocity *= damping;
+			if(Math.abs(this.scrollVelocity) < 0.01) {
+				this.scrollVelocity = 0;
+				this.momentumActive = false;
+				return;
+			}
+			let before = this.scrollY;
+			this.scrollY += this.scrollVelocity * dt;
+			this.updateScrollVisual();
+			if(this.scrollY == 0 || this.scrollY == before) {
+				this.momentumActive = false;
 			}
 		}
 	}
@@ -16559,6 +16906,9 @@ Object.assign(gui_GuiConsoleScrollCtrl.prototype, {
 	,prevMousePos: null
 	,scrollUpButton: null
 	,scrollDownButton: null
+	,scrollVelocity: null
+	,lastMoveStamp: null
+	,momentumActive: null
 });
 var gui_HorizSizing = $hxEnums["gui.HorizSizing"] = { __ename__:true,__constructs__:null
 	,Right: {_hx_name:"Right",_hx_index:0,__enum__:"gui.HorizSizing",toString:$estr}
@@ -16795,6 +17145,7 @@ class gui_GuiMLTextListCtrl extends gui_GuiControl {
 		this._hx_constructor(font,texts,imageLoader,filter);
 	}
 	_hx_constructor(font,texts,imageLoader,filter) {
+		this.usedGamepad = false;
 		this.filter = null;
 		this.scrollable = false;
 		this.scroll = 0;
@@ -17084,6 +17435,43 @@ class gui_GuiMLTextListCtrl extends gui_GuiControl {
 		}
 		this.redrawSelectionRect(hittestrect);
 	}
+	update(dt,mouseState) {
+		super.update(dt,mouseState);
+		let ps = this._prevSelected;
+		if(hxd_Key.isPressed(40) || src_Gamepad.isPressed(["dpadDown"]) || src_Gamepad.getAxis("analogY") > 0.75 && !this.usedGamepad) {
+			this._prevSelected++;
+			if(this._prevSelected >= this.texts.length) {
+				this._prevSelected = 0;
+			}
+		}
+		if(hxd_Key.isPressed(38) || src_Gamepad.isPressed(["dpadUp"]) || src_Gamepad.getAxis("analogY") < -0.75 && !this.usedGamepad) {
+			this._prevSelected--;
+			if(this._prevSelected < 0) {
+				this._prevSelected = this.texts.length - 1;
+			}
+		}
+		if(ps != this._prevSelected) {
+			let y = 2 * src_Settings.uiScale + this._prevSelected * (this.font.size + 4 * src_Settings.uiScale) + this.g.y;
+			let renderRect = this.getRenderRectangle();
+			this.redrawSelectionRect(renderRect);
+			if(this.onSelectedFunc != null) {
+				this.onSelectedFunc(this._prevSelected);
+			}
+			let hittestrect = this.getHitTestRect(false);
+			if(y < 0) {
+				this.scroll = (this.font.size + 4 * src_Settings.uiScale) * this._prevSelected;
+				this.onScroll(0,this.scroll);
+			} else if(y + this.font.size + 4 * src_Settings.uiScale > hittestrect.extent.y) {
+				this.scroll = (this.font.size + 4 * src_Settings.uiScale) * this._prevSelected;
+				this.onScroll(0,this.scroll);
+			}
+		}
+		if(Math.abs(src_Gamepad.getAxis("analogY")) > 0.75) {
+			this.usedGamepad = true;
+		} else {
+			this.usedGamepad = false;
+		}
+	}
 }
 $hxClasses["gui.GuiMLTextListCtrl"] = gui_GuiMLTextListCtrl;
 gui_GuiMLTextListCtrl.__name__ = "gui.GuiMLTextListCtrl";
@@ -17104,6 +17492,7 @@ Object.assign(gui_GuiMLTextListCtrl.prototype, {
 	,filter: null
 	,flow: null
 	,_imageLoader: null
+	,usedGamepad: null
 });
 var gui_Justification = $hxEnums["gui.Justification"] = { __ename__:true,__constructs__:null
 	,Left: {_hx_name:"Left",_hx_index:0,__enum__:"gui.Justification",toString:$estr}
@@ -17307,6 +17696,7 @@ class gui_GuiTextListCtrl extends gui_GuiControl {
 		if(textColor == null) {
 			textColor = 0;
 		}
+		this.usedGamepad = false;
 		this.scrollable = false;
 		this.scroll = 0;
 		this.textYOffset = 0;
@@ -17536,6 +17926,43 @@ class gui_GuiTextListCtrl extends gui_GuiControl {
 		}
 		this.redrawSelectionRect(hittestrect);
 	}
+	update(dt,mouseState) {
+		super.update(dt,mouseState);
+		let ps = this._prevSelected;
+		if(hxd_Key.isPressed(40) || src_Gamepad.isPressed(["dpadDown"]) || src_Gamepad.getAxis("analogY") > 0.75 && !this.usedGamepad) {
+			this._prevSelected++;
+			if(this._prevSelected >= this.texts.length) {
+				this._prevSelected = 0;
+			}
+		}
+		if(hxd_Key.isPressed(38) || src_Gamepad.isPressed(["dpadUp"]) || src_Gamepad.getAxis("analogY") < -0.75 && !this.usedGamepad) {
+			this._prevSelected--;
+			if(this._prevSelected < 0) {
+				this._prevSelected = this.texts.length - 1;
+			}
+		}
+		if(ps != this._prevSelected) {
+			let y = 2 * src_Settings.uiScale + this._prevSelected * (this.font.size + 4 * src_Settings.uiScale) + this.g.y;
+			let renderRect = this.getRenderRectangle();
+			this.redrawSelectionRect(renderRect);
+			if(this.onSelectedFunc != null) {
+				this.onSelectedFunc(this._prevSelected);
+			}
+			let hittestrect = this.getHitTestRect(false);
+			if(y < 0) {
+				this.scroll = (this.font.size + 4 * src_Settings.uiScale) * this._prevSelected;
+				this.onScroll(0,this.scroll);
+			} else if(y + this.font.size + 4 * src_Settings.uiScale > hittestrect.extent.y) {
+				this.scroll = (this.font.size + 4 * src_Settings.uiScale) * this._prevSelected;
+				this.onScroll(0,this.scroll);
+			}
+		}
+		if(Math.abs(src_Gamepad.getAxis("analogY")) > 0.75) {
+			this.usedGamepad = true;
+		} else {
+			this.usedGamepad = false;
+		}
+	}
 }
 $hxClasses["gui.GuiTextListCtrl"] = gui_GuiTextListCtrl;
 gui_GuiTextListCtrl.__name__ = "gui.GuiTextListCtrl";
@@ -17554,6 +17981,7 @@ Object.assign(gui_GuiTextListCtrl.prototype, {
 	,textYOffset: null
 	,scroll: null
 	,scrollable: null
+	,usedGamepad: null
 	,flow: null
 });
 class gui_GuiXboxButton extends gui_GuiControl {
@@ -18565,7 +18993,7 @@ class gui_HelpCreditsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(960,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["A"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		backButton.accelerators = [13];
 		let _gthis = this;
 		if(pauseGui) {
@@ -20332,6 +20760,130 @@ Object.assign(gui_HtmlText.prototype, {
 	,aHrefs: null
 	,aInteractive: null
 });
+class gui_ImportExportGui extends gui_GuiImage {
+	constructor() {
+		let res = src_ResourceLoader.getImage("data/ui/xbox/BG_fadeOutSoftEdge.png").resource.toTile();
+		super(res);
+		let domcasual32fontdata = src_ResourceLoader.getFileEntry("data/font/DomCasualD.fnt");
+		let domcasual32b = new hxd_res_BitmapFont(domcasual32fontdata.entry);
+		domcasual32b.loader = src_ResourceLoader.loader;
+		domcasual32b.toSdfFont(42 * src_Settings.uiScale,4);
+		this.horizSizing = gui_HorizSizing.Width;
+		this.vertSizing = gui_VertSizing.Height;
+		this.position = new h3d_Vector();
+		this.extent = new h3d_Vector(640,480);
+		let scene2d = src_MarbleGame.instance.scene2d;
+		let offsetX = (scene2d.width - 1280) / 2;
+		let offsetY = (scene2d.height - 720) / 2;
+		let subX = 640 - (scene2d.width - offsetX) * 640 / scene2d.width;
+		let subY = 480 - (scene2d.height - offsetY) * 480 / scene2d.height;
+		this.innerCtrl = new gui_GuiControl();
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.innerCtrl.horizSizing = gui_HorizSizing.Width;
+		this.innerCtrl.vertSizing = gui_VertSizing.Height;
+		this.addChild(this.innerCtrl);
+		let coliseumfontdata = src_ResourceLoader.getFileEntry("data/font/ColiseumRR.fnt");
+		let coliseumb = new hxd_res_BitmapFont(coliseumfontdata.entry);
+		coliseumb.loader = src_ResourceLoader.loader;
+		let coliseum = coliseumb.toSdfFont(44 * src_Settings.uiScale,4);
+		let rootTitle = new gui_GuiText(coliseum);
+		rootTitle.position = new h3d_Vector(100,30);
+		rootTitle.extent = new h3d_Vector(1120,80);
+		rootTitle.text.set_textColor(16777215);
+		rootTitle.text.set_text("IMPORT & EXPORT");
+		rootTitle.text.alpha = 0.5;
+		this.innerCtrl.addChild(rootTitle);
+		let btnList = new gui_GuiXboxList();
+		btnList.position = new h3d_Vector(70 - offsetX,165);
+		btnList.horizSizing = gui_HorizSizing.Left;
+		btnList.extent = new h3d_Vector(502,500);
+		this.innerCtrl.addChild(btnList);
+		btnList.addButton(0,"Import Progress",function(e) {
+			hxd_File.browse(function(sel) {
+				sel.load(function(data) {
+					try {
+						let jsonStr = data.toString();
+						let json = JSON.parse(jsonStr);
+						let highScoreData = json.highScores;
+						let _g_keys = Reflect.fields(highScoreData);
+						let _g_index = 0;
+						while(_g_index < _g_keys.length) {
+							let key = _g_keys[_g_index++];
+							let _g_value = highScoreData[key];
+							src_Settings.highScores.h[key] = _g_value;
+						}
+						let easterEggData = json.easterEggs;
+						if(easterEggData != null) {
+							let _g_keys = Reflect.fields(easterEggData);
+							let _g_index = 0;
+							while(_g_index < _g_keys.length) {
+								let key = _g_keys[_g_index++];
+								let _g_value = easterEggData[key];
+								src_Settings.easterEggs.h[key] = _g_value;
+							}
+						}
+						src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Progress data imported successfully!"));
+						src_Settings.save();
+					} catch( _g ) {
+						let _g1 = haxe_Exception.caught(_g);
+						src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to import progress data: " + _g1.get_message()));
+					}
+				});
+			},{ title : "Select a progress file to import", fileTypes : [{ name : "JSON files", extensions : ["json"]},{ name : "All files", extensions : ["*"]}]});
+		});
+		btnList.addButton(0,"Export Progress",function(e) {
+			let localStorage = js_Browser.getLocalStorage();
+			if(localStorage != null) {
+				let settingsData = localStorage.getItem("MBHaxeSettings");
+				if(settingsData != null) {
+					let blob = new Blob([haxe_io_Bytes.ofString(settingsData).b.bufferValue],{ type : "application/octet-stream"});
+					let url = URL.createObjectURL(blob);
+					let element = window.document.createElement("a");
+					element.setAttribute("href",url);
+					element.setAttribute("download","settings.json");
+					element.style.display = "none";
+					window.document.body.appendChild(element);
+					element.click();
+					window.document.body.removeChild(element);
+					URL.revokeObjectURL(url);
+				}
+			}
+		});
+		let bottomBar = new gui_GuiControl();
+		bottomBar.position = new h3d_Vector(0,590);
+		bottomBar.extent = new h3d_Vector(640,200);
+		bottomBar.horizSizing = gui_HorizSizing.Width;
+		bottomBar.vertSizing = gui_VertSizing.Bottom;
+		this.innerCtrl.addChild(bottomBar);
+		let backButton = new gui_GuiXboxButton("Back",160);
+		backButton.position = new h3d_Vector(400,0);
+		backButton.vertSizing = gui_VertSizing.Bottom;
+		backButton.horizSizing = gui_HorizSizing.Right;
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
+		backButton.accelerators = [27,8];
+		backButton.pressedAction = function(e) {
+			src_MarbleGame.canvas.setContent(new gui_OptionsListGui(false));
+		};
+		bottomBar.addChild(backButton);
+	}
+	onResize(width,height) {
+		let offsetX = (width - 1280) / 2;
+		let offsetY = (height - 720) / 2;
+		let subX = 640 - (width - offsetX) * 640 / width;
+		let subY = 480 - (height - offsetY) * 480 / height;
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		super.onResize(width,height);
+	}
+}
+$hxClasses["gui.ImportExportGui"] = gui_ImportExportGui;
+gui_ImportExportGui.__name__ = "gui.ImportExportGui";
+gui_ImportExportGui.__super__ = gui_GuiImage;
+Object.assign(gui_ImportExportGui.prototype, {
+	__class__: gui_ImportExportGui
+	,innerCtrl: null
+});
 class gui_InputOptionsGui extends gui_GuiImage {
 	constructor(pauseGui) {
 		if(pauseGui == null) {
@@ -20426,7 +20978,7 @@ class gui_InputOptionsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(960,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["A"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		backButton.accelerators = [13];
 		let _gthis = this;
 		if(pauseGui) {
@@ -20459,6 +21011,98 @@ gui_InputOptionsGui.__super__ = gui_GuiImage;
 Object.assign(gui_InputOptionsGui.prototype, {
 	__class__: gui_InputOptionsGui
 	,innerCtrl: null
+});
+class gui_InputSelectGui extends gui_GuiImage {
+	constructor(pauseGui) {
+		if(pauseGui == null) {
+			pauseGui = false;
+		}
+		let res = src_ResourceLoader.getImage("data/ui/xbox/BG_fadeOutSoftEdge.png").resource.toTile();
+		super(res);
+		let domcasual32fontdata = src_ResourceLoader.getFileEntry("data/font/DomCasualD.fnt");
+		let domcasual32b = new hxd_res_BitmapFont(domcasual32fontdata.entry);
+		domcasual32b.loader = src_ResourceLoader.loader;
+		domcasual32b.toSdfFont(42 * src_Settings.uiScale,4);
+		this.horizSizing = gui_HorizSizing.Width;
+		this.vertSizing = gui_VertSizing.Height;
+		this.position = new h3d_Vector();
+		this.extent = new h3d_Vector(640,480);
+		let scene2d = src_MarbleGame.instance.scene2d;
+		let offsetX = (scene2d.width - 1280) / 2;
+		let offsetY = (scene2d.height - 720) / 2;
+		let subX = 640 - (scene2d.width - offsetX) * 640 / scene2d.width;
+		let subY = 480 - (scene2d.height - offsetY) * 480 / scene2d.height;
+		this.innerCtrl = new gui_GuiControl();
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.innerCtrl.horizSizing = gui_HorizSizing.Width;
+		this.innerCtrl.vertSizing = gui_VertSizing.Height;
+		this.addChild(this.innerCtrl);
+		let coliseumfontdata = src_ResourceLoader.getFileEntry("data/font/ColiseumRR.fnt");
+		let coliseumb = new hxd_res_BitmapFont(coliseumfontdata.entry);
+		coliseumb.loader = src_ResourceLoader.loader;
+		let coliseum = coliseumb.toSdfFont(44 * src_Settings.uiScale,4);
+		let rootTitle = new gui_GuiText(coliseum);
+		rootTitle.position = new h3d_Vector(100,30);
+		rootTitle.extent = new h3d_Vector(1120,80);
+		rootTitle.text.set_textColor(16777215);
+		rootTitle.text.set_text("SELECT CONTROLS");
+		rootTitle.text.alpha = 0.5;
+		this.innerCtrl.addChild(rootTitle);
+		this.btnList = new gui_GuiXboxList();
+		this.btnList.position = new h3d_Vector(70 - offsetX,165);
+		this.btnList.horizSizing = gui_HorizSizing.Left;
+		this.btnList.extent = new h3d_Vector(502,500);
+		this.innerCtrl.addChild(this.btnList);
+		this.btnList.addButton(0,"Keyboard Controls",function(e) {
+			src_MarbleGame.canvas.setContent(new gui_KeyBindingsGui(pauseGui));
+		});
+		this.btnList.addButton(0,"Gamepad Controls",function(e) {
+			src_MarbleGame.canvas.setContent(new gui_ControllerBindingsGui(pauseGui));
+		});
+		let bottomBar = new gui_GuiControl();
+		bottomBar.position = new h3d_Vector(0,590);
+		bottomBar.extent = new h3d_Vector(640,200);
+		bottomBar.horizSizing = gui_HorizSizing.Width;
+		bottomBar.vertSizing = gui_VertSizing.Bottom;
+		this.innerCtrl.addChild(bottomBar);
+		let backButton = new gui_GuiXboxButton("Back",160);
+		backButton.position = new h3d_Vector(400,0);
+		backButton.vertSizing = gui_VertSizing.Bottom;
+		backButton.horizSizing = gui_HorizSizing.Right;
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
+		backButton.accelerators = [27,8];
+		let _gthis = this;
+		if(pauseGui) {
+			backButton.pressedAction = function(e) {
+				src_MarbleGame.canvas.popDialog(_gthis);
+				src_MarbleGame.canvas.pushDialog(new gui_OptionsListGui(pauseGui));
+			};
+		} else {
+			backButton.pressedAction = function(e) {
+				src_MarbleGame.canvas.setContent(new gui_OptionsListGui(pauseGui));
+			};
+		}
+		bottomBar.addChild(backButton);
+	}
+	onResize(width,height) {
+		let offsetX = (width - 1280) / 2;
+		let offsetY = (height - 720) / 2;
+		let subX = 640 - (width - offsetX) * 640 / width;
+		let subY = 480 - (height - offsetY) * 480 / height;
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.btnList.position = new h3d_Vector(70 - offsetX,165);
+		super.onResize(width,height);
+	}
+}
+$hxClasses["gui.InputSelectGui"] = gui_InputSelectGui;
+gui_InputSelectGui.__name__ = "gui.InputSelectGui";
+gui_InputSelectGui.__super__ = gui_GuiImage;
+Object.assign(gui_InputSelectGui.prototype, {
+	__class__: gui_InputSelectGui
+	,innerCtrl: null
+	,btnList: null
 });
 class gui_JoinServerGui extends gui_GuiImage {
 	constructor() {
@@ -20636,7 +21280,7 @@ class gui_JoinServerGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		backButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_MultiplayerGui());
@@ -20646,7 +21290,7 @@ class gui_JoinServerGui extends gui_GuiImage {
 		goButton.position = new h3d_Vector(960,0);
 		goButton.vertSizing = gui_VertSizing.Bottom;
 		goButton.horizSizing = gui_HorizSizing.Right;
-		goButton.gamepadAccelerator = ["A"];
+		goButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		goButton.accelerators = [13];
 		goButton.pressedAction = function(e) {
 			joinFunc();
@@ -21098,17 +21742,17 @@ class gui_KeyBindingsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		let _gthis = this;
 		if(pauseGui) {
 			backButton.pressedAction = function(e) {
 				src_MarbleGame.canvas.popDialog(_gthis);
-				src_MarbleGame.canvas.pushDialog(new gui_OptionsListGui(true));
+				src_MarbleGame.canvas.pushDialog(new gui_InputSelectGui(true));
 			};
 		} else {
 			backButton.pressedAction = function(e) {
-				src_MarbleGame.canvas.setContent(new gui_OptionsListGui());
+				src_MarbleGame.canvas.setContent(new gui_InputSelectGui());
 			};
 		}
 		bottomBar.addChild(backButton);
@@ -21328,7 +21972,12 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 			}
 			return null;
 		};
-		let headerText = "<font face=\"arial12\">Rank<offset value=\"50\">Name</offset><offset value=\"500\">Score</offset><offset value=\"600\">Platform</offset></font>";
+		let headerText = "<font face=\"arial12\">Rank<offset value=\"50\">Name</offset><offset value=\"400\">Score</offset><offset value=\"500\">Rating</offset><offset value=\"600\">Platform</offset></font>";
+		let playerHeaderText = "<font face=\"arial12\">Rank<offset value=\"50\">Name</offset><offset value=\"575\">Rating</offset></font>";
+		if(levelSelectDifficulty == "customs") {
+			headerText = "<font face=\"arial12\">Rank<offset value=\"50\">Name</offset><offset value=\"500\">Score</offset><offset value=\"600\">Platform</offset></font>";
+			playerHeaderText = "<font face=\"arial12\">Rank<offset value=\"50\">Name</offset></font>";
+		}
 		let scoreCtrl = new gui_GuiMLText(arial14,mlFontLoader);
 		scoreCtrl.position = new h3d_Vector(30,20);
 		scoreCtrl.extent = new h3d_Vector(706,305);
@@ -21339,8 +21988,14 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 		let allMissions = src_MissionList.missionList.h["ultra"].h["advanced"];
 		let allMissions1 = src_MissionList.missionList.h["ultra"].h["multiplayer"];
 		let allMissions2 = src_MissionList.missionList.h["ultra"].h["beginner"].concat(src_MissionList.missionList.h["ultra"].h["intermediate"]).concat(allMissions).concat(allMissions1);
-		let actualIndex = allMissions2.indexOf(src_MissionList.missionList.h["ultra"].h[levelSelectDifficulty][index]);
+		let actualIndex = levelSelectDifficulty != "players" && levelSelectDifficulty != "customs" ? allMissions2.indexOf(src_MissionList.missionList.h["ultra"].h[levelSelectDifficulty][index]) : 0;
+		if(levelSelectDifficulty == "customs") {
+			actualIndex = index;
+		}
 		levelTitle.text.set_text("Level " + (actualIndex + 1));
+		if(levelSelectDifficulty == "customs") {
+			levelTitle.text.set_text("");
+		}
 		let result = new Array(allMissions2.length);
 		let _g = 0;
 		let _g1 = allMissions2.length;
@@ -21349,24 +22004,33 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 			result[i] = allMissions2[i].title;
 		}
 		let scoreCategories = ["Overall","Rewind","Non-Rewind"];
-		let scoreView = 0;
-		let currentMission = allMissions2[actualIndex];
+		let scoreView = src_Settings.optionsSettings.currentView;
+		if(levelSelectDifficulty == "players") {
+			levelTitle.text.set_text("Top Players: " + scoreCategories[scoreView]);
+		}
+		if(levelSelectDifficulty == "customs") {
+			levelTitle.text.set_text("Showing: " + scoreCategories[scoreView]);
+		}
+		let currentMission = null;
+		if(levelSelectDifficulty != "customs") {
+			currentMission = allMissions2[actualIndex];
+		}
 		let scoreTok = 0;
 		let fetchScores = function() {
 			scoreTok += 1;
 			let ourToken = scoreTok - 1;
-			src_Leaderboards.getScores(currentMission.path,scoreView,function(scoreList) {
+			src_Leaderboards.getScores(levelSelectDifficulty != "customs" ? currentMission.path : "custom/mbu/" + index,scoreView,function(scoreList) {
 				if(ourToken + 1 != scoreTok) {
 					return;
 				}
 				let scoreTexts = [];
 				let i = 1;
-				let isHuntScore = currentMission.difficultyIndex == 3;
+				let isHuntScore = levelSelectDifficulty != "customs" ? currentMission.difficultyIndex == 3 : src_Marbleland.missions.h[index].customSource == "MPCustoms";
 				let _g = 0;
 				while(_g < scoreList.length) {
 					let score = scoreList[_g];
 					++_g;
-					let scoreText = "<offset value=\"10\">" + i + ". </offset>\n\t\t\t\t\t<offset value=\"50\">" + score.name + "</offset>\n\t\t\t\t\t<offset value=\"475\">" + (score.rewind > 0 ? "<img src='rewind'/>" : "") + "</offset>\n\t\t\t\t\t<offset value=\"500\">" + (isHuntScore ? Std.string(1000 - score.score) : src_Util.formatTime(score.score)) + "</offset>\n\t\t\t\t\t<offset value=\"625\"><img src=\"";
+					let scoreText = "<offset value=\"10\">" + i + ". </offset>\n\t\t\t\t\t<offset value=\"50\">" + StringTools.htmlEscape(score.name) + "</offset>\n\t\t\t\t\t<offset value=\"375\">" + (score.rewind > 0 ? "<img src='rewind'/>" : "") + "</offset>\n\t\t\t\t\t<offset value=\"400\">" + (isHuntScore ? Std.string(1000 - score.score) : src_Util.formatTime(score.score)) + "</offset>\n\t\t\t\t\t<offset value=\"500\">" + score.rating + "</offset>\n\t\t\t\t\t<offset value=\"625\"><img src=\"";
 					let scoreText1;
 					switch(score.platform) {
 					case 0:
@@ -21386,6 +22050,28 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 						break;
 					}
 					let scoreText2 = scoreText + scoreText1 + "\"/></offset>";
+					if(levelSelectDifficulty == "customs") {
+						let scoreText = "<offset value=\"10\">" + i + ". </offset>\n\t\t\t\t\t<offset value=\"50\">" + StringTools.htmlEscape(score.name) + "</offset>\n\t\t\t\t\t<offset value=\"475\">" + (score.rewind > 0 ? "<img src='rewind'/>" : "") + "</offset>\n\t\t\t\t\t<offset value=\"500\">" + (isHuntScore ? Std.string(1000 - score.score) : src_Util.formatTime(score.score)) + "</offset>\n\t\t\t\t\t<offset value=\"625\"><img src=\"";
+						let scoreText1;
+						switch(score.platform) {
+						case 0:
+							scoreText1 = "unknown";
+							break;
+						case 1:
+							scoreText1 = "pc";
+							break;
+						case 2:
+							scoreText1 = "mac";
+							break;
+						case 3:
+							scoreText1 = "web";
+							break;
+						case 4:
+							scoreText1 = "android";
+							break;
+						}
+						scoreText2 = scoreText + scoreText1 + "\"/></offset>";
+					}
 					scoreTexts.push(scoreText2);
 					++i;
 				}
@@ -21398,6 +22084,32 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 			});
 			scoreCtrl.text.set_text(headerText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Loading...</p>");
 		};
+		let fetchPlayers = function() {
+			scoreTok += 1;
+			let ourToken = scoreTok - 1;
+			src_Leaderboards.getTopPlayers(scoreView,function(scoreList) {
+				if(ourToken + 1 != scoreTok) {
+					return;
+				}
+				let scoreTexts = [];
+				let i = 1;
+				let _g = 0;
+				while(_g < scoreList.length) {
+					let score = scoreList[_g];
+					++_g;
+					let scoreText = "<offset value=\"10\">" + i + ". </offset>\n\t\t\t\t\t<offset value=\"50\">" + StringTools.htmlEscape(score.name) + "</offset>\n\t\t\t\t\t<offset value=\"575\">" + score.rating + "</offset>";
+					scoreTexts.push(scoreText);
+					++i;
+				}
+				while(i <= 10) {
+					let scoreText = "<offset value=\"10\">" + i + ". </offset><offset value=\"475\">10000</offset>";
+					scoreTexts.push(scoreText);
+					++i;
+				}
+				scoreCtrl.text.set_text(playerHeaderText + "<br/>" + scoreTexts.join("<br/>"));
+			});
+			scoreCtrl.text.set_text(playerHeaderText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Loading...</p>");
+		};
 		let levelSelectOpts = new gui_GuiXboxOptionsList(2,"Overall",result);
 		levelSelectOpts.position = new h3d_Vector(380,485);
 		levelSelectOpts.extent = new h3d_Vector(815,94);
@@ -21405,13 +22117,20 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 		levelSelectOpts.horizSizing = gui_HorizSizing.Right;
 		levelSelectOpts.alwaysActive = true;
 		levelSelectOpts.onChangeFunc = function(l) {
+			if(levelSelectDifficulty == "players") {
+				fetchPlayers();
+				levelTitle.text.set_text("Top Players: " + scoreCategories[scoreView]);
+				return true;
+			}
 			levelTitle.text.set_text("Level " + (l + 1));
 			currentMission = allMissions2[l];
 			fetchScores();
 			return true;
 		};
 		levelSelectOpts.setCurrentOption(actualIndex);
-		this.innerCtrl.addChild(levelSelectOpts);
+		if(levelSelectDifficulty != "players" && levelSelectDifficulty != "customs") {
+			this.innerCtrl.addChild(levelSelectOpts);
+		}
 		let bottomBar = new gui_GuiControl();
 		bottomBar.position = new h3d_Vector(0,590);
 		bottomBar.extent = new h3d_Vector(640,200);
@@ -21422,15 +22141,21 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		if(levelSelectGui) {
-			backButton.pressedAction = function(e) {
-				src_MarbleGame.canvas.setContent(new gui_LevelSelectGui(levelSelectDifficulty));
-			};
+			if(levelSelectDifficulty == "customs") {
+				backButton.pressedAction = function(e) {
+					src_MarbleGame.canvas.setContent(new gui_SPCustomsGui());
+				};
+			} else {
+				backButton.pressedAction = function(e) {
+					src_MarbleGame.canvas.setContent(new gui_LevelSelectGui(levelSelectDifficulty));
+				};
+			}
 		} else {
 			backButton.pressedAction = function(e) {
-				src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
+				src_MarbleGame.canvas.setContent(new gui_LeaderboardsSelectGui());
 			};
 		}
 		bottomBar.addChild(backButton);
@@ -21438,45 +22163,60 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 		changeViewButton.position = new h3d_Vector(560,0);
 		changeViewButton.vertSizing = gui_VertSizing.Bottom;
 		changeViewButton.horizSizing = gui_HorizSizing.Right;
-		changeViewButton.gamepadAccelerator = ["X"];
+		changeViewButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
 		changeViewButton.pressedAction = function(e) {
 			scoreView = scoreView == 0 ? 1 : scoreView == 1 ? 2 : 0;
+			src_Settings.optionsSettings.currentView = scoreView;
 			levelSelectOpts.labelText.text.set_text(scoreCategories[js_Boot.__cast(scoreView , Int)]);
-			fetchScores();
+			if(levelSelectDifficulty == "players") {
+				levelTitle.text.set_text("Top Players: " + scoreCategories[scoreView]);
+				fetchPlayers();
+			} else {
+				fetchScores();
+			}
+			if(levelSelectDifficulty == "customs") {
+				levelTitle.text.set_text("Showing: " + scoreCategories[scoreView]);
+			}
 		};
 		bottomBar.addChild(changeViewButton);
-		let replayButton = new gui_GuiXboxButton("Watch Replay",220);
-		replayButton.position = new h3d_Vector(750,0);
-		replayButton.vertSizing = gui_VertSizing.Bottom;
-		replayButton.gamepadAccelerator = ["Y"];
-		replayButton.horizSizing = gui_HorizSizing.Right;
-		replayButton.pressedAction = function(e) {
-			src_Leaderboards.watchTopReplay(currentMission.path,scoreView,function(b) {
-				if(b != null) {
-					let replayF = new src_Replay("");
-					if(replayF.read(b)) {
-						let repmis = replayF.mission;
-						if(repmis.startsWith("data/")) {
-							repmis = HxOverrides.substr(repmis,5,null);
-						}
-						let mi = src_MissionList.missions.h[repmis];
-						if(mi == null) {
-							if(!repmis.includes("data/")) {
-								repmis = "data/" + repmis;
+		if(levelSelectDifficulty != "players" && levelSelectDifficulty != "customs") {
+			let replayButton = new gui_GuiXboxButton("Watch Replay",220);
+			replayButton.position = new h3d_Vector(750,0);
+			replayButton.vertSizing = gui_VertSizing.Bottom;
+			replayButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt2];
+			replayButton.horizSizing = gui_HorizSizing.Right;
+			replayButton.pressedAction = function(e) {
+				src_Leaderboards.watchTopReplay(currentMission.path,scoreView,function(b) {
+					if(b != null) {
+						let replayF = new src_Replay("");
+						if(replayF.read(b)) {
+							let repmis = replayF.mission;
+							if(repmis.startsWith("data/")) {
+								repmis = HxOverrides.substr(repmis,5,null);
 							}
-							mi = src_MissionList.missions.h[repmis];
+							let mi = src_MissionList.missions.h[repmis];
+							if(mi == null) {
+								if(!repmis.includes("data/")) {
+									repmis = "data/" + repmis;
+								}
+								mi = src_MissionList.missions.h[repmis];
+							}
+							src_MarbleGame.instance.watchMissionReplay(mi,replayF,gui_DifficultySelectGui);
+						} else {
+							src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Could not load replay for this level."));
 						}
-						src_MarbleGame.instance.watchMissionReplay(mi,replayF,gui_DifficultySelectGui);
 					} else {
-						src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Could not load replay for this level."));
+						src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("No top replay found for this level."));
 					}
-				} else {
-					src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("No top replay found for this level."));
-				}
-			});
-		};
-		bottomBar.addChild(replayButton);
-		fetchScores();
+				});
+			};
+			bottomBar.addChild(replayButton);
+		}
+		if(levelSelectDifficulty == "players") {
+			fetchPlayers();
+		} else {
+			fetchScores();
+		}
 	}
 	onResize(width,height) {
 		let offsetX = (width - 1280) / 2;
@@ -21494,6 +22234,87 @@ gui_LeaderboardsGui.__super__ = gui_GuiImage;
 Object.assign(gui_LeaderboardsGui.prototype, {
 	__class__: gui_LeaderboardsGui
 	,innerCtrl: null
+});
+class gui_LeaderboardsSelectGui extends gui_GuiImage {
+	constructor() {
+		let res = src_ResourceLoader.getImage("data/ui/xbox/BG_fadeOutSoftEdge.png").resource.toTile();
+		super(res);
+		let domcasual32fontdata = src_ResourceLoader.getFileEntry("data/font/DomCasualD.fnt");
+		let domcasual32b = new hxd_res_BitmapFont(domcasual32fontdata.entry);
+		domcasual32b.loader = src_ResourceLoader.loader;
+		domcasual32b.toSdfFont(42 * src_Settings.uiScale,4);
+		this.horizSizing = gui_HorizSizing.Width;
+		this.vertSizing = gui_VertSizing.Height;
+		this.position = new h3d_Vector();
+		this.extent = new h3d_Vector(640,480);
+		let scene2d = src_MarbleGame.instance.scene2d;
+		let offsetX = (scene2d.width - 1280) / 2;
+		let offsetY = (scene2d.height - 720) / 2;
+		let subX = 640 - (scene2d.width - offsetX) * 640 / scene2d.width;
+		let subY = 480 - (scene2d.height - offsetY) * 480 / scene2d.height;
+		this.innerCtrl = new gui_GuiControl();
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.innerCtrl.horizSizing = gui_HorizSizing.Width;
+		this.innerCtrl.vertSizing = gui_VertSizing.Height;
+		this.addChild(this.innerCtrl);
+		let coliseumfontdata = src_ResourceLoader.getFileEntry("data/font/ColiseumRR.fnt");
+		let coliseumb = new hxd_res_BitmapFont(coliseumfontdata.entry);
+		coliseumb.loader = src_ResourceLoader.loader;
+		let coliseum = coliseumb.toSdfFont(44 * src_Settings.uiScale,4);
+		let rootTitle = new gui_GuiText(coliseum);
+		rootTitle.position = new h3d_Vector(100,30);
+		rootTitle.extent = new h3d_Vector(1120,80);
+		rootTitle.text.set_textColor(16777215);
+		rootTitle.text.set_text("SELECT LEADERBOARDS");
+		rootTitle.text.alpha = 0.5;
+		this.innerCtrl.addChild(rootTitle);
+		this.btnList = new gui_GuiXboxList();
+		this.btnList.position = new h3d_Vector(70 - offsetX,165);
+		this.btnList.horizSizing = gui_HorizSizing.Left;
+		this.btnList.extent = new h3d_Vector(502,500);
+		this.innerCtrl.addChild(this.btnList);
+		this.btnList.addButton(0,"Level Leaderboards",function(e) {
+			src_MarbleGame.canvas.setContent(new gui_LeaderboardsGui(0,"beginner",false));
+		});
+		this.btnList.addButton(0,"Player Leaderboards",function(e) {
+			src_MarbleGame.canvas.setContent(new gui_LeaderboardsGui(0,"players",false));
+		});
+		let bottomBar = new gui_GuiControl();
+		bottomBar.position = new h3d_Vector(0,590);
+		bottomBar.extent = new h3d_Vector(640,200);
+		bottomBar.horizSizing = gui_HorizSizing.Width;
+		bottomBar.vertSizing = gui_VertSizing.Bottom;
+		this.innerCtrl.addChild(bottomBar);
+		let backButton = new gui_GuiXboxButton("Back",160);
+		backButton.position = new h3d_Vector(400,0);
+		backButton.vertSizing = gui_VertSizing.Bottom;
+		backButton.horizSizing = gui_HorizSizing.Right;
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
+		backButton.accelerators = [27,8];
+		backButton.pressedAction = function(e) {
+			src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
+		};
+		bottomBar.addChild(backButton);
+	}
+	onResize(width,height) {
+		let offsetX = (width - 1280) / 2;
+		let offsetY = (height - 720) / 2;
+		let subX = 640 - (width - offsetX) * 640 / width;
+		let subY = 480 - (height - offsetY) * 480 / height;
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.btnList.position = new h3d_Vector(70 - offsetX,165);
+		super.onResize(width,height);
+	}
+}
+$hxClasses["gui.LeaderboardsSelectGui"] = gui_LeaderboardsSelectGui;
+gui_LeaderboardsSelectGui.__name__ = "gui.LeaderboardsSelectGui";
+gui_LeaderboardsSelectGui.__super__ = gui_GuiImage;
+Object.assign(gui_LeaderboardsSelectGui.prototype, {
+	__class__: gui_LeaderboardsSelectGui
+	,innerCtrl: null
+	,btnList: null
 });
 class gui_LevelSelectGui extends gui_GuiImage {
 	constructor(difficulty) {
@@ -21587,7 +22408,7 @@ class gui_LevelSelectGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		backButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_DifficultySelectGui());
@@ -21597,7 +22418,7 @@ class gui_LevelSelectGui extends gui_GuiImage {
 		recordButton.position = new h3d_Vector(560,0);
 		recordButton.vertSizing = gui_VertSizing.Bottom;
 		recordButton.horizSizing = gui_HorizSizing.Right;
-		recordButton.gamepadAccelerator = ["X"];
+		recordButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
 		recordButton.pressedAction = function(e) {
 			src_MarbleGame.instance.toRecord = true;
 			src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("The next mission you play will be recorded."));
@@ -21606,7 +22427,7 @@ class gui_LevelSelectGui extends gui_GuiImage {
 		let lbButton = new gui_GuiXboxButton("Leaderboard",220);
 		lbButton.position = new h3d_Vector(750,0);
 		lbButton.vertSizing = gui_VertSizing.Bottom;
-		lbButton.gamepadAccelerator = ["Y"];
+		lbButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt2];
 		lbButton.horizSizing = gui_HorizSizing.Right;
 		lbButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_LeaderboardsGui(gui_LevelSelectGui.currentSelectionStatic,gui_LevelSelectGui.currentDifficultyStatic,true));
@@ -21616,7 +22437,7 @@ class gui_LevelSelectGui extends gui_GuiImage {
 		nextButton.position = new h3d_Vector(960,0);
 		nextButton.vertSizing = gui_VertSizing.Bottom;
 		nextButton.horizSizing = gui_HorizSizing.Right;
-		nextButton.gamepadAccelerator = ["A"];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		nextButton.accelerators = [13];
 		nextButton.pressedAction = function(e) {
 			src_MarbleGame.instance.playMission(curMission);
@@ -21879,7 +22700,7 @@ class gui_MPServerListGui extends gui_GuiImage {
 			while(_g < _g1) {
 				let i = _g++;
 				let x = ourServerList[i];
-				result[i] = "<img src=\"" + platformToString[x.platform] + "\"></img><font color=\"#FFFFFF\">" + x.players + "/" + x.maxPlayers + "  " + x.name + "</font>";
+				result[i] = "<img src=\"" + platformToString[x.platform] + "\"></img><font color=\"#FFFFFF\">" + x.players + "/" + x.maxPlayers + "  " + StringTools.htmlEscape(x.name) + "</font>";
 			}
 			serverDisplays = result;
 			serverList.setTexts(serverDisplays);
@@ -21914,7 +22735,7 @@ class gui_MPServerListGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		backButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
@@ -21956,7 +22777,7 @@ class gui_MPServerListGui extends gui_GuiImage {
 		nextButton.vertSizing = gui_VertSizing.Bottom;
 		nextButton.horizSizing = gui_HorizSizing.Right;
 		nextButton.accelerators = [13];
-		nextButton.gamepadAccelerator = ["X"];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
 		nextButton.pressedAction = function(e) {
 			if(curSelection != -1) {
 				let selectedServerVersion = ourServerList[curSelection].version;
@@ -22046,9 +22867,9 @@ class gui_MainMenuGui extends gui_GuiImage {
 			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_DifficultySelectGui());
 		});
 		this.btnList.addButton(0,"Multiplayer Game",function(sender) {
-			if(MPCustoms.missionList.length == 0) {
+			if(src_MPCustoms.missionList.length == 0) {
 				(js_Boot.__cast(_gthis.parent , gui_Canvas)).pushDialog(new gui_MessageBoxOkDlg("Custom levels not loaded yet, please wait."));
-				MPCustoms.loadMissionList();
+				src_MPCustoms.loadMissionList();
 			} else if(StringTools.trim(src_Settings.highscoreName) == "" || src_Settings.highscoreName == "Player" || src_Settings.highscoreName == "Player Name") {
 				src_MarbleGame.canvas.setContent(new gui_EnterNameDlg());
 			} else {
@@ -22056,7 +22877,7 @@ class gui_MainMenuGui extends gui_GuiImage {
 			}
 		});
 		this.btnList.addButton(2,"Leaderboards",function(e) {
-			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_LeaderboardsGui(0,"beginner",false));
+			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_LeaderboardsSelectGui());
 		},20);
 		this.btnList.addButton(2,"Achievements",function(e) {
 			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_AchievementsGui());
@@ -22308,7 +23129,7 @@ class gui_MarblePickerGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(960,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["A"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		backButton.accelerators = [13];
 		backButton.pressedAction = function(e) {
 			_gthis.bmp.set_visible(true);
@@ -22367,7 +23188,7 @@ class gui_MessageBoxOkDlg extends gui_GuiImage {
 		okButton.extent = new h3d_Vector(120,94);
 		okButton.vertSizing = gui_VertSizing.Top;
 		okButton.accelerators = [13];
-		okButton.gamepadAccelerator = ["A"];
+		okButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		let _gthis = this;
 		okButton.pressedAction = function(sender) {
 			src_MarbleGame.canvas.popDialog(_gthis);
@@ -22415,7 +23236,7 @@ class gui_MessageBoxYesNoDlg extends gui_GuiImage {
 		okButton.extent = new h3d_Vector(120,94);
 		okButton.vertSizing = gui_VertSizing.Top;
 		okButton.accelerators = [13];
-		okButton.gamepadAccelerator = ["A"];
+		okButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		let _gthis = this;
 		okButton.pressedAction = function(sender) {
 			src_MarbleGame.canvas.popDialog(_gthis);
@@ -22427,7 +23248,7 @@ class gui_MessageBoxYesNoDlg extends gui_GuiImage {
 		cancelButton.extent = new h3d_Vector(120,94);
 		cancelButton.vertSizing = gui_VertSizing.Top;
 		cancelButton.accelerators = [27,8];
-		cancelButton.gamepadAccelerator = ["B"];
+		cancelButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		cancelButton.pressedAction = function(sender) {
 			src_MarbleGame.canvas.popDialog(_gthis);
 			noFunc();
@@ -22531,7 +23352,7 @@ class gui_MiscOptionsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(960,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["A"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		backButton.accelerators = [13];
 		let _gthis = this;
 		if(pauseGui) {
@@ -22636,7 +23457,7 @@ class gui_MultiplayerGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		backButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
@@ -22839,7 +23660,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 				tmp1 = "android";
 				break;
 			}
-			result[i] = tmp + tmp1 + "\"></img>" + player.name;
+			result[i] = tmp + tmp1 + "\"></img>" + StringTools.htmlEscape(player.name);
 		}
 		this.playerList = new gui_GuiMLTextListCtrl(arial141,result,imgLoader);
 		this.playerList.selectedColor = 15897877;
@@ -22861,7 +23682,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		customListScroll.scrollToBottom = false;
 		custWnd.addChild(customListScroll);
 		let arial142 = arial14;
-		let _this = MPCustoms.missionList;
+		let _this = src_MPCustoms.missionList;
 		let result1 = new Array(_this.length);
 		let _g2 = 0;
 		let _g3 = _this.length;
@@ -22878,10 +23699,10 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		this.customList.extent = new h3d_Vector(550,2880);
 		this.customList.scrollable = true;
 		this.customList.onSelectedFunc = function(idx) {
-			net_NetCommands.setLobbyCustLevelName(MPCustoms.missionList[idx].path);
+			net_NetCommands.setLobbyCustLevelName(src_MPCustoms.missionList[idx].path);
 			gui_MultiplayerLevelSelectGui.custSelected = true;
 			custSelectedIdx = idx;
-			gui_MultiplayerLevelSelectGui.custPath = MPCustoms.missionList[idx].path;
+			gui_MultiplayerLevelSelectGui.custPath = src_MPCustoms.missionList[idx].path;
 			_gthis.updateLobbyNames();
 		};
 		customListScroll.addChild(this.customList);
@@ -22896,7 +23717,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		backButton.pressedAction = function(e) {
 			net_Net.disconnect();
@@ -22912,7 +23733,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 			customsButton.position = new h3d_Vector(560,0);
 			customsButton.vertSizing = gui_VertSizing.Bottom;
 			customsButton.horizSizing = gui_HorizSizing.Right;
-			customsButton.gamepadAccelerator = ["X"];
+			customsButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
 			customsButton.pressedAction = function(e) {
 				_gthis.showingCustoms = !_gthis.showingCustoms;
 				if(_gthis.showingCustoms) {
@@ -22930,7 +23751,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 			inviteButton.position = new h3d_Vector(750,0);
 			inviteButton.vertSizing = gui_VertSizing.Bottom;
 			inviteButton.horizSizing = gui_HorizSizing.Right;
-			inviteButton.gamepadAccelerator = ["Y"];
+			inviteButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt2];
 			inviteButton.pressedAction = function(e) {
 				_gthis.inviteVisibility = !_gthis.inviteVisibility;
 				_gthis.updateLobbyNames();
@@ -22941,7 +23762,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		nextButton.position = new h3d_Vector(960,0);
 		nextButton.vertSizing = gui_VertSizing.Bottom;
 		nextButton.horizSizing = gui_HorizSizing.Right;
-		nextButton.gamepadAccelerator = ["A"];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		nextButton.accelerators = [13];
 		nextButton.pressedAction = function(e) {
 			net_NetCommands.toggleReadiness(net_Net.isClient ? net_Net.clientId : 0);
@@ -22949,7 +23770,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		bottomBar.addChild(nextButton);
 		gui_MultiplayerLevelSelectGui.playSelectedLevel = function(index) {
 			if(gui_MultiplayerLevelSelectGui.custSelected) {
-				net_NetCommands.playCustomLevel(MPCustoms.missionList[custSelectedIdx].path);
+				net_NetCommands.playCustomLevel(src_MPCustoms.missionList[custSelectedIdx].path);
 			} else {
 				curMission = difficultyMissions[index];
 				src_MarbleGame.instance.playMission(curMission,true);
@@ -23048,7 +23869,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 			setLevel(idx);
 		};
 		gui_MultiplayerLevelSelectGui.setLevelStr = function(str) {
-			let _this = MPCustoms.missionList;
+			let _this = src_MPCustoms.missionList;
 			let _g = [];
 			let _g1 = 0;
 			while(_g1 < _this.length) {
@@ -23129,7 +23950,7 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 					tmp1 = "android";
 					break;
 				}
-				result[i] = tmp + tmp1 + "\"></img>" + player.name;
+				result[i] = tmp + tmp1 + "\"></img>" + StringTools.htmlEscape(player.name);
 			}
 			tmp.setTexts(result);
 		}
@@ -23242,7 +24063,7 @@ class gui_MultiplayerLoadingGui extends gui_GuiImage {
 			this.backButton.position = new h3d_Vector(960,0);
 			this.backButton.vertSizing = gui_VertSizing.Bottom;
 			this.backButton.horizSizing = gui_HorizSizing.Right;
-			this.backButton.gamepadAccelerator = ["A"];
+			this.backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 			this.backButton.accelerators = [13];
 			this.backButton.pressedAction = function(e) {
 				net_Net.disconnect();
@@ -23325,7 +24146,7 @@ class gui_OptionsListGui extends gui_GuiImage {
 		rootTitle.text.alpha = 0.5;
 		this.innerCtrl.addChild(rootTitle);
 		let btnList = new gui_GuiXboxList();
-		btnList.position = new h3d_Vector(70 - offsetX,165);
+		btnList.position = new h3d_Vector(70 - offsetX,71);
 		btnList.horizSizing = gui_HorizSizing.Left;
 		btnList.extent = new h3d_Vector(502,500);
 		this.innerCtrl.addChild(btnList);
@@ -23345,7 +24166,7 @@ class gui_OptionsListGui extends gui_GuiImage {
 			}
 		} else {
 			btnList.addButton(3,"Key Bindings",function(e) {
-				src_MarbleGame.canvas.setContent(new gui_KeyBindingsGui(pauseGui));
+				src_MarbleGame.canvas.setContent(new gui_InputSelectGui(pauseGui));
 			});
 		}
 		btnList.addButton(3,"Video Options",function(e) {
@@ -23354,6 +24175,9 @@ class gui_OptionsListGui extends gui_GuiImage {
 		if(!pauseGui) {
 			btnList.addButton(3,"Misc Options",function(e) {
 				src_MarbleGame.canvas.setContent(new gui_MiscOptionsGui(pauseGui));
+			});
+			btnList.addButton(3,"Import & Export",function(e) {
+				src_MarbleGame.canvas.setContent(new gui_ImportExportGui());
 			});
 		}
 		btnList.addButton(5,"How to Play",function(e) {
@@ -23372,7 +24196,7 @@ class gui_OptionsListGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(400,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["B"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
 		backButton.accelerators = [27,8];
 		let _gthis = this;
 		if(pauseGui) {
@@ -24031,12 +24855,12 @@ class gui_PlayGui {
 			let item = _g1[_g];
 			++_g;
 			let tmp = "<font color=\"#EBEBEB\"><img src=\"" + (item.us ? "us" : "them") + "\"></img>";
-			let str = item.name;
+			let str = StringTools.htmlEscape(item.name);
 			str = str.substring(0,22);
 			while(str.length < 25) str += " ";
 			pl.push(tmp + str + "</font>");
 			plScores.push("<font color=\"#EBEBEB\">" + item.score + "</font>");
-			let str1 = item.name;
+			let str1 = StringTools.htmlEscape(item.name);
 			str1 = str1.substring(0,22);
 			while(str1.length < 25) str1 += " ";
 			plShadow.push("<font color=\"#000000\"><img src=\"them\"></img>" + str1 + "</font>");
@@ -24062,9 +24886,9 @@ class gui_PlayGui {
 		if(p2 == null) {
 			let onePt = p1.score == 1;
 			if(onePt) {
-				src_MarbleGame.instance.world.displayAlert("" + p1.name + " won with 1 point!");
+				src_MarbleGame.instance.world.displayAlert("" + StringTools.htmlEscape(p1.name) + " won with 1 point!");
 			} else {
-				src_MarbleGame.instance.world.displayAlert("" + p1.name + " won with " + p1.score + " points!");
+				src_MarbleGame.instance.world.displayAlert("" + StringTools.htmlEscape(p1.name) + " won with " + p1.score + " points!");
 			}
 		} else {
 			let tie = p1.score == p2.score;
@@ -24073,9 +24897,9 @@ class gui_PlayGui {
 			} else {
 				let onePt = p1.score == 1;
 				if(onePt) {
-					src_MarbleGame.instance.world.displayAlert("" + p1.name + " won with 1 point!");
+					src_MarbleGame.instance.world.displayAlert("" + StringTools.htmlEscape(p1.name) + " won with 1 point!");
 				} else {
-					src_MarbleGame.instance.world.displayAlert("" + p1.name + " won with " + p1.score + " points!");
+					src_MarbleGame.instance.world.displayAlert("" + StringTools.htmlEscape(p1.name) + " won with " + p1.score + " points!");
 				}
 				if(p1.id == net_Net.clientId) {
 					gui_AchievementsGui.queueMPAchievement(512);
@@ -24635,9 +25459,13 @@ Object.assign(gui_Rect.prototype, {
 	,scroll: null
 });
 class gui_RemapDlg extends gui_GuiImage {
-	constructor(bindingName) {
+	constructor(bindingName,controller) {
+		if(controller == null) {
+			controller = false;
+		}
 		let res = src_ResourceLoader.getImage("data/ui/xbox/roundedBG.png").resource.toTile();
 		super(res);
+		this.controller = controller;
 		this.horizSizing = gui_HorizSizing.Width;
 		this.vertSizing = gui_VertSizing.Height;
 		this.position = new h3d_Vector();
@@ -24661,14 +25489,30 @@ class gui_RemapDlg extends gui_GuiImage {
 	}
 	update(dt,mouseState) {
 		super.update(dt,mouseState);
-		let _g = 0;
-		while(_g < 1024) {
-			let i = _g++;
-			if(i == 6 || i == 5) {
-				continue;
+		if(this.controller) {
+			let controllerKeys = ["A","B","X","Y","LB","RB","LT","RT","start","back","analogClick","ranalogClick","dpadUp","dpadDown","dpadLeft","dpadRight"];
+			let _g = 0;
+			while(_g < controllerKeys.length) {
+				let key = controllerKeys[_g];
+				++_g;
+				if(src_Gamepad.isPressed([key])) {
+					this.controllerRemapCallback(key);
+					return;
+				}
 			}
-			if(hxd_Key.isPressed(i)) {
-				this.remapCallback(i);
+			if(hxd_Key.isPressed(27)) {
+				this.controllerRemapCallback("escape");
+			}
+		} else {
+			let _g = 0;
+			while(_g < 1024) {
+				let i = _g++;
+				if(i == 6 || i == 5) {
+					continue;
+				}
+				if(hxd_Key.isPressed(i)) {
+					this.remapCallback(i);
+				}
 			}
 		}
 	}
@@ -24679,6 +25523,8 @@ gui_RemapDlg.__super__ = gui_GuiImage;
 Object.assign(gui_RemapDlg.prototype, {
 	__class__: gui_RemapDlg
 	,remapCallback: null
+	,controllerRemapCallback: null
+	,controller: null
 });
 class gui_ReplayNameDlg extends gui_GuiImage {
 	constructor(callback) {
@@ -24736,7 +25582,7 @@ class gui_ReplayNameDlg extends gui_GuiImage {
 		okButton.extent = new h3d_Vector(120,94);
 		okButton.vertSizing = gui_VertSizing.Top;
 		okButton.accelerators = [13];
-		okButton.gamepadAccelerator = ["A"];
+		okButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		let _gthis = this;
 		okButton.pressedAction = function(sender) {
 			if(StringTools.trim(textInput.text.text) != "") {
@@ -24752,7 +25598,7 @@ class gui_ReplayNameDlg extends gui_GuiImage {
 		cancelButton.extent = new h3d_Vector(120,94);
 		cancelButton.vertSizing = gui_VertSizing.Top;
 		cancelButton.accelerators = [13];
-		cancelButton.gamepadAccelerator = ["A"];
+		cancelButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		cancelButton.pressedAction = function(sender) {
 			src_MarbleGame.canvas.popDialog(_gthis);
 			callback();
@@ -24765,6 +25611,215 @@ gui_ReplayNameDlg.__name__ = "gui.ReplayNameDlg";
 gui_ReplayNameDlg.__super__ = gui_GuiImage;
 Object.assign(gui_ReplayNameDlg.prototype, {
 	__class__: gui_ReplayNameDlg
+});
+class gui_SPCustomsGui extends gui_GuiImage {
+	constructor() {
+		let res = src_ResourceLoader.getImage("data/ui/xbox/BG_fadeOutSoftEdge.png").resource.toTile();
+		super(res);
+		let arial14fontdata = src_ResourceLoader.getFileEntry("data/font/Arial Bold.fnt");
+		let arial14b = new hxd_res_BitmapFont(arial14fontdata.entry);
+		arial14b.loader = src_ResourceLoader.loader;
+		let arial14 = arial14b.toSdfFont(21 * src_Settings.uiScale,4);
+		this.horizSizing = gui_HorizSizing.Width;
+		this.vertSizing = gui_VertSizing.Height;
+		this.position = new h3d_Vector();
+		this.extent = new h3d_Vector(640,480);
+		let scene2d = src_MarbleGame.instance.scene2d;
+		let offsetX = (scene2d.width - 1280) / 2;
+		let offsetY = (scene2d.height - 720) / 2;
+		let subX = 640 - (scene2d.width - offsetX) * 640 / scene2d.width;
+		let subY = 480 - (scene2d.height - offsetY) * 480 / scene2d.height;
+		this.innerCtrl = new gui_GuiControl();
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		this.innerCtrl.horizSizing = gui_HorizSizing.Width;
+		this.innerCtrl.vertSizing = gui_VertSizing.Height;
+		this.addChild(this.innerCtrl);
+		let custWnd = new gui_GuiImage(src_ResourceLoader.getResource("data/ui/xbox/helpWindow.png",src_ResourceLoader.getImage,this.imageResources).toTile());
+		custWnd.horizSizing = gui_HorizSizing.Right;
+		custWnd.vertSizing = gui_VertSizing.Bottom;
+		custWnd.position = new h3d_Vector(330,58);
+		custWnd.extent = new h3d_Vector(640,330);
+		this.innerCtrl.addChild(custWnd);
+		let customListScroll = new gui_GuiConsoleScrollCtrl(src_ResourceLoader.getResource("data/ui/common/osxscroll.png",src_ResourceLoader.getImage,this.imageResources).toTile());
+		customListScroll.position = new h3d_Vector(25,22);
+		customListScroll.extent = new h3d_Vector(600,280);
+		customListScroll.scrollToBottom = false;
+		custWnd.addChild(customListScroll);
+		let ultraMissions = src_Marbleland.ultraMissions;
+		let curMission = ultraMissions[0];
+		let result = new Array(ultraMissions.length);
+		let _g = 0;
+		let _g1 = ultraMissions.length;
+		while(_g < _g1) {
+			let i = _g++;
+			let x = ultraMissions[i];
+			result[i] = "" + x.title + " by " + x.artist;
+		}
+		let customList = new gui_GuiTextListCtrl(arial14,result,16777215);
+		let custSelectedIdx = 0;
+		customList.selectedColor = 15897877;
+		customList.selectedFillColor = 8750469;
+		customList.textColor = 16777215;
+		customList.position = new h3d_Vector(0,0);
+		customList.extent = new h3d_Vector(550,2880);
+		customList.scrollable = true;
+		customListScroll.addChild(customList);
+		customListScroll.setScrollMax(customList.calculateFullHeight());
+		let bottomBar = new gui_GuiControl();
+		bottomBar.position = new h3d_Vector(0,590);
+		bottomBar.extent = new h3d_Vector(640,200);
+		bottomBar.horizSizing = gui_HorizSizing.Width;
+		bottomBar.vertSizing = gui_VertSizing.Bottom;
+		this.innerCtrl.addChild(bottomBar);
+		let backButton = new gui_GuiXboxButton("Back",160);
+		backButton.position = new h3d_Vector(400,0);
+		backButton.vertSizing = gui_VertSizing.Bottom;
+		backButton.horizSizing = gui_HorizSizing.Right;
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.back];
+		backButton.accelerators = [27,8];
+		backButton.pressedAction = function(e) {
+			src_MarbleGame.canvas.setContent(new gui_DifficultySelectGui());
+		};
+		bottomBar.addChild(backButton);
+		let recordButton = new gui_GuiXboxButton("Record",200);
+		recordButton.position = new h3d_Vector(560,0);
+		recordButton.vertSizing = gui_VertSizing.Bottom;
+		recordButton.horizSizing = gui_HorizSizing.Right;
+		recordButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
+		recordButton.pressedAction = function(e) {
+			src_MarbleGame.instance.toRecord = true;
+			src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("The next mission you play will be recorded."));
+		};
+		bottomBar.addChild(recordButton);
+		let lbButton = new gui_GuiXboxButton("Leaderboard",220);
+		lbButton.position = new h3d_Vector(750,0);
+		lbButton.vertSizing = gui_VertSizing.Bottom;
+		lbButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt2];
+		lbButton.horizSizing = gui_HorizSizing.Right;
+		lbButton.pressedAction = function(e) {
+			src_MarbleGame.canvas.setContent(new gui_LeaderboardsGui(curMission.id,"customs",true));
+		};
+		bottomBar.addChild(lbButton);
+		let nextButton = new gui_GuiXboxButton("Play",160);
+		nextButton.position = new h3d_Vector(960,0);
+		nextButton.vertSizing = gui_VertSizing.Bottom;
+		nextButton.horizSizing = gui_HorizSizing.Right;
+		nextButton.accelerators = [13];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
+		nextButton.pressedAction = function(e) {
+			src_MarbleGame.instance.playMission(curMission);
+		};
+		bottomBar.addChild(nextButton);
+		let levelWnd = new gui_GuiImage(src_ResourceLoader.getResource("data/ui/xbox/levelPreviewWindow.png",src_ResourceLoader.getImage,this.imageResources).toTile());
+		levelWnd.position = new h3d_Vector(555,469);
+		levelWnd.extent = new h3d_Vector(535,137);
+		levelWnd.vertSizing = gui_VertSizing.Bottom;
+		levelWnd.horizSizing = gui_HorizSizing.Right;
+		this.innerCtrl.addChild(levelWnd);
+		let statIcon = new gui_GuiImage(src_ResourceLoader.getResource("data/ui/xbox/statIcon.png",src_ResourceLoader.getImage,this.imageResources).toTile());
+		statIcon.position = new h3d_Vector(29,54);
+		statIcon.extent = new h3d_Vector(20,20);
+		levelWnd.addChild(statIcon);
+		let eggIcon = new gui_GuiImage(src_ResourceLoader.getResource("data/ui/xbox/eggIcon.png",src_ResourceLoader.getImage,this.imageResources).toTile());
+		eggIcon.position = new h3d_Vector(29,79);
+		eggIcon.extent = new h3d_Vector(20,20);
+		levelWnd.addChild(eggIcon);
+		let arial14fontdata1 = src_ResourceLoader.getFileEntry("data/font/Arial Bold.fnt");
+		let arial14b1 = new hxd_res_BitmapFont(arial14fontdata1.entry);
+		arial14b1.loader = src_ResourceLoader.loader;
+		let arial141 = arial14b1.toSdfFont(21 * src_Settings.uiScale,4);
+		let mlFontLoader = function(text) {
+			return arial141;
+		};
+		let levelInfoLeft = new gui_GuiMLText(arial141,mlFontLoader);
+		levelInfoLeft.position = new h3d_Vector(69,54);
+		levelInfoLeft.extent = new h3d_Vector(180,100);
+		levelInfoLeft.text.set_text("<p align=\"right\"><font color=\"#EBEBEB\">My Best Time:</font><br/><font color=\"#EBEBEB\">Par Time:</font></p>");
+		levelInfoLeft.text.set_lineSpacing(6);
+		levelWnd.addChild(levelInfoLeft);
+		let levelInfoMid = new gui_GuiMLText(arial141,mlFontLoader);
+		levelInfoMid.position = new h3d_Vector(269,54);
+		levelInfoMid.extent = new h3d_Vector(180,100);
+		levelInfoMid.text.set_text("<p align=\"left\"><font color=\"#EBEBEB\">None</font><br/><font color=\"#88BCEE\">99:59:99</font></p>");
+		levelInfoMid.text.set_lineSpacing(6);
+		levelWnd.addChild(levelInfoMid);
+		let setLevel = function(idx) {
+			curMission = ultraMissions[idx];
+			custSelectedIdx = idx;
+			let misPath = "custom/mbu/" + curMission.id;
+			if(Object.prototype.hasOwnProperty.call(src_Settings.easterEggs.h,misPath)) {
+				eggIcon.bmp.set_visible(true);
+			} else {
+				eggIcon.bmp.set_visible(false);
+			}
+			let scoreType = curMission.customSource == "MPCustoms" ? modes_ScoreType.Score : modes_ScoreType.Time;
+			let myScore = src_Settings.getScores(misPath);
+			let scoreDisp = "None";
+			if(myScore.length != 0) {
+				if(scoreType == modes_ScoreType.Time) {
+					scoreDisp = src_Util.formatTime(myScore[0].time);
+				} else {
+					let scoreInt = Math.round(myScore[0].time) | 0;
+					scoreDisp = "" + scoreInt;
+				}
+			}
+			let isPar = myScore.length != 0 && myScore[0].time < curMission.qualifyTime;
+			let scoreColor = "#EBEBEB";
+			if(isPar) {
+				scoreColor = "#8DFF8D";
+			}
+			if(scoreType == modes_ScoreType.Score && myScore.length == 0) {
+				scoreColor = "#EBEBEB";
+			}
+			if(scoreType == modes_ScoreType.Time) {
+				levelInfoLeft.text.set_text("<p align=\"right\"><font color=\"#EBEBEB\">My Best Time:</font><br/><font color=\"#EBEBEB\">Par Time:</font></p>");
+				levelInfoMid.text.set_text("<p align=\"left\"><font color=\"" + scoreColor + "\">" + scoreDisp + "</font><br/><font color=\"#88BCEE\">" + src_Util.formatTime(curMission.qualifyTime) + "</font></p>");
+			}
+			if(scoreType == modes_ScoreType.Score) {
+				levelInfoLeft.text.set_text("<p align=\"right\"><font color=\"#EBEBEB\">My Best Score:</font></p>");
+				levelInfoMid.text.set_text("<p align=\"left\"><font color=\"" + scoreColor + "\">" + scoreDisp + "</font></p>");
+			}
+			return true;
+		};
+		let result1 = new Array(ultraMissions.length);
+		let _g2 = 0;
+		let _g3 = ultraMissions.length;
+		while(_g2 < _g3) {
+			let i = _g2++;
+			result1[i] = ultraMissions[i].title;
+		}
+		let levelSelectOpts = new gui_GuiXboxOptionsList(6,"Level",result1);
+		levelSelectOpts.position = new h3d_Vector(380,435);
+		levelSelectOpts.extent = new h3d_Vector(815,94);
+		levelSelectOpts.vertSizing = gui_VertSizing.Bottom;
+		levelSelectOpts.horizSizing = gui_HorizSizing.Right;
+		levelSelectOpts.alwaysActive = true;
+		levelSelectOpts.onChangeFunc = setLevel;
+		levelSelectOpts.setCurrentOption(0);
+		setLevel(0);
+		this.innerCtrl.addChild(levelSelectOpts);
+		customList.onSelectedFunc = function(idx) {
+			setLevel(idx);
+			levelSelectOpts.setCurrentOption(idx);
+		};
+	}
+	onResize(width,height) {
+		let offsetX = (width - 1280) / 2;
+		let offsetY = (height - 720) / 2;
+		let subX = 640 - (width - offsetX) * 640 / width;
+		let subY = 480 - (height - offsetY) * 480 / height;
+		this.innerCtrl.position = new h3d_Vector(offsetX,offsetY);
+		this.innerCtrl.extent = new h3d_Vector(640 - subX,480 - subY);
+		super.onResize(width,height);
+	}
+}
+$hxClasses["gui.SPCustomsGui"] = gui_SPCustomsGui;
+gui_SPCustomsGui.__name__ = "gui.SPCustomsGui";
+gui_SPCustomsGui.__super__ = gui_GuiImage;
+Object.assign(gui_SPCustomsGui.prototype, {
+	__class__: gui_SPCustomsGui
+	,innerCtrl: null
 });
 class gui_TouchCtrlsEditGui extends gui_GuiImage {
 	constructor(paused) {
@@ -24806,7 +25861,7 @@ class gui_TouchCtrlsEditGui extends gui_GuiImage {
 		nextButton.position = new h3d_Vector(960,100);
 		nextButton.vertSizing = gui_VertSizing.Bottom;
 		nextButton.horizSizing = gui_HorizSizing.Right;
-		nextButton.gamepadAccelerator = ["A"];
+		nextButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		nextButton.accelerators = [13];
 		let _gthis = this;
 		nextButton.pressedAction = function(e) {
@@ -24982,7 +26037,7 @@ class gui_TouchOptionsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(960,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["A"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		backButton.accelerators = [13];
 		let _gthis = this;
 		if(pauseGui) {
@@ -25003,7 +26058,7 @@ class gui_TouchOptionsGui extends gui_GuiImage {
 			ctrlButton.position = new h3d_Vector(750,0);
 			ctrlButton.vertSizing = gui_VertSizing.Bottom;
 			ctrlButton.horizSizing = gui_HorizSizing.Right;
-			ctrlButton.gamepadAccelerator = ["Y"];
+			ctrlButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt2];
 			ctrlButton.pressedAction = function(e) {
 				src_MarbleGame.canvas.setContent(new gui_TouchCtrlsEditGui(pauseGui));
 			};
@@ -25079,7 +26134,7 @@ class gui_VersionGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(960,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["A"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		backButton.accelerators = [13];
 		backButton.pressedAction = function(e) {
 			src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
@@ -25306,7 +26361,7 @@ class gui_VideoOptionsGui extends gui_GuiImage {
 		backButton.position = new h3d_Vector(960,0);
 		backButton.vertSizing = gui_VertSizing.Bottom;
 		backButton.horizSizing = gui_HorizSizing.Right;
-		backButton.gamepadAccelerator = ["A"];
+		backButton.gamepadAccelerator = [src_Settings.gamepadSettings.ok];
 		backButton.accelerators = [13];
 		let _gthis = this;
 		if(pauseGui) {
@@ -78046,6 +79101,7 @@ Object.assign(mis_MissionElementTrigger.prototype, {
 	,targettime: null
 	,instant: null
 	,icontinuetottime: null
+	,respawnpoint: null
 	,sequence: null
 });
 class mis_MissionElementAudioProfile extends mis_MissionElementBase {
@@ -79403,7 +80459,8 @@ class modes_HuntMode extends modes_NullMode {
 				}
 			} else {
 				let myScore = { name : "Player", time : this.getFinishScore()};
-				src_Settings.saveScore(this.level.mission.path,myScore,this.getScoreType());
+				let misPath = this.level.mission.isClaMission ? "custom/mbu/" + this.level.mission.id : this.level.mission.path;
+				src_Settings.saveScore(misPath,myScore,this.getScoreType());
 				let notifies = gui_AchievementsGui.check();
 				let achDelay = 0.0;
 				if((notifies & 1) > 0) {
@@ -79801,34 +80858,70 @@ class net_MarblePredictionStore {
 		this.predictions = new haxe_ds_ObjectMap();
 	}
 	storeState(marble,tick) {
-		let state = new net_MarblePrediction(marble,tick);
-		if(this.predictions.h.__keys__[marble.__id__] != null) {
-			let arr = this.predictions.h[marble.__id__];
-			while(arr.length != 0 && arr[0].tick >= tick) arr.shift();
-			arr.push(state);
-		} else {
-			this.predictions.set(marble,[state]);
+		let arr = this.predictions.h[marble.__id__];
+		if(arr == null) {
+			arr = [];
+			this.predictions.set(marble,arr);
 		}
+		let arr1 = arr;
+		let lo = 0;
+		let hi = arr1.length;
+		while(lo < hi) {
+			let mid = lo + hi >> 1;
+			if(arr1[mid].tick < tick) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
+		}
+		let idx = lo;
+		if(idx < arr1.length) {
+			arr1.splice(idx,arr1.length - idx);
+		}
+		arr1.push(new net_MarblePrediction(marble,tick));
 	}
 	retrieveState(marble,tick) {
-		if(this.predictions.h.__keys__[marble.__id__] != null) {
-			let arr = this.predictions.h[marble.__id__];
-			while(arr.length != 0 && arr[0].tick < tick) arr.shift();
-			if(arr.length == 0) {
-				return null;
-			}
-			let p = arr[0];
-			if(p.tick == tick) {
-				return p;
-			}
+		let arr = this.predictions.h[marble.__id__];
+		if(arr == null) {
 			return null;
 		}
-		return null;
+		let lo = 0;
+		let hi = arr.length;
+		while(lo < hi) {
+			let mid = lo + hi >> 1;
+			if(arr[mid].tick < tick) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
+		}
+		let idx = lo;
+		if(idx > 0) {
+			arr.splice(0,idx);
+		}
+		if(arr.length != 0 && arr[0].tick == tick) {
+			return arr[0];
+		} else {
+			return null;
+		}
 	}
 	clearStatesAfterTick(marble,tick) {
-		if(this.predictions.h.__keys__[marble.__id__] != null) {
-			let arr = this.predictions.h[marble.__id__];
-			while(arr.length != 0 && arr[arr.length - 1].tick >= tick) arr.pop();
+		let arr = this.predictions.h[marble.__id__];
+		if(arr != null) {
+			let lo = 0;
+			let hi = arr.length;
+			while(lo < hi) {
+				let mid = lo + hi >> 1;
+				if(arr[mid].tick < tick) {
+					lo = mid + 1;
+				} else {
+					hi = mid;
+				}
+			}
+			let idx = lo;
+			if(idx < arr.length) {
+				arr.splice(idx,arr.length - idx);
+			}
 		}
 	}
 	removeMarbleFromPrediction(marble) {
@@ -79864,71 +80957,77 @@ class net_MarbleUpdateQueue {
 	}
 	enqueue(update) {
 		let cc = update.clientId;
+		let flags = update.netFlags;
 		if(cc != net_Net.clientId) {
-			if(this.otherMarbleUpdates.h.hasOwnProperty(cc)) {
-				let otherUpdate = this.otherMarbleUpdates.h[cc];
-				let ourList = otherUpdate.packets;
-				if((update.netFlags & 1) == 0) {
-					update.blastTick = otherUpdate.lastBlastTick;
-				} else {
-					otherUpdate.lastBlastTick = update.blastTick;
-				}
-				if((update.netFlags & 2) == 0) {
-					update.heliTick = otherUpdate.lastHeliTick;
-				} else {
-					otherUpdate.lastHeliTick = update.heliTick;
-				}
-				if((update.netFlags & 4) == 0) {
-					update.megaTick = otherUpdate.lastMegaTick;
-				} else {
-					otherUpdate.lastMegaTick = update.megaTick;
-				}
-				if((update.netFlags & 8) == 0) {
-					update.powerUpId = otherUpdate.lastPowerUpId;
-				} else {
-					otherUpdate.lastPowerUpId = update.powerUpId;
-				}
-				if((update.netFlags & 16) == 0) {
-					update.gravityDirection = otherUpdate.lastGravityUp;
-				} else {
-					otherUpdate.lastGravityUp = update.gravityDirection;
-				}
-				ourList.push(update);
-			} else {
-				let otherUpdate = new net_OtherMarbleUpdate();
-				otherUpdate.packets.push(update);
-				if((update.netFlags & 1) != 0) {
-					otherUpdate.lastBlastTick = update.blastTick;
-				}
-				if((update.netFlags & 2) != 0) {
-					otherUpdate.lastHeliTick = update.heliTick;
-				}
-				if((update.netFlags & 4) != 0) {
-					otherUpdate.lastMegaTick = update.megaTick;
-				}
-				if((update.netFlags & 8) != 0) {
-					otherUpdate.lastPowerUpId = update.powerUpId;
-				}
-				if((update.netFlags & 16) != 0) {
-					otherUpdate.lastGravityUp = update.gravityDirection;
-				}
+			let otherUpdate = this.otherMarbleUpdates.h[cc];
+			if(otherUpdate == null) {
+				otherUpdate = new net_OtherMarbleUpdate();
 				this.otherMarbleUpdates.h[cc] = otherUpdate;
 			}
+			if(otherUpdate.packets.length == 0) {
+				if((flags & 1) != 0) {
+					otherUpdate.lastBlastTick = update.blastTick;
+				}
+				if((flags & 2) != 0) {
+					otherUpdate.lastHeliTick = update.heliTick;
+				}
+				if((flags & 4) != 0) {
+					otherUpdate.lastMegaTick = update.megaTick;
+				}
+				if((flags & 8) != 0) {
+					otherUpdate.lastPowerUpId = update.powerUpId;
+				}
+				if((flags & 16) != 0) {
+					otherUpdate.lastGravityUp = update.gravityDirection;
+				}
+			} else {
+				let lastValue = otherUpdate.lastBlastTick;
+				if((flags & 1) != 0) {
+					otherUpdate.lastBlastTick = update.blastTick;
+				} else {
+					update.blastTick = lastValue;
+				}
+				let lastValue1 = otherUpdate.lastHeliTick;
+				if((flags & 2) != 0) {
+					otherUpdate.lastHeliTick = update.heliTick;
+				} else {
+					update.heliTick = lastValue1;
+				}
+				let lastValue2 = otherUpdate.lastMegaTick;
+				if((flags & 4) != 0) {
+					otherUpdate.lastMegaTick = update.megaTick;
+				} else {
+					update.megaTick = lastValue2;
+				}
+				let lastValue3 = otherUpdate.lastPowerUpId;
+				if((flags & 8) != 0) {
+					otherUpdate.lastPowerUpId = update.powerUpId;
+				} else {
+					update.powerUpId = lastValue3;
+				}
+				let lastValue4 = otherUpdate.lastGravityUp;
+				if((flags & 16) != 0) {
+					otherUpdate.lastGravityUp = update.gravityDirection;
+				} else {
+					update.gravityDirection = lastValue4;
+				}
+			}
+			otherUpdate.packets.push(update);
 		} else if(this.myMarbleUpdate == null || update.serverTicks > this.myMarbleUpdate.serverTicks) {
 			if(this.myMarbleUpdate != null) {
-				if((update.netFlags & 1) == 0) {
+				if((flags & 1) == 0) {
 					update.blastTick = this.myMarbleUpdate.blastTick;
 				}
-				if((update.netFlags & 2) == 0) {
+				if((flags & 2) == 0) {
 					update.heliTick = this.myMarbleUpdate.heliTick;
 				}
-				if((update.netFlags & 4) == 0) {
+				if((flags & 4) == 0) {
 					update.megaTick = this.myMarbleUpdate.megaTick;
 				}
-				if((update.netFlags & 8) == 0) {
+				if((flags & 8) == 0) {
 					update.powerUpId = this.myMarbleUpdate.powerUpId;
 				}
-				if((update.netFlags & 16) == 0) {
+				if((flags & 16) == 0) {
 					update.gravityDirection = this.myMarbleUpdate.gravityDirection;
 				}
 			}
@@ -80062,6 +81161,9 @@ class net_MasterServerClient {
 		if(conts.type == "turnserver") {
 			net_Net.turnServer = conts.server;
 		}
+	}
+	static setServerIp(ip) {
+		net_MasterServerClient.serverIp = ip;
 	}
 	static connectToMasterServer(onConnect,onError) {
 		if(net_MasterServerClient.instance == null) {
@@ -80776,7 +81878,6 @@ class net_Net {
 			this1.get(key);
 			net_Net.serverInfo.players++;
 		}
-		net_Net.serverInfo.players++;
 		net_MasterServerClient.instance.sendServerInfo(net_Net.serverInfo);
 		if(((src_MarbleGame.canvas.content) instanceof gui_MultiplayerLevelSelectGui)) {
 			(js_Boot.__cast(src_MarbleGame.canvas.content , gui_MultiplayerLevelSelectGui)).updateLobbyNames();
@@ -80966,36 +82067,28 @@ class net_Net {
 			let netMove = new net_NetMove(move,motionDir,src_MarbleGame.instance.world.timeState.clone(),0,moveId);
 			marbleUpdatePacket.move = netMove;
 			marbleUpdatePacket.serverTicks = input.readUInt16();
+			marbleUpdatePacket.netFlags = input.readInt(6);
 			marbleUpdatePacket.moveQueueSize = input.readByte();
 			marbleUpdatePacket.position = new h3d_Vector(input.readFloat(),input.readFloat(),input.readFloat());
 			marbleUpdatePacket.velocity = new h3d_Vector(input.readFloat(),input.readFloat(),input.readFloat());
 			marbleUpdatePacket.omega = new h3d_Vector(input.readFloat(),input.readFloat(),input.readFloat());
 			marbleUpdatePacket.lastContactNormal = new h3d_Vector(input.readFloat(),input.readFloat(),input.readFloat());
 			marbleUpdatePacket.blastAmount = input.readInt(11);
-			marbleUpdatePacket.netFlags = 0;
-			if(input.readFlag()) {
-				marbleUpdatePacket.blastTick = input.readUInt16();
-				marbleUpdatePacket.netFlags |= 1;
-			}
-			if(input.readFlag()) {
-				marbleUpdatePacket.heliTick = input.readUInt16();
-				marbleUpdatePacket.netFlags |= 2;
-			}
-			if(input.readFlag()) {
-				marbleUpdatePacket.megaTick = input.readUInt16();
-				marbleUpdatePacket.netFlags |= 4;
-			}
 			marbleUpdatePacket.oob = input.readFlag();
-			if(input.readFlag()) {
-				marbleUpdatePacket.netFlags |= 32;
+			if((marbleUpdatePacket.netFlags & 1) > 0) {
+				marbleUpdatePacket.blastTick = input.readUInt16();
 			}
-			if(input.readFlag()) {
+			if((marbleUpdatePacket.netFlags & 2) > 0) {
+				marbleUpdatePacket.heliTick = input.readUInt16();
+			}
+			if((marbleUpdatePacket.netFlags & 4) > 0) {
+				marbleUpdatePacket.megaTick = input.readUInt16();
+			}
+			if((marbleUpdatePacket.netFlags & 8) > 0) {
 				marbleUpdatePacket.powerUpId = input.readInt(9);
-				marbleUpdatePacket.netFlags |= 8;
 			}
-			if(input.readFlag()) {
+			if((marbleUpdatePacket.netFlags & 16) > 0) {
 				marbleUpdatePacket.gravityDirection = new h3d_Vector(input.readFloat(),input.readFloat(),input.readFloat());
-				marbleUpdatePacket.netFlags |= 16;
 			}
 			if(src_MarbleGame.instance.world != null && !src_MarbleGame.instance.world._disposed) {
 				let m = src_MarbleGame.instance.world.lastMoves;
@@ -81243,7 +82336,7 @@ class net_NetCommands {
 		}
 	}
 	static playCustomLevel(levelPath) {
-		let _this = MPCustoms.missionList;
+		let _this = src_MPCustoms.missionList;
 		let _g = [];
 		let _g1 = 0;
 		while(_g1 < _this.length) {
@@ -81255,7 +82348,7 @@ class net_NetCommands {
 		}
 		let levelEntry = _g[0];
 		src_MarbleGame.canvas.setContent(new gui_MultiplayerLoadingGui("Downloading",false));
-		MPCustoms.play(levelEntry,function() {
+		src_MPCustoms.play(levelEntry,function() {
 		},function() {
 			src_MarbleGame.canvas.setContent(new gui_MultiplayerGui());
 			net_Net.disconnect();
@@ -91453,7 +92546,7 @@ class shapes_Gem extends src_DtsObject {
 		this.sharedNodeTransforms = true;
 		this.showSequences = false;
 		let GEM_COLORS = ["red"];
-		let color = element.datablock.substring("GemItem".length);
+		let color = element.datablock.substring("GemItem".length).toLowerCase();
 		if(color.length == 0) {
 			color = GEM_COLORS[Math.floor(Math.random() * GEM_COLORS.length)];
 		}
@@ -93204,6 +94297,9 @@ Object.assign(shapes_Trapdoor.prototype, {
 	,lastCompletion: null
 });
 class src_Analytics {
+	static setURL(url) {
+		src_Analytics.umami = url;
+	}
 	static trackSingle(eventName) {
 		let p = src_Analytics.payload(eventName,null);
 		let json = JSON.stringify(p);
@@ -93422,14 +94518,13 @@ class src_CameraController extends h3d_scene_Object {
 		return (delta < min ? min : delta > max ? max : delta) * 4;
 	}
 	applyNonlinearScale(value) {
-		return Math.pow(Math.abs(value),3.2) * (value >= 0 ? 1 : -1);
+		return Math.pow(Math.abs(value),1.6) * (value >= 0 ? 1 : -1);
 	}
 	update(currentTime,dt) {
 		let camera = this.level.scene.camera;
-		this.dt = dt;
 		let lerpt = 1 - Math.pow(0.5,dt / 0.016);
-		let gamepadX = this.applyNonlinearScale(this.rescaleDeadZone(src_Gamepad.getAxis(src_Settings.gamepadSettings.cameraXAxis),0.25));
-		let gamepadY = this.applyNonlinearScale(this.rescaleDeadZone(src_Gamepad.getAxis(src_Settings.gamepadSettings.cameraYAxis),0.25));
+		let gamepadX = this.applyNonlinearScale(this.rescaleDeadZone(src_Gamepad.getAxis(src_Settings.gamepadSettings.cameraXAxis),src_Settings.gamepadSettings.axisDeadzone));
+		let gamepadY = this.rescaleDeadZone(src_Gamepad.getAxis(src_Settings.gamepadSettings.cameraYAxis),src_Settings.gamepadSettings.axisDeadzone);
 		if(gamepadX != 0.0 || gamepadY != 0.0) {
 			this.wasLastGamepadInput = true;
 		}
@@ -93445,8 +94540,12 @@ class src_CameraController extends h3d_scene_Object {
 			cameraYawDelta = 0;
 			cameraPitchDelta = 0;
 		}
-		let deltaX = 3.75 * cameraYawDelta * dt * src_Settings.gamepadSettings.cameraSensitivity;
-		let deltaY = 3.75 * cameraPitchDelta * dt * src_Settings.gamepadSettings.cameraSensitivity;
+		let gamePadSensitivity = 1.0;
+		if(this.wasLastGamepadInput) {
+			gamePadSensitivity = 1.6 - src_Settings.controlsSettings.cameraSensitivity;
+		}
+		let deltaX = 3.75 * cameraYawDelta * dt * gamePadSensitivity;
+		let deltaY = 3.75 * cameraPitchDelta * dt * gamePadSensitivity;
 		let deltaNew = deltaX;
 		if(src_Settings.controlsSettings.controllerVerticalCenter && !(this.hasXInput || this.hasYInput) && deltaY == 0.0 && this.wasLastGamepadInput) {
 			let rescaledY = deltaY;
@@ -94279,7 +95378,6 @@ Object.assign(src_CameraController.prototype, {
 	,_ignoreCursor: null
 	,hasXInput: null
 	,hasYInput: null
-	,dt: null
 	,wasLastGamepadInput: null
 });
 class src_ConsoleEntry {
@@ -97213,8 +98311,11 @@ Object.assign(src_LRUCacheValue_$src_$DifCache.prototype, {
 	,age: null
 });
 class src_Leaderboards {
+	static setHost(url) {
+		src_Leaderboards.host = url;
+	}
 	static submitScore(mission,score,rewindUsed,needsReplayCb) {
-		if(!mission.startsWith("data/")) {
+		if(!mission.startsWith("data/") && !mission.startsWith("custom/")) {
 			mission = "data/" + mission;
 		}
 		src_Http.post("" + src_Leaderboards.host + "/api/submit",JSON.stringify({ mission : mission, score : score, game : src_Leaderboards.game, name : src_Settings.highscoreName, uid : src_Settings.userId, rewind : rewindUsed ? 1 : 0, platform : 3}),function(b) {
@@ -97228,7 +98329,7 @@ class src_Leaderboards {
 		});
 	}
 	static getScores(mission,kind,cb) {
-		if(!mission.startsWith("data/")) {
+		if(!mission.startsWith("data/") && !mission.startsWith("custom/")) {
 			mission = "data/" + mission;
 		}
 		return src_Http.get("" + src_Leaderboards.host + "/api/scores?mission=" + encodeURIComponent(mission) + "&game=" + src_Leaderboards.game + "&view=" + kind + "&count=10",function(b) {
@@ -97240,6 +98341,16 @@ class src_Leaderboards {
 			cb([]);
 		});
 	}
+	static getTopPlayers(kind,cb) {
+		return src_Http.get("" + src_Leaderboards.host + "/api/players?&game=" + src_Leaderboards.game + "&view=" + kind,function(b) {
+			let s = b.toString();
+			let players = JSON.parse(s).players;
+			cb(players);
+		},function(e) {
+			src_Console.instance.addEntry("log","Failed to get players: " + e);
+			cb([]);
+		});
+	}
 	static submitReplay(ref,replay) {
 		return src_Http.uploadFile("" + src_Leaderboards.host + "/api/record?ref=" + ref,replay,function(b) {
 			src_Console.instance.addEntry("log","Replay submitted");
@@ -97248,7 +98359,7 @@ class src_Leaderboards {
 		});
 	}
 	static watchTopReplay(mission,kind,cb) {
-		if(!mission.startsWith("data/")) {
+		if(!mission.startsWith("data/") && !mission.startsWith("custom/")) {
 			mission = "data/" + mission;
 		}
 		return src_Http.get("" + src_Leaderboards.host + "/api/replay?mission=" + encodeURIComponent(mission) + "&game=" + src_Leaderboards.game + "&view=" + kind,function(b) {
@@ -97261,6 +98372,94 @@ class src_Leaderboards {
 }
 $hxClasses["src.Leaderboards"] = src_Leaderboards;
 src_Leaderboards.__name__ = "src.Leaderboards";
+class src_MPCustoms {
+	static loadMissionList() {
+		if(src_MPCustoms.missionList.length == 0 && !src_MPCustoms._requestSent) {
+			src_MPCustoms._requestSent = true;
+			src_Http.get(Main.isDiscord ? ".proxy/data/ultraCustom.json" : "https://marbleblastultra.randomityguy.me/data/ultraCustom.json",function(b) {
+				let misList = JSON.parse(b.toString());
+				src_MPCustoms.missionList = misList;
+				src_MPCustoms.missionList.sort(function(a,b) {
+					let a1 = a.title.toLowerCase();
+					let b1 = b.title.toLowerCase();
+					if(a1 < b1) {
+						return -1;
+					} else if(a1 > b1) {
+						return 1;
+					} else {
+						return 0;
+					}
+				});
+				let _g = 0;
+				let _g1 = src_MPCustoms.missionList;
+				while(_g < _g1.length) {
+					let mis = _g1[_g];
+					++_g;
+					let mission = new src_Mission();
+					mission.id = mis.id;
+					mission.path = mis.path;
+					mission.title = mis.title;
+					mission.artist = mis.artist;
+					mission.description = mis.description;
+					mission.qualifyTime = Infinity;
+					mission.goldTime = 0;
+					mission.game = "ultra";
+					mission.isClaMission = true;
+					mission.customSource = "MPCustoms";
+					src_Marbleland.ultraMissions.push(mission);
+					src_Marbleland.missions.h[mission.id] = mission;
+				}
+				src_Console.instance.addEntry("log","Loaded " + misList.length + " custom missions.");
+				src_MPCustoms._requestSent = false;
+			},function(e) {
+				src_Console.instance.addEntry("log","Error getting custom list from marbleland.");
+				src_MPCustoms._requestSent = false;
+			});
+		}
+	}
+	static download(mission,onFinish,onFail) {
+		let lastSlashIdx = mission.path.lastIndexOf("/");
+		let dlHost = Main.isDiscord ? ".proxy/" : "https://marbleblastultra.randomityguy.me/";
+		let s = HxOverrides.substr(mission.path,0,lastSlashIdx);
+		let dlPath = dlHost + encodeURIComponent(s) + ".zip";
+		src_Http.get(dlPath,function(zipData) {
+			let reader = new haxe_zip_Reader(new haxe_io_BytesInput(zipData));
+			let entries = null;
+			try {
+				let _g = [];
+				let _g_head = reader.read().h;
+				while(_g_head != null) {
+					let val = _g_head.item;
+					_g_head = _g_head.next;
+					let x = val;
+					_g.push(x);
+				}
+				entries = _g;
+			} catch( _g ) {
+			}
+			src_ResourceLoader.loadZip(entries,"missions/mpcustom/");
+			if(entries != null) {
+				onFinish();
+			} else {
+				src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
+				onFail();
+			}
+		},function(e) {
+			src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
+			onFail();
+		});
+	}
+	static play(mission,onFinish,onFail) {
+		src_MPCustoms.download(mission,function() {
+			let f = src_ResourceLoader.getFileEntry(mission.path);
+			let mis = src_MissionList.parseMisHeader(f.entry.getBytes().toString(),mission.path);
+			src_MarbleGame.instance.playMission(mis,true);
+			onFinish();
+		},onFail);
+	}
+}
+$hxClasses["src.MPCustoms"] = src_MPCustoms;
+src_MPCustoms.__name__ = "src.MPCustoms";
 var src_Mode = $hxEnums["src.Mode"] = { __ename__:true,__constructs__:null
 	,Start: {_hx_name:"Start",_hx_index:0,__enum__:"src.Mode",toString:$estr}
 	,Play: {_hx_name:"Play",_hx_index:1,__enum__:"src.Mode",toString:$estr}
@@ -97440,6 +98639,7 @@ class src_Marble extends src_GameObject {
 		this.lastRenderPos = new h3d_Vector();
 		this.netSmoothOffset = new h3d_Vector();
 		this.netCorrected = false;
+		this.lastContactNormal = new h3d_Vector(0,0,1);
 		let marbleDts = new src_DtsObject();
 		let marbleShader = "";
 		marbleDts.identifier = "Marble";
@@ -102816,6 +104016,7 @@ class src_Marble extends src_GameObject {
 		b.writeFloat(m.motionDir.y);
 		b.writeFloat(m.motionDir.z);
 		b.writeUInt16(marbleUpdate.serverTicks);
+		b.writeInt(marbleUpdate.netFlags,6);
 		b.writeByte(marbleUpdate.moveQueueSize);
 		b.writeFloat(marbleUpdate.position.x);
 		b.writeFloat(marbleUpdate.position.y);
@@ -102830,43 +104031,23 @@ class src_Marble extends src_GameObject {
 		b.writeFloat(marbleUpdate.lastContactNormal.y);
 		b.writeFloat(marbleUpdate.lastContactNormal.z);
 		b.writeInt(marbleUpdate.blastAmount,11);
+		b.writeFlag(marbleUpdate.oob);
 		if((marbleUpdate.netFlags & 1) > 0) {
-			b.writeFlag(true);
 			b.writeUInt16(marbleUpdate.blastTick);
-		} else {
-			b.writeFlag(false);
 		}
 		if((marbleUpdate.netFlags & 2) > 0) {
-			b.writeFlag(true);
 			b.writeUInt16(marbleUpdate.heliTick);
-		} else {
-			b.writeFlag(false);
 		}
 		if((marbleUpdate.netFlags & 4) > 0) {
-			b.writeFlag(true);
 			b.writeUInt16(marbleUpdate.megaTick);
-		} else {
-			b.writeFlag(false);
-		}
-		b.writeFlag(marbleUpdate.oob);
-		if((marbleUpdate.netFlags & 32) > 0) {
-			b.writeFlag(true);
-		} else {
-			b.writeFlag(false);
 		}
 		if((marbleUpdate.netFlags & 8) > 0) {
-			b.writeFlag(true);
 			b.writeInt(marbleUpdate.powerUpId,9);
-		} else {
-			b.writeFlag(false);
 		}
 		if((marbleUpdate.netFlags & 16) > 0) {
-			b.writeFlag(true);
 			b.writeFloat(marbleUpdate.gravityDirection.x);
 			b.writeFloat(marbleUpdate.gravityDirection.y);
 			b.writeFloat(marbleUpdate.gravityDirection.z);
-		} else {
-			b.writeFlag(false);
 		}
 		return b.getBytes();
 	}
@@ -104692,7 +105873,7 @@ class src_MarbleGame {
 			return scene2d.window.curMouseY = e.touches[0].clientY;
 		});
 		pointercontainer.addEventListener("touchend",function(e) {
-			return;
+			return hxd_Key.keyPressed[0] = -(hxd_Timer.frameCount + 2);
 		});
 		pointercontainer.addEventListener("touchmove",function(e) {
 			scene2d.window.curMouseX = e.touches[0].clientX;
@@ -104827,6 +106008,7 @@ class src_MarbleGame {
 			}
 		}
 		let watching = this.world.isWatching;
+		let isNotCustom = !this.world.mission.isClaMission && !this.world.mission.isCustom;
 		let lastMis = haxe_io_Path.withoutExtension(haxe_io_Path.withoutDirectory(this.world.mission.path));
 		this.world.setCursorLock(false);
 		if(!Object.prototype.hasOwnProperty.call(src_Settings.levelStatistics.h,this.world.mission.path)) {
@@ -104839,6 +106021,10 @@ class src_MarbleGame {
 		this.paused = false;
 		if(watching) {
 			src_MarbleGame.canvas.setContent(Type.createInstance(this.replayExitGui,[]));
+			this.setPreviewMission(lastMis,function() {
+				let pointercontainer = window.document.querySelector("#pointercontainer");
+				pointercontainer.hidden = false;
+			});
 		} else if(net_Net.isMP) {
 			if(weDisconnecting) {
 				src_MarbleGame.instance.setPreviewMission(lastMis,function() {
@@ -104848,14 +106034,26 @@ class src_MarbleGame {
 				let lobby = new gui_MultiplayerLevelSelectGui(net_Net.isHost);
 				src_MarbleGame.canvas.setContent(lobby);
 			}
-		} else {
-			let pmg = new gui_LevelSelectGui(gui_LevelSelectGui.currentDifficultyStatic);
-			if(this._exitingToMenu) {
-				this._exitingToMenu = false;
-				src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
+		} else if(this._exitingToMenu) {
+			this._exitingToMenu = false;
+			if(!isNotCustom) {
+				src_MarbleGame.instance.setPreviewMission("urban",function() {
+				});
 			} else {
-				src_MarbleGame.canvas.setContent(pmg);
+				src_MarbleGame.instance.setPreviewMission(lastMis,function() {
+				});
 			}
+			src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
+		} else if(isNotCustom) {
+			src_MarbleGame.instance.setPreviewMission(lastMis,function() {
+			});
+			let pmg = new gui_LevelSelectGui(gui_LevelSelectGui.currentDifficultyStatic);
+			src_MarbleGame.canvas.setContent(pmg);
+		} else {
+			src_MarbleGame.instance.setPreviewMission("urban",function() {
+			});
+			let pmg = new gui_SPCustomsGui();
+			src_MarbleGame.canvas.setContent(pmg);
 		}
 		src_Settings.save();
 	}
@@ -105051,7 +106249,11 @@ class src_MarbleWorld extends src_Scheduler {
 		this.scene2d = scene2d;
 		this.mission = mission;
 		this.game = mission.game.toLowerCase();
-		this.gameMode = modes_GameModeFactory.getGameMode(this,mission.missionInfo.gamemode);
+		let misGameMode = mission.missionInfo != null ? mission.missionInfo.gamemode : null;
+		if(mission.customSource == "MPCustoms") {
+			misGameMode = "scrum";
+		}
+		this.gameMode = modes_GameModeFactory.getGameMode(this,misGameMode);
 		this.replay = new src_Replay(mission.path,mission.isClaMission ? mission.id : 0);
 		this.isRecording = record;
 		this.rewindManager = new rewind_RewindManager(this);
@@ -106412,6 +107614,8 @@ class src_MarbleWorld extends src_Scheduler {
 			if(ourMove != null) {
 				let ourMoveStruct = net_Net.clientConnection.moveManager.acknowledgeMove(ourMove.move,this.timeState);
 				this.lastMoves.ourMoveApplied = true;
+				let hasStruct = ourMoveStruct != null;
+				let ourTick = hasStruct ? ourMoveStruct.timeState.ticks : -1;
 				let this1 = this.lastMoves.otherMarbleUpdates;
 				let _g_keys = this1.keys();
 				while(_g_keys.hasNext()) {
@@ -106426,57 +107630,70 @@ class src_MarbleWorld extends src_Scheduler {
 							break;
 						}
 					}
-					if(lastMove != null) {
-						let clientMarble = this.clientMarbles.h[net_Net.clientIdMap.h[key].__id__];
-						if(clientMarble != null) {
-							if(ourMove.serverTicks == lastMove.serverTicks) {
-								if(ourMoveStruct != null) {
-									let otherPred = this.predictions.retrieveState(clientMarble,ourMoveStruct.timeState.ticks);
-									if(otherPred != null) {
-										let _this = otherPred.position;
-										let v = lastMove.position;
-										let x = _this.x - v.x;
-										let y = _this.y - v.y;
-										let z = _this.z - v.z;
-										if(z == null) {
-											z = 0.;
-										}
-										if(y == null) {
-											y = 0.;
-										}
-										if(x == null) {
-											x = 0.;
-										}
-										let _this_x = x;
-										let _this_y = y;
-										let _this_z = z;
-										let subs = _this_x * _this_x + _this_y * _this_y + _this_z * _this_z;
-										if(lastMove.netFlags != 0) {
-											++subs;
-										}
-										if(subs > 0.01) {
-											clientMarble.unpackUpdate(lastMove);
-											needsPrediction |= 1 << key;
-											_g_value.packets.splice(0,0,lastMove);
-											this.predictions.clearStatesAfterTick(this.clientMarbles.h[net_Net.clientIdMap.h[key].__id__],ourMoveStruct.timeState.ticks);
-										}
-									} else {
-										clientMarble.unpackUpdate(lastMove);
-										needsPrediction |= 1 << key;
-										_g_value.packets.splice(0,0,lastMove);
-										this.predictions.clearStatesAfterTick(clientMarble,ourMoveStruct.timeState.ticks);
-									}
-								} else {
-									clientMarble.unpackUpdate(lastMove);
-									needsPrediction |= 1 << key;
-									_g_value.packets.splice(0,0,lastMove);
-								}
+					if(lastMove == null || ourMove.serverTicks != lastMove.serverTicks) {
+						continue;
+					}
+					let connection = net_Net.clientIdMap.h[key];
+					if(connection == null) {
+						continue;
+					}
+					let clientMarble = this.clientMarbles.h[connection.__id__];
+					if(clientMarble == null) {
+						continue;
+					}
+					let mask = 1 << key;
+					if(hasStruct) {
+						let otherPred = this.predictions.retrieveState(clientMarble,ourMoveStruct.timeState.ticks);
+						let tmp;
+						if(otherPred != null) {
+							let _this = otherPred.position;
+							let v = lastMove.position;
+							let x = _this.x - v.x;
+							let y = _this.y - v.y;
+							let z = _this.z - v.z;
+							if(z == null) {
+								z = 0.;
 							}
+							if(y == null) {
+								y = 0.;
+							}
+							if(x == null) {
+								x = 0.;
+							}
+							let _this_x = x;
+							let _this_y = y;
+							let _this_z = z;
+							let subs = _this_x * _this_x + _this_y * _this_y + _this_z * _this_z;
+							if(lastMove.netFlags != 0) {
+								++subs;
+							}
+							tmp = subs > 0.01;
+						} else {
+							tmp = true;
+						}
+						if(tmp) {
+							let pending = _g_value.packets;
+							clientMarble.unpackUpdate(lastMove);
+							needsPrediction |= mask;
+							if(pending != null) {
+								pending.splice(0,0,lastMove);
+							}
+							if(ourTick >= 0) {
+								this.predictions.clearStatesAfterTick(clientMarble,ourTick);
+							}
+						}
+					} else {
+						let pending = _g_value.packets;
+						clientMarble.unpackUpdate(lastMove);
+						needsPrediction |= mask;
+						if(pending != null) {
+							pending.splice(0,0,lastMove);
 						}
 					}
 				}
-				if(ourMoveStruct != null) {
-					let ourPred = this.predictions.retrieveState(this.marble,ourMoveStruct.timeState.ticks);
+				if(hasStruct) {
+					let ourPred = this.predictions.retrieveState(this.marble,ourTick);
+					let tmp;
 					if(ourPred != null) {
 						let _this = ourPred.position;
 						let v = ourMove.position;
@@ -106499,19 +107716,24 @@ class src_MarbleWorld extends src_Scheduler {
 						if(ourMove.netFlags != 0) {
 							++subs;
 						}
-						if(subs > 0.01) {
-							this.marble.unpackUpdate(ourMove);
-							needsPrediction |= 1 << net_Net.clientId;
-							this.predictions.clearStatesAfterTick(this.marble,ourMoveStruct.timeState.ticks);
-						}
+						tmp = subs > 0.01;
 					} else {
-						this.marble.unpackUpdate(ourMove);
-						needsPrediction |= 1 << net_Net.clientId;
-						this.predictions.clearStatesAfterTick(this.marble,ourMoveStruct.timeState.ticks);
+						tmp = true;
+					}
+					if(tmp) {
+						let target = this.marble;
+						let bitMask = 1 << net_Net.clientId;
+						target.unpackUpdate(ourMove);
+						needsPrediction |= bitMask;
+						if(ourTick >= 0) {
+							this.predictions.clearStatesAfterTick(target,ourTick);
+						}
 					}
 				} else {
-					this.marble.unpackUpdate(ourMove);
-					needsPrediction |= 1 << net_Net.clientId;
+					let target = this.marble;
+					let bitMask = 1 << net_Net.clientId;
+					target.unpackUpdate(ourMove);
+					needsPrediction |= bitMask;
 				}
 			}
 		}
@@ -106725,13 +107947,8 @@ class src_MarbleWorld extends src_Scheduler {
 				src_MarbleGame.instance.touchInput.hideControls(this.playGui.playGuiCtrl);
 			}
 			this.setCursorLock(false);
-			let misFile = haxe_io_Path.withoutExtension(haxe_io_Path.withoutDirectory(this.mission.path));
-			this.dispose();
-			src_MarbleGame.instance.setPreviewMission(misFile,function() {
-				src_MarbleGame.canvas.setContent(new gui_MainMenuGui());
-				let pointercontainer = window.document.querySelector("#pointercontainer");
-				pointercontainer.hidden = false;
-			});
+			haxe_io_Path.withoutExtension(haxe_io_Path.withoutDirectory(this.mission.path));
+			src_MarbleGame.instance.quitMission();
 			return;
 		}
 		if(this.rewinding && !this.isWatching) {
@@ -106759,7 +107976,7 @@ class src_MarbleWorld extends src_Scheduler {
 				}
 				if(this.isReplayingMovement) {
 					if(this.timeState.currentAttemptTime != this.currentInputMoves[0].time) {
-						haxe_Log.trace("fucked",{ fileName : "src/MarbleWorld.hx", lineNumber : 1585, className : "src.MarbleWorld", methodName : "update"});
+						haxe_Log.trace("fucked",{ fileName : "src/MarbleWorld.hx", lineNumber : 1543, className : "src.MarbleWorld", methodName : "update"});
 					}
 				}
 				if(this.currentInputMoves.length > 1) {
@@ -108195,13 +109412,14 @@ class src_MarbleWorld extends src_Scheduler {
 			this.finishYaw = this.marble.camera.CameraYaw;
 			this.finishPitch = this.marble.camera.CameraPitch;
 			this.displayAlert("Congratulations! You've finished!");
-			if(!Object.prototype.hasOwnProperty.call(src_Settings.levelStatistics.h,this.mission.path)) {
-				src_Settings.levelStatistics.h[this.mission.path] = { oobs : 0, respawns : 0, totalTime : 0, totalMPScore : 0};
+			let misPath = this.mission.isClaMission ? "custom/mbu/" + this.mission.id : this.mission.path;
+			if(!Object.prototype.hasOwnProperty.call(src_Settings.levelStatistics.h,misPath)) {
+				src_Settings.levelStatistics.h[misPath] = { oobs : 0, respawns : 0, totalTime : 0, totalMPScore : 0};
 			}
-			src_Analytics.trackLevelScore(this.mission.title,this.mission.path,this.gameMode.getScoreType() == modes_ScoreType.Time ? 1000 * this.gameMode.getFinishScore() | 0 : this.gameMode.getFinishScore() | 0,src_Settings.levelStatistics.h[this.mission.path].oobs,src_Settings.levelStatistics.h[this.mission.path].respawns,src_Settings.optionsSettings.rewindEnabled);
+			src_Analytics.trackLevelScore(this.mission.title,misPath,this.gameMode.getScoreType() == modes_ScoreType.Time ? 1000 * this.gameMode.getFinishScore() | 0 : this.gameMode.getFinishScore() | 0,src_Settings.levelStatistics.h[misPath].oobs,src_Settings.levelStatistics.h[misPath].respawns,src_Settings.optionsSettings.rewindEnabled);
 			if(!this.isWatching) {
 				let myScore = { name : "Player", time : this.gameMode.getFinishScore()};
-				src_Settings.saveScore(this.mission.path,myScore,this.gameMode.getScoreType());
+				src_Settings.saveScore(misPath,myScore,this.gameMode.getScoreType());
 				let notifies = gui_AchievementsGui.check();
 				let achDelay = 0.0;
 				if((notifies & 1) > 0) {
@@ -108293,9 +109511,16 @@ class src_MarbleWorld extends src_Scheduler {
 					}
 				} else {
 					_gthis.dispose();
-					gui_LevelSelectGui.currentSelectionStatic = _gthis.mission.index + 1;
-					let pmg = new gui_LevelSelectGui(["beginner","intermediate","advanced","multiplayer"][_gthis.mission.difficultyIndex]);
-					src_MarbleGame.canvas.setContent(pmg);
+					if(_gthis.mission.isClaMission) {
+						src_MarbleGame.instance.setPreviewMission("urban",function() {
+						});
+						let pmg = new gui_SPCustomsGui();
+						src_MarbleGame.canvas.setContent(pmg);
+					} else {
+						gui_LevelSelectGui.currentSelectionStatic = _gthis.mission.index + 1;
+						let pmg = new gui_LevelSelectGui(["beginner","intermediate","advanced","multiplayer"][_gthis.mission.difficultyIndex]);
+						src_MarbleGame.canvas.setContent(pmg);
+					}
 				}
 				return pointercontainer.hidden = false;
 			};
@@ -108324,18 +109549,6 @@ class src_MarbleWorld extends src_Scheduler {
 				}));
 			} else {
 				restartGameCode();
-			}
-		},function(sender) {
-			let nextLevelCode = function() {
-				let nextMission = _gthis.mission.getNextMission();
-				if(nextMission != null) {
-					src_MarbleGame.instance.playMission(nextMission);
-				}
-			};
-			if(src_MarbleGame.instance.toRecord) {
-				src_MarbleGame.canvas.pushDialog(new gui_ReplayNameDlg(nextLevelCode));
-			} else {
-				nextLevelCode();
 			}
 		},this.mission,this.gameMode.getFinishScore(),this.gameMode.getScoreType(),this.replay.write());
 		src_MarbleGame.canvas.pushDialog(egg);
@@ -109096,6 +110309,89 @@ Object.assign(src_MarbleWorld.prototype, {
 	,postInited: null
 });
 class src_Marbleland {
+	static init() {
+		src_Http.get("https://marbleland.vaniverse.io/api/level/list",function(b) {
+			src_Marbleland.parseMissionList(b.toString());
+			src_Console.instance.addEntry("log","Loaded ultra customs: " + src_Marbleland.ultraMissions.length);
+			let urlParams = new URLSearchParams(window.location.search);
+			let playParam = urlParams.get("play");
+			if(playParam != null) {
+				let intParam = Std.parseInt(playParam);
+				if(intParam != null) {
+					let mission = src_Marbleland.missions.h[intParam];
+					if(mission != null) {
+						src_MarbleGame.instance.playMission(mission);
+					}
+				}
+			}
+		},function(e) {
+			src_Console.instance.addEntry("log","Error getting custom list from marbleland.");
+		});
+	}
+	static parseMissionList(s) {
+		let claJson = JSON.parse(s);
+		let _g = 0;
+		while(_g < claJson.length) {
+			let missionData = claJson[_g];
+			++_g;
+			if(missionData.datablockCompatibility != "mbw" && missionData.datablockCompatibility != "mbg") {
+				continue;
+			}
+			if(missionData.gameMode != null && !(missionData.gameMode == "null" || missionData.gameMode.toLowerCase() == "hunt")) {
+				continue;
+			}
+			let isMultiplayer = missionData.gameType == "multi";
+			if(isMultiplayer && (missionData.gameMode == null || missionData.gameMode.toLowerCase() != "hunt")) {
+				continue;
+			}
+			let mission = new src_Mission();
+			mission.id = missionData.id;
+			mission.path = "missions/" + Std.string(missionData.baseName);
+			mission.path = mission.path.toLowerCase();
+			mission.title = missionData.name;
+			mission.artist = missionData.artist != null ? missionData.artist : "Unknown Author";
+			mission.description = missionData.desc != null ? missionData.desc : "";
+			mission.qualifyTime = missionData.qualifyingTime != null && missionData.qualifyingTime != 0 ? missionData.qualifyingTime / 1000 : Infinity;
+			mission.goldTime = missionData.goldTime != null ? missionData.goldTime / 1000 : 0;
+			if(missionData.modification == "platinumquest") {
+				missionData.modification = "platinum";
+			}
+			mission.game = missionData.modification;
+			if(missionData.modification == "platinum") {
+				mission.goldTime = missionData.platinumTime != null ? missionData.platinumTime / 1000 : mission.goldTime;
+			}
+			mission.ultimateTime = missionData.ultimateTime != null ? missionData.ultimateTime / 1000 : 0;
+			mission.hasEgg = missionData.hasEgg;
+			mission.isClaMission = true;
+			mission.customSource = "Marbleland";
+			let game = missionData.modification;
+			if(isMultiplayer) {
+				game = "multiplayer";
+			}
+			if(game == "ultra") {
+				src_Marbleland.ultraMissions.push(mission);
+			}
+			src_Marbleland.missions.h[mission.id] = mission;
+		}
+		src_Marbleland.ultraMissions.sort(function(x,y) {
+			if(x.title > y.title) {
+				return 1;
+			} else if(x.title < y.title) {
+				return -1;
+			} else {
+				return 0;
+			}
+		});
+		let _g1 = 0;
+		let _g2 = src_Marbleland.ultraMissions.length - 1;
+		while(_g1 < _g2) {
+			let i = _g1++;
+			src_Marbleland.ultraMissions[i].next = src_Marbleland.ultraMissions[i + 1];
+			src_Marbleland.ultraMissions[i].index = i;
+		}
+		src_Marbleland.ultraMissions[src_Marbleland.ultraMissions.length - 1].next = src_Marbleland.ultraMissions[0];
+		src_Marbleland.ultraMissions[src_Marbleland.ultraMissions.length - 1].index = src_Marbleland.ultraMissions.length - 1;
+	}
 	static download(id,cb) {
 		src_Http.get("https://marbleland.vaniverse.io/api/level/" + id + "/zip?assuming=none",function(zipData) {
 			let reader = new haxe_zip_Reader(new haxe_io_BytesInput(zipData));
@@ -109761,9 +111057,18 @@ class src_Mission {
 			}
 		};
 		scanMission(this.root);
-	}
-	getNextMission() {
-		return this.next;
+		if(this.isClaMission) {
+			this.postProcessFromMarbleland();
+		}
+		if(this.customSource == "MPCustoms") {
+			if(this.missionInfo.time != null && this.missionInfo.time != "0") {
+				this.qualifyTime = mis_MisParser.parseNumber(this.missionInfo.time) / 1000;
+			}
+			if(this.missionInfo.goldtime != null) {
+				this.goldTime = mis_MisParser.parseNumber(this.missionInfo.goldtime) / 1000;
+			}
+			this.type = this.missionInfo.type.toLowerCase();
+		}
 	}
 	getDifPath(rawElementPath) {
 		if(rawElementPath.includes("$usermods")) {
@@ -109817,16 +111122,152 @@ class src_Mission {
 		return "";
 	}
 	download(onFinish) {
-		let _gthis = this;
 		if(this.isClaMission) {
-			src_Marbleland.download(this.id,function(zipEntries) {
-				if(zipEntries != null) {
-					src_ResourceLoader.loadZip(zipEntries,_gthis.game);
+			if(this.customSource == "Marbleland") {
+				src_Marbleland.download(this.id,function(zipEntries) {
+					if(zipEntries != null) {
+						src_ResourceLoader.loadZip(zipEntries,"");
+						onFinish();
+					} else {
+						src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
+					}
+				});
+			}
+			if(this.customSource == "MPCustoms") {
+				src_MPCustoms.download({ id : this.id, title : this.title, path : this.path, description : this.description, artist : this.artist},function() {
 					onFinish();
-				} else {
+				},function() {
 					src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
+				});
+			}
+		}
+	}
+	postProcessFromMarbleland() {
+		let skyEl = null;
+		let processFunctions = [];
+		let cloudType = "none";
+		let postprocessMission = null;
+		postprocessMission = function(simGroup) {
+			let _g = 0;
+			let _g1 = simGroup.elements;
+			while(_g < _g1.length) {
+				let element = _g1[_g];
+				++_g;
+				if(element._type == mis_MissionElementType.Sky) {
+					skyEl = js_Boot.__cast(element , mis_MissionElementSky);
+					let skyMaterial = skyEl.materiallist.toLowerCase();
+					switch(skyMaterial) {
+					case "~/data/skies/mbu/sky_advanced.dml":
+						skyEl.materiallist = "~/data/skies/sky_advanced.dml";
+						cloudType = "advanced";
+						break;
+					case "~/data/skies/cloudy/cloudy.dml":case "~/data/skies/mbu/sky_beginner.dml":
+						skyEl.materiallist = "~/data/skies/sky_beginner.dml";
+						cloudType = "beginner";
+						break;
+					case "~/data/skies/mbu/sky_intermediate.dml":
+						skyEl.materiallist = "~/data/skies/sky_intermediate.dml";
+						cloudType = "intermediate";
+						break;
+					}
 				}
-			});
+				if(element._type == mis_MissionElementType.StaticShape) {
+					let ss = js_Boot.__cast(element , mis_MissionElementStaticShape);
+					let db = ss.datablock.toLowerCase();
+					switch(db) {
+					case "clear":
+						skyEl.materiallist = "~/data/skies/sky_beginner.dml";
+						cloudType = "beginner";
+						break;
+					case "dusk":
+						skyEl.materiallist = "~/data/skies/sky_intermediate.dml";
+						cloudType = "intermediate";
+						break;
+					case "wintry":
+						skyEl.materiallist = "~/data/skies/sky_advanced.dml";
+						cloudType = "advanced";
+						break;
+					}
+				}
+				if(element._type == mis_MissionElementType.TSStatic) {
+					let ts = js_Boot.__cast(element , mis_MissionElementTSStatic);
+					let shapeName = ts.shapename.toLowerCase();
+					if(shapeName == "~/data/shapes/buttons/checkpoint.dts") {
+						let sg = simGroup;
+						processFunctions.push(function() {
+							HxOverrides.remove(sg.elements,ts);
+							let checkpointEl = new mis_MissionElementStaticShape();
+							checkpointEl._name = ts._name;
+							checkpointEl.position = ts.position;
+							checkpointEl.rotation = ts.rotation;
+							checkpointEl.scale = ts.scale;
+							checkpointEl.datablock = "checkPointShape";
+							checkpointEl.fields = new haxe_ds_StringMap();
+							let checkpointSG = new mis_MissionElementSimGroup();
+							checkpointSG._name = null;
+							checkpointSG.elements = [];
+							checkpointSG.elements.push(checkpointEl);
+							checkpointSG.fields = new haxe_ds_StringMap();
+							let _this = sg.elements;
+							let _g = [];
+							let _g1 = 0;
+							while(_g1 < _this.length) {
+								let v = _this[_g1];
+								++_g1;
+								if(v._type == mis_MissionElementType.Trigger) {
+									_g.push(v);
+								}
+							}
+							let _g2 = [];
+							let _g3 = 0;
+							while(_g3 < _g.length) {
+								let v = _g[_g3];
+								++_g3;
+								if((js_Boot.__cast(v , mis_MissionElementTrigger)).respawnpoint == ts._name) {
+									_g2.push(v);
+								}
+							}
+							let _g4 = 0;
+							while(_g4 < _g2.length) {
+								let triggerEl = _g2[_g4];
+								++_g4;
+								let trigger = js_Boot.__cast(triggerEl , mis_MissionElementTrigger);
+								HxOverrides.remove(sg.elements,trigger);
+								checkpointSG.elements.push(trigger);
+							}
+							return sg.elements.push(checkpointSG);
+						});
+					}
+				}
+				if(element._type != mis_MissionElementType.Item) {
+					if(element._type == mis_MissionElementType.SimGroup) {
+						postprocessMission(element);
+					}
+				}
+			}
+		};
+		postprocessMission(this.root);
+		let astrolabeEl = new mis_MissionElementStaticShape();
+		astrolabeEl._name = "Astrolabe";
+		astrolabeEl.position = "0 0 -600";
+		astrolabeEl.rotation = "1 0 0 0";
+		astrolabeEl.scale = "1 1 1";
+		astrolabeEl.datablock = "astrolabeShape";
+		astrolabeEl.fields = new haxe_ds_StringMap();
+		this.root.elements.push(astrolabeEl);
+		let cloudEl = new mis_MissionElementStaticShape();
+		cloudEl._name = "CloudLayer";
+		cloudEl.position = "0 0 0";
+		cloudEl.rotation = "1 0 0 0";
+		cloudEl.scale = "1 1 1";
+		cloudEl.datablock = "astrolabeClouds" + cloudType + "Shape";
+		cloudEl.fields = new haxe_ds_StringMap();
+		this.root.elements.push(cloudEl);
+		let _g = 0;
+		while(_g < processFunctions.length) {
+			let f = processFunctions[_g];
+			++_g;
+			f();
 		}
 	}
 	static fromMissionInfo(path,mInfo) {
@@ -109872,6 +111313,7 @@ Object.assign(src_Mission.prototype, {
 	,hasEgg: null
 	,isCustom: null
 	,marbleAttributes: null
+	,customSource: null
 	,next: null
 });
 class src_MissionList {
@@ -111654,6 +113096,9 @@ class src_PreviewWorld extends src_Scheduler {
 		this._loadToken++;
 		let groupName = (misname + "group").toLowerCase();
 		let group = this.levelGroups.h[groupName];
+		if(group == null) {
+			group = this.levelGroups.h["urban"];
+		}
 		let _gthis = this;
 		if(group != null) {
 			this.destroyAllObjects();
@@ -114186,21 +115631,24 @@ class src_ReplayFrame {
 	interpolate(next,time) {
 		let t = (time - this.time) / (next.time - this.time);
 		let dt = time - this.time;
+		let clockDt = next.clockTime - this.clockTime;
 		let interpFrame = new src_ReplayFrame();
 		interpFrame.time = time;
 		interpFrame.bonusTime = this.bonusTime;
 		interpFrame.clockTime = this.clockTime;
-		if(interpFrame.bonusTime != 0 && time >= 3.5) {
-			if(dt <= this.bonusTime) {
-				interpFrame.bonusTime -= dt;
-			} else {
-				interpFrame.clockTime += dt - this.bonusTime;
-				interpFrame.bonusTime = 0;
+		if(clockDt > 0) {
+			if(interpFrame.bonusTime != 0 && time >= 3.5) {
+				if(dt <= this.bonusTime) {
+					interpFrame.bonusTime -= dt;
+				} else {
+					interpFrame.clockTime += dt - this.bonusTime;
+					interpFrame.bonusTime = 0;
+				}
+			} else if(this.time >= 3.5) {
+				interpFrame.clockTime += dt;
+			} else if(this.time + dt >= 3.5) {
+				interpFrame.clockTime += this.time + dt - 3.5;
 			}
-		} else if(this.time >= 3.5) {
-			interpFrame.clockTime += dt;
-		} else if(this.time + dt >= 3.5) {
-			interpFrame.clockTime += this.time + dt - 3.5;
 		}
 		if((this.marbleStateFlags & 4) != 0) {
 			let _this = this.marblePosition;
@@ -114967,6 +116415,9 @@ class src_Settings {
 			if(src_Settings.optionsSettings.fastLoad == null) {
 				src_Settings.optionsSettings.fastLoad = false;
 			}
+			if(src_Settings.optionsSettings.currentView == null) {
+				src_Settings.optionsSettings.currentView = 0;
+			}
 			if(src_Settings.optionsSettings.maxPixelRatio == 0 || src_Settings.optionsSettings.maxPixelRatio == null) {
 				src_Settings.optionsSettings.maxPixelRatio = 1;
 			}
@@ -115011,6 +116462,18 @@ class src_Settings {
 			}
 			if(src_Settings.gamepadSettings.rewind == null) {
 				src_Settings.gamepadSettings.rewind = ["Y"];
+			}
+			if(src_Settings.gamepadSettings.ok == null) {
+				src_Settings.gamepadSettings.ok = "A";
+			}
+			if(src_Settings.gamepadSettings.back == null) {
+				src_Settings.gamepadSettings.back = "B";
+			}
+			if(src_Settings.gamepadSettings.alt1 == null) {
+				src_Settings.gamepadSettings.alt1 = "X";
+			}
+			if(src_Settings.gamepadSettings.alt2 == null) {
+				src_Settings.gamepadSettings.alt2 = "Y";
 			}
 			if(json.stats != null) {
 				src_Settings.playStatistics = json.stats;
@@ -122937,19 +124400,28 @@ class touch_CameraInput {
 				let delta_y = y1;
 				let scaleFactor = 1.0;
 				scaleFactor = window.devicePixelRatio / src_Settings.zoomRatio;
-				let jumpcam = src_MarbleGame.instance.touchInput.jumpButton.pressed || src_MarbleGame.instance.touchInput.powerupButton.pressed;
+				let jumpcam = src_MarbleGame.instance.touchInput.jumpButton.pressed || src_MarbleGame.instance.touchInput.powerupButton.pressed || src_MarbleGame.instance.touchInput.blastbutton.pressed;
 				if(jumpcam) {
 					scaleFactor /= src_Settings.touchSettings.buttonJoystickMultiplier;
 				}
-				if(Math.abs(delta_x) < 0.05) {
-					delta_x = 0;
+				let inpX = delta_x / scaleFactor;
+				let inpY = delta_y / scaleFactor;
+				if(jumpcam) {
+					if(Math.abs(inpX) < 1.3) {
+						inpX = 0;
+					}
+					if(Math.abs(inpY) < 1.3) {
+						inpY = 0;
+					}
 				}
-				if(Math.abs(delta_y) < 0.05) {
-					delta_y = 0;
+				let dt = src_MarbleGame.instance.world.timeState.dt;
+				src_MarbleGame.instance.world.marble.camera.orbit(_gthis.applyNonlinearScale(inpX / dt * 0.016666666666666666) * 0.016666666666666666 * 20,_gthis.applyNonlinearScale(inpY / dt * 0.016666666666666666) * 0.016666666666666666 * 20,true);
+				if(inpX != 0) {
+					prevMouse_x = e.relX;
 				}
-				src_MarbleGame.instance.world.marble.camera.orbit(_gthis.applyNonlinearScale(delta_x / scaleFactor),_gthis.applyNonlinearScale(delta_y / scaleFactor),true);
-				prevMouse_x = e.relX;
-				prevMouse_y = e.relY;
+				if(inpY != 0) {
+					prevMouse_y = e.relY;
+				}
 			}
 		};
 		interactive.onRelease = function(e) {
@@ -129287,9 +130759,8 @@ haxe_MainLoop.add(hxd_System.updateCursor,-1);
 	};
 }
 js_Boot.__toStr = ({ }).toString;
-MPCustoms.missionList = [];
-MPCustoms._requestSent = false;
 hxd_App._hx_skip_constructor = false;
+Main.isDiscord = false;
 RandomLCG.msSeed = 1376312589;
 RandomLCG.quotient = 127773;
 RandomLCG.remainder = 2836;
@@ -129693,7 +131164,9 @@ src_DifBuilder.materialDict = (function($this) {
 	_g.h["friction_none"] = { friction : 0.01, restitution : 0.5};
 	_g.h["friction_low"] = { friction : 0.2, restitution : 0.5};
 	_g.h["friction_low_shadow"] = { friction : 0.2, restitution : 0.5};
-	_g.h["friction_high"] = { friction : 1.5, restitution : 0.5};
+	_g.h["friction_high"] = { friction : 4.5, restitution : 0.5};
+	_g.h["friction_high_shadow"] = { friction : 4.5, restitution : 0.5};
+	_g.h["friction_ultrahigh"] = { friction : 4.5, restitution : 0.5};
 	_g.h["friction_ramp_yellow"] = { friction : 2.0, restitution : 1.0};
 	_g.h["oilslick"] = { friction : 0.05, restitution : 0.5};
 	_g.h["base.slick"] = { friction : 0.05, restitution : 0.5};
@@ -129716,7 +131189,6 @@ src_DifBuilder.materialDict = (function($this) {
 	_g.h["mmg_ice_shadow"] = { friction : 0.03, restitution : 0.95};
 	_g.h["friction_mp_high"] = { friction : 6, restitution : 0.3};
 	_g.h["friction_mp_high_shadow"] = { friction : 6, restitution : 0.3};
-	_g.h["friction_high_shadow"] = { friction : 6, restitution : 0.3};
 	_g.h["friction_bouncy"] = { friction : 0.2, restitution : 2.0, force : 15.0};
 	$r = _g;
 	return $r;
@@ -129743,11 +131215,17 @@ src_DifBuilder.shaderMaterialDict = (function($this) {
 	_g.h["tile_beginner_red_shadow"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_beginner.png","_red_shadow",40,new h3d_Vector(0.2,0.2,0.2,0.2));
 	};
+	_g.h["tile_beginner_light"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_beginner.png","_red",40,new h3d_Vector(1,1,1,1));
+	};
 	_g.h["tile_beginner_blue"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_beginner.png","_blue",40,new h3d_Vector(1,1,1,1));
 	};
 	_g.h["tile_beginner_blue_shadow"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_beginner.png","_blue_shadow",40,new h3d_Vector(0.2,0.2,0.2,0.2));
+	};
+	_g.h["tile_beginner_dark"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_beginner.png","_blue",40,new h3d_Vector(1,1,1,1));
 	};
 	_g.h["tile_intermediate"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","",40,new h3d_Vector(1,1,1,1));
@@ -129761,11 +131239,17 @@ src_DifBuilder.shaderMaterialDict = (function($this) {
 	_g.h["tile_intermediate_red_shadow"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_red_shadow",40,new h3d_Vector(0.2,0.2,0.2,0.2));
 	};
+	_g.h["tile_intermediate_dark"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_red",40,new h3d_Vector(1,1,1,1));
+	};
 	_g.h["tile_intermediate_green"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_green",40,new h3d_Vector(1,1,1,1));
 	};
 	_g.h["tile_intermediate_green_shadow"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_green_shadow",40,new h3d_Vector(0.2,0.2,0.2,0.2));
+	};
+	_g.h["tile_intermediate_light"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_green",40,new h3d_Vector(1,1,1,1));
 	};
 	_g.h["tile_advanced"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","",40,new h3d_Vector(1,1,1,1));
@@ -129779,11 +131263,38 @@ src_DifBuilder.shaderMaterialDict = (function($this) {
 	_g.h["tile_advanced_blue_shadow"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_blue_shadow",40,new h3d_Vector(0.2,0.2,0.2,0.2));
 	};
+	_g.h["tile_advanced_dark"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_blue",40,new h3d_Vector(1,1,1,1));
+	};
 	_g.h["tile_advanced_green"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_green",40,new h3d_Vector(1,1,1,1));
 	};
 	_g.h["tile_advanced_green_shadow"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_green_shadow",40,new h3d_Vector(0.2,0.2,0.2,0.2));
+	};
+	_g.h["tile_advanced_light"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_green",40,new h3d_Vector(1,1,1,1));
+	};
+	_g.h["tile_blue"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_red",40,new h3d_Vector(1,1,1,1));
+	};
+	_g.h["tile_bonus_blue"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_red",40,new h3d_Vector(1,1,1,1));
+	};
+	_g.h["tile_bonus_shadow"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_intermediate.png","_red",40,new h3d_Vector(1,1,1,1));
+	};
+	_g.h["tile_bonus"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_green",40,new h3d_Vector(1,1,1,1));
+	};
+	_g.h["tile_bonus_yellow"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_green",40,new h3d_Vector(1,1,1,1));
+	};
+	_g.h["tile_bonus_red"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_blue",40,new h3d_Vector(1,1,1,1));
+	};
+	_g.h["tile_expert"] = function(onFinish) {
+		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_advanced.png","_blue",40,new h3d_Vector(1,1,1,1));
 	};
 	_g.h["tile_underside"] = function(onFinish) {
 		src_DifBuilder.createNoiseTileMaterial(onFinish,"tile_underside.png","",40,new h3d_Vector(1,1,1,1));
@@ -129866,10 +131377,19 @@ src_DifBuilder.shaderMaterialDict = (function($this) {
 	_g.h["friction_high"] = function(onFinish) {
 		src_DifBuilder.createDefaultMaterial(onFinish,"data/textures/friction_high.png","data/textures/friction_high.normal.png",10,new h3d_Vector(0.3,0.3,0.35,1));
 	};
+	_g.h["friction_ultrahigh"] = function(onFinish) {
+		src_DifBuilder.createDefaultMaterial(onFinish,"data/textures/friction_high.png","data/textures/friction_high.normal.png",10,new h3d_Vector(0.3,0.3,0.35,1));
+	};
 	_g.h["friction_high_shadow"] = function(onFinish) {
 		src_DifBuilder.createDefaultMaterial(onFinish,"data/textures/friction_high_shadow.png","data/textures/friction_high.normal.png",10,new h3d_Vector(0.15,0.15,0.16,1.0));
 	};
 	_g.h["friction_bouncy"] = function(onFinish) {
+		src_DifBuilder.createDefaultNormalMaterial(onFinish,"data/textures/friction_bouncy.png",8,new h3d_Vector(0.4,0.4,0.2,1));
+	};
+	_g.h["tile_bouncy"] = function(onFinish) {
+		src_DifBuilder.createDefaultNormalMaterial(onFinish,"data/textures/friction_bouncy.png",8,new h3d_Vector(0.4,0.4,0.2,1));
+	};
+	_g.h["tile_bouncy2"] = function(onFinish) {
 		src_DifBuilder.createDefaultNormalMaterial(onFinish,"data/textures/friction_bouncy.png",8,new h3d_Vector(0.4,0.4,0.2,1));
 	};
 	_g.h["stripe_caution"] = function(onFinish) {
@@ -129898,10 +131418,13 @@ src_Gamepad.gamepad = hxd_Pad.createDummy();
 src_InstanceManager.render_tmpBounds = new h3d_col_Bounds();
 src_Leaderboards.host = "https://lb.randomityguy.me";
 src_Leaderboards.game = "Ultra";
+src_MPCustoms.missionList = [];
+src_MPCustoms._requestSent = false;
 src_Marble.updateFinishAnimation_animTimeAccumulator = 0.0;
 var src_Marble_bounceParticleOptions = { ejectionPeriod : 5, ambientVelocity : new h3d_Vector(0,0,0.0), ejectionVelocity : 6, velocityVariance : 0.25, emitterLifetime : 50, inheritedVelFactor : 0, particleOptions : { texture : "particles/burst.png", blending : h2d_BlendMode.Add, spinSpeed : 90, spinRandomMin : -90, spinRandomMax : 90, lifetime : 400, lifetimeVariance : 50, dragCoefficient : 0, acceleration : -2, colors : [new h3d_Vector(0.5,0.5,0.5,0.6),new h3d_Vector(0.3,0.3,0.2,0.4),new h3d_Vector(0.2,0.2,0.1,0)], sizes : [0.8,0.4,0.2], times : [0,0.75,1]}};
-src_MarbleGame.currentVersion = "1.2.2";
+src_MarbleGame.currentVersion = "1.2.5";
 src_Scheduler._hx_skip_constructor = false;
+src_Marbleland.ultraMissions = [];
 src_Marbleland.missions = new haxe_ds_IntMap();
 src_MeshBatch.modelViewID = hxsl_Globals.allocID("global.modelView");
 src_MeshBatch.modelViewTransposeID = hxsl_Globals.allocID("global.modelViewTranspose");
@@ -129922,10 +131445,10 @@ src_Renderer.pixelRatio = 1;
 src_Renderer.cubemapPass = false;
 src_Settings.highScores = new haxe_ds_StringMap();
 src_Settings.easterEggs = new haxe_ds_StringMap();
-src_Settings.optionsSettings = { screenWidth : 1280, screenHeight : 720, isFullScreen : false, videoDriver : 0, colorDepth : 1, shadows : false, musicVolume : 1, soundVolume : 0.7, fovX : 90, frameRateVis : false, oobInsults : true, marbleIndex : 0, marbleCategoryIndex : 0, marbleSkin : "base", marbleModel : "data/shapes/balls/marble01.dts", marbleShader : "ClassicGlassPureSphere", rewindEnabled : false, rewindTimescale : 1, reflectionDetail : 2, maxPixelRatio : 1, vsync : false, huntRandom : false, fastLoad : false};
+src_Settings.optionsSettings = { screenWidth : 1280, screenHeight : 720, isFullScreen : false, videoDriver : 0, colorDepth : 1, shadows : false, musicVolume : 1, soundVolume : 0.7, fovX : 90, frameRateVis : false, oobInsults : true, marbleIndex : 0, marbleCategoryIndex : 0, marbleSkin : "base", marbleModel : "data/shapes/balls/marble01.dts", marbleShader : "ClassicGlassPureSphere", rewindEnabled : false, rewindTimescale : 1, reflectionDetail : 2, maxPixelRatio : 1, vsync : false, huntRandom : false, fastLoad : false, currentView : 0};
 src_Settings.controlsSettings = { forward : 87, backward : 83, left : 65, right : 68, camForward : 38, camBackward : 40, camLeft : 37, camRight : 39, jump : 32, powerup : 0, freelook : 2, alwaysFreeLook : true, controllerVerticalCenter : true, cameraSensitivity : 0.6, invertYAxis : false, respawn : 8, blast : 1, rewind : 82, chat : 84, oobRespawnKeyByPowerup : false, moddedController : false};
 src_Settings.touchSettings = { joystickPos : [100,40], joystickSize : 50, jumpButtonPos : [440,320], jumpButtonSize : 60, powerupButtonPos : [440,180], powerupButtonSize : 60, blastButtonPos : [300,240], blastButtonSize : 60, rewindButtonPos : [300,100], rewindButtonSize : 60, buttonJoystickMultiplier : 2.5, hideControls : false, dynamicJoystick : false, cameraSwipeExtent : 10.0};
-src_Settings.gamepadSettings = { moveXAxis : "analogX", moveYAxis : "analogY", cameraXAxis : "ranalogX", cameraYAxis : "ranalogY", jump : ["A","LT"], powerup : ["B","RT"], cameraSensitivity : 1.0, invertXAxis : false, invertYAxis : false, axisDeadzone : 0.15, respawn : ["back"], blast : ["X","LB","RB"], rewind : ["Y"]};
+src_Settings.gamepadSettings = { moveXAxis : "analogX", moveYAxis : "analogY", cameraXAxis : "ranalogX", cameraYAxis : "ranalogY", jump : ["A","LT"], powerup : ["B","RT"], cameraSensitivity : 1.0, invertXAxis : false, invertYAxis : false, axisDeadzone : 0.15, respawn : ["back"], blast : ["X","LB","RB"], rewind : ["Y"], ok : "A", back : "B", alt1 : "X", alt2 : "Y"};
 src_Settings.playStatistics = { oobs : 0, respawns : 0, totalTime : 0, totalMPScore : 0};
 src_Settings.levelStatistics = new haxe_ds_StringMap();
 src_Settings.highscoreName = "Player";
