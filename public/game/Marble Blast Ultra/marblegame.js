@@ -14303,9 +14303,6 @@ class gui_DifficultySelectGui extends gui_GuiImage {
 		this.btnList.addButton(0,"Gem Hunt",function(e) {
 			src_MarbleGame.canvas.setContent(new gui_LevelSelectGui("multiplayer"));
 		},20);
-		this.btnList.addButton(0,"Custom Levels",function(e) {
-			src_MarbleGame.canvas.setContent(new gui_SPCustomsGui());
-		});
 		let bottomBar = new gui_GuiControl();
 		bottomBar.position = new h3d_Vector(0,590);
 		bottomBar.extent = new h3d_Vector(640,200);
@@ -22042,16 +22039,6 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 			}
 		};
 		bottomBar.addChild(changeViewButton);
-		if(levelSelectDifficulty != "players" && levelSelectDifficulty != "customs") {
-			let replayButton = new gui_GuiXboxButton("Watch Replay",220);
-			replayButton.position = new h3d_Vector(750,0);
-			replayButton.vertSizing = gui_VertSizing.Bottom;
-			replayButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt2];
-			replayButton.horizSizing = gui_HorizSizing.Right;
-			replayButton.pressedAction = function(e) {
-			};
-			bottomBar.addChild(replayButton);
-		}
 		if(levelSelectDifficulty == "players") {
 			fetchPlayers();
 		} else {
@@ -22254,16 +22241,6 @@ class gui_LevelSelectGui extends gui_GuiImage {
 			src_MarbleGame.canvas.setContent(new gui_DifficultySelectGui());
 		};
 		bottomBar.addChild(backButton);
-		let recordButton = new gui_GuiXboxButton("Record",200);
-		recordButton.position = new h3d_Vector(560,0);
-		recordButton.vertSizing = gui_VertSizing.Bottom;
-		recordButton.horizSizing = gui_HorizSizing.Right;
-		recordButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
-		recordButton.pressedAction = function(e) {
-			src_MarbleGame.instance.toRecord = true;
-			src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("The next mission you play will be recorded."));
-		};
-		bottomBar.addChild(recordButton);
 		let lbButton = new gui_GuiXboxButton("Leaderboard",220);
 		lbButton.position = new h3d_Vector(750,0);
 		lbButton.vertSizing = gui_VertSizing.Bottom;
@@ -25425,16 +25402,6 @@ class gui_SPCustomsGui extends gui_GuiImage {
 			src_MarbleGame.canvas.setContent(new gui_DifficultySelectGui());
 		};
 		bottomBar.addChild(backButton);
-		let recordButton = new gui_GuiXboxButton("Record",200);
-		recordButton.position = new h3d_Vector(560,0);
-		recordButton.vertSizing = gui_VertSizing.Bottom;
-		recordButton.horizSizing = gui_HorizSizing.Right;
-		recordButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt1];
-		recordButton.pressedAction = function(e) {
-			src_MarbleGame.instance.toRecord = true;
-			src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("The next mission you play will be recorded."));
-		};
-		bottomBar.addChild(recordButton);
 		let lbButton = new gui_GuiXboxButton("Leaderboard",220);
 		lbButton.position = new h3d_Vector(750,0);
 		lbButton.vertSizing = gui_VertSizing.Bottom;
