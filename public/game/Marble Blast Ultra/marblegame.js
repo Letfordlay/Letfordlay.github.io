@@ -258,12 +258,6 @@ class Main extends hxd_App {
 		super.init();
 		this.s3d.set_renderer(new src_Renderer());
 		this.s3d.checkPasses = false;
-		Main.isDiscord = window.location.href.indexOf("discord") != -1;
-		if(Main.isDiscord) {
-			src_Analytics.setURL(".proxy/analytics/api/send");
-			src_Leaderboards.setHost(".proxy/lb");
-			net_MasterServerClient.setServerIp(".proxy/mbomaster");
-		}
 		let zoomRatio;
 		if(src_Util.isTouchDevice()) {
 			let reg = new EReg("iPad|tablet","gm");
@@ -305,12 +299,10 @@ class Main extends hxd_App {
 		});
 		src_Settings.init();
 		src_Gamepad.init();
-		src_MPCustoms.loadMissionList();
 		let _gthis = this;
 		src_ResourceLoader.init(this.s2d,function() {
 			src_AudioManager.init();
 			src_AudioManager.playShell();
-			src_Marbleland.init();
 			_gthis.marbleGame = new src_MarbleGame(_gthis.s2d,_gthis.s3d);
 			src_MarbleGame.canvas.setContent(new gui_PresentsGui());
 			src_MissionList.buildMissionList();
@@ -10992,9 +10984,6 @@ class fs_ManifestEntry extends hxd_fs_FileEntry {
 			}
 		} else {
 			let prefix = "";
-			if(Main.isDiscord) {
-				prefix = ".proxy/";
-			}
 			window.fetch(prefix + this.file).then(function(res) {
 				return res.arrayBuffer();
 			}).then(function(buf) {
@@ -14493,48 +14482,6 @@ class gui_EndGameGui extends gui_GuiImage {
 		bottomBar.addChild(nextButton);
 		let rewindUsed = src_MarbleGame.instance.world.rewindUsed;
 		let misPath = mission.isClaMission ? "custom/mbu/" + mission.id : mission.path;
-		let submitScore = function() {
-			let lbScoreValue = score;
-			if(scoreType == modes_ScoreType.Score) {
-				lbScoreValue = 1000 - score;
-			}
-			src_Leaderboards.submitScore(misPath,lbScoreValue,rewindUsed,function(needsReplay,ref) {
-				if(needsReplay && !mission.isClaMission) {
-					src_Leaderboards.submitReplay(ref,replayData);
-				}
-			});
-		};
-		if(bestScore.time == score) {
-			if(src_Settings.highscoreName == "" || src_Settings.highscoreName == "Player" || src_Settings.highscoreName == "Player Name") {
-				haxe_Timer.delay(function() {
-					src_MarbleGame.canvas.pushDialog(new gui_EnterNamePopupDlg(function() {
-						submitScore();
-					}));
-				},100);
-			} else {
-				submitScore();
-			}
-		} else {
-			src_Leaderboards.getScores(misPath,rewindUsed ? 1 : 2,function(lbscores) {
-				let foundScore = false;
-				let foundLBScore = 0;
-				let _g = 0;
-				while(_g < lbscores.length) {
-					let lb = lbscores[_g];
-					++_g;
-					if(lb.name == src_Settings.highscoreName) {
-						foundScore = true;
-						foundLBScore = lb.score;
-						break;
-					}
-				}
-				if(!foundScore) {
-					submitScore();
-				} else if(foundLBScore > score) {
-					submitScore();
-				}
-			});
-		}
 	}
 	onResize(width,height) {
 		let offsetX = (width - 1280) / 2;
@@ -22019,95 +21966,11 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 		let fetchScores = function() {
 			scoreTok += 1;
 			let ourToken = scoreTok - 1;
-			src_Leaderboards.getScores(levelSelectDifficulty != "customs" ? currentMission.path : "custom/mbu/" + index,scoreView,function(scoreList) {
-				if(ourToken + 1 != scoreTok) {
-					return;
-				}
-				let scoreTexts = [];
-				let i = 1;
-				let isHuntScore = levelSelectDifficulty != "customs" ? currentMission.difficultyIndex == 3 : src_Marbleland.missions.h[index].customSource == "MPCustoms";
-				let _g = 0;
-				while(_g < scoreList.length) {
-					let score = scoreList[_g];
-					++_g;
-					let scoreText = "<offset value=\"10\">" + i + ". </offset>\n\t\t\t\t\t<offset value=\"50\">" + StringTools.htmlEscape(score.name) + "</offset>\n\t\t\t\t\t<offset value=\"375\">" + (score.rewind > 0 ? "<img src='rewind'/>" : "") + "</offset>\n\t\t\t\t\t<offset value=\"400\">" + (isHuntScore ? Std.string(1000 - score.score) : src_Util.formatTime(score.score)) + "</offset>\n\t\t\t\t\t<offset value=\"500\">" + score.rating + "</offset>\n\t\t\t\t\t<offset value=\"625\"><img src=\"";
-					let scoreText1;
-					switch(score.platform) {
-					case 0:
-						scoreText1 = "unknown";
-						break;
-					case 1:
-						scoreText1 = "pc";
-						break;
-					case 2:
-						scoreText1 = "mac";
-						break;
-					case 3:
-						scoreText1 = "web";
-						break;
-					case 4:
-						scoreText1 = "android";
-						break;
-					}
-					let scoreText2 = scoreText + scoreText1 + "\"/></offset>";
-					if(levelSelectDifficulty == "customs") {
-						let scoreText = "<offset value=\"10\">" + i + ". </offset>\n\t\t\t\t\t<offset value=\"50\">" + StringTools.htmlEscape(score.name) + "</offset>\n\t\t\t\t\t<offset value=\"475\">" + (score.rewind > 0 ? "<img src='rewind'/>" : "") + "</offset>\n\t\t\t\t\t<offset value=\"500\">" + (isHuntScore ? Std.string(1000 - score.score) : src_Util.formatTime(score.score)) + "</offset>\n\t\t\t\t\t<offset value=\"625\"><img src=\"";
-						let scoreText1;
-						switch(score.platform) {
-						case 0:
-							scoreText1 = "unknown";
-							break;
-						case 1:
-							scoreText1 = "pc";
-							break;
-						case 2:
-							scoreText1 = "mac";
-							break;
-						case 3:
-							scoreText1 = "web";
-							break;
-						case 4:
-							scoreText1 = "android";
-							break;
-						}
-						scoreText2 = scoreText + scoreText1 + "\"/></offset>";
-					}
-					scoreTexts.push(scoreText2);
-					++i;
-				}
-				while(i <= 10) {
-					let scoreText = "<offset value=\"10\">" + i + ". </offset><offset value=\"50\">Nardo Polo</offset><offset value=\"500\">99:59.99</offset><offset value=\"625\"><img src=\"unknown\"/></offset>";
-					scoreTexts.push(scoreText);
-					++i;
-				}
-				scoreCtrl.text.set_text(headerText + "<br/>" + scoreTexts.join("<br/>"));
-			});
 			scoreCtrl.text.set_text(headerText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Loading...</p>");
 		};
 		let fetchPlayers = function() {
 			scoreTok += 1;
 			let ourToken = scoreTok - 1;
-			src_Leaderboards.getTopPlayers(scoreView,function(scoreList) {
-				if(ourToken + 1 != scoreTok) {
-					return;
-				}
-				let scoreTexts = [];
-				let i = 1;
-				let _g = 0;
-				while(_g < scoreList.length) {
-					let score = scoreList[_g];
-					++_g;
-					let scoreText = "<offset value=\"10\">" + i + ". </offset>\n\t\t\t\t\t<offset value=\"50\">" + StringTools.htmlEscape(score.name) + "</offset>\n\t\t\t\t\t<offset value=\"575\">" + score.rating + "</offset>";
-					scoreTexts.push(scoreText);
-					++i;
-				}
-				while(i <= 10) {
-					let scoreText = "<offset value=\"10\">" + i + ". </offset><offset value=\"475\">10000</offset>";
-					scoreTexts.push(scoreText);
-					++i;
-				}
-				scoreCtrl.text.set_text(playerHeaderText + "<br/>" + scoreTexts.join("<br/>"));
-			});
 			scoreCtrl.text.set_text(playerHeaderText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Loading...</p>");
 		};
 		let levelSelectOpts = new gui_GuiXboxOptionsList(2,"Overall",result);
@@ -22186,29 +22049,6 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 			replayButton.gamepadAccelerator = [src_Settings.gamepadSettings.alt2];
 			replayButton.horizSizing = gui_HorizSizing.Right;
 			replayButton.pressedAction = function(e) {
-				src_Leaderboards.watchTopReplay(currentMission.path,scoreView,function(b) {
-					if(b != null) {
-						let replayF = new src_Replay("");
-						if(replayF.read(b)) {
-							let repmis = replayF.mission;
-							if(repmis.startsWith("data/")) {
-								repmis = HxOverrides.substr(repmis,5,null);
-							}
-							let mi = src_MissionList.missions.h[repmis];
-							if(mi == null) {
-								if(!repmis.includes("data/")) {
-									repmis = "data/" + repmis;
-								}
-								mi = src_MissionList.missions.h[repmis];
-							}
-							src_MarbleGame.instance.watchMissionReplay(mi,replayF,gui_DifficultySelectGui);
-						} else {
-							src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Could not load replay for this level."));
-						}
-					} else {
-						src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("No top replay found for this level."));
-					}
-				});
 			};
 			bottomBar.addChild(replayButton);
 		}
@@ -22867,14 +22707,7 @@ class gui_MainMenuGui extends gui_GuiImage {
 			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_DifficultySelectGui());
 		});
 		this.btnList.addButton(0,"Multiplayer Game",function(sender) {
-			if(src_MPCustoms.missionList.length == 0) {
-				(js_Boot.__cast(_gthis.parent , gui_Canvas)).pushDialog(new gui_MessageBoxOkDlg("Custom levels not loaded yet, please wait."));
-				src_MPCustoms.loadMissionList();
-			} else if(StringTools.trim(src_Settings.highscoreName) == "" || src_Settings.highscoreName == "Player" || src_Settings.highscoreName == "Player Name") {
-				src_MarbleGame.canvas.setContent(new gui_EnterNameDlg());
-			} else {
-				(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_MultiplayerGui());
-			}
+			(js_Boot.__cast(_gthis.parent , gui_Canvas)).pushDialog(new gui_MessageBoxOkDlg("Multiplayer is under maintenance."));
 		});
 		this.btnList.addButton(2,"Leaderboards",function(e) {
 			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_LeaderboardsSelectGui());
@@ -23634,7 +23467,6 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		customListScroll.scrollToBottom = false;
 		custWnd.addChild(customListScroll);
 		let arial142 = arial14;
-		let _this = src_MPCustoms.missionList;
 		let result1 = new Array(_this.length);
 		let _g2 = 0;
 		let _g3 = _this.length;
@@ -23650,13 +23482,6 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		this.customList.position = new h3d_Vector(0,0);
 		this.customList.extent = new h3d_Vector(550,2880);
 		this.customList.scrollable = true;
-		this.customList.onSelectedFunc = function(idx) {
-			net_NetCommands.setLobbyCustLevelName(src_MPCustoms.missionList[idx].path);
-			gui_MultiplayerLevelSelectGui.custSelected = true;
-			custSelectedIdx = idx;
-			gui_MultiplayerLevelSelectGui.custPath = src_MPCustoms.missionList[idx].path;
-			_gthis.updateLobbyNames();
-		};
 		customListScroll.addChild(this.customList);
 		customListScroll.setScrollMax(this.customList.calculateFullHeight());
 		let bottomBar = new gui_GuiControl();
@@ -23720,14 +23545,6 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 			net_NetCommands.toggleReadiness(net_Net.isClient ? net_Net.clientId : 0);
 		};
 		bottomBar.addChild(nextButton);
-		gui_MultiplayerLevelSelectGui.playSelectedLevel = function(index) {
-			if(gui_MultiplayerLevelSelectGui.custSelected) {
-				net_NetCommands.playCustomLevel(src_MPCustoms.missionList[custSelectedIdx].path);
-			} else {
-				curMission = difficultyMissions[index];
-				src_MarbleGame.instance.playMission(curMission,true);
-			}
-		};
 		let levelWnd = new gui_GuiImage(src_ResourceLoader.getResource("data/ui/xbox/levelPreviewWindow.png",src_ResourceLoader.getImage,this.imageResources).toTile());
 		levelWnd.position = new h3d_Vector(555,469);
 		levelWnd.extent = new h3d_Vector(535,137);
@@ -23815,31 +23632,6 @@ class gui_MultiplayerLevelSelectGui extends gui_GuiImage {
 		levelSelectOpts.onChangeFunc = function(i) {
 			net_NetCommands.setLobbyLevelIndex(i);
 			return true;
-		};
-		gui_MultiplayerLevelSelectGui.setLevelFn = function(idx) {
-			levelSelectOpts.setCurrentOption(idx);
-			setLevel(idx);
-		};
-		gui_MultiplayerLevelSelectGui.setLevelStr = function(str) {
-			let _this = src_MPCustoms.missionList;
-			let _g = [];
-			let _g1 = 0;
-			while(_g1 < _this.length) {
-				let v = _this[_g1];
-				++_g1;
-				if(v.path == str) {
-					_g.push(v);
-				}
-			}
-			let cust = _g[0];
-			levelSelectOpts.optionText.text.set_text(cust.title);
-			gui_MultiplayerLevelSelectGui.custSelected = true;
-			gui_MultiplayerLevelSelectGui.custPath = str;
-			if(net_Net.isHost) {
-				_gthis.updateLobbyNames();
-			} else {
-				_gthis.updatePlayerCountFn(0,0,0,0);
-			}
 		};
 		let customIsSelected = gui_MultiplayerLevelSelectGui.custSelected == true;
 		levelSelectOpts.setCurrentOption(gui_MultiplayerLevelSelectGui.currentSelectionStatic);
@@ -25598,7 +25390,6 @@ class gui_SPCustomsGui extends gui_GuiImage {
 		customListScroll.extent = new h3d_Vector(600,280);
 		customListScroll.scrollToBottom = false;
 		custWnd.addChild(customListScroll);
-		let ultraMissions = src_Marbleland.ultraMissions;
 		let curMission = ultraMissions[0];
 		let result = new Array(ultraMissions.length);
 		let _g = 0;
@@ -26121,31 +25912,6 @@ class gui_VersionGui extends gui_GuiImage {
 		wndTxt.text.set_text("Loading changelog, please wait.<br/>");
 		wndTxt.scrollable = true;
 		textCtrl.addChild(wndTxt);
-		src_Http.get("https://raw.githubusercontent.com/RandomityGuy/MBHaxe/mbu-port/CHANGELOG.md",function(res) {
-			let mdtext = res.toString();
-			let res1 = "";
-			wndTxt.text.set_text("");
-			wndTxtBg.text.set_text("");
-			let _g = 0;
-			let _g1 = mdtext.split("\n");
-			while(_g < _g1.length) {
-				let line = _g1[_g];
-				++_g;
-				if(line.startsWith("#")) {
-					line = StringTools.replace(line,"#","");
-					line = "<font face=\"ArialMed\">" + line + "</font>";
-				}
-				res1 += line + "<br/>";
-			}
-			let fh = wndTxt.text;
-			fh.set_text(fh.text + res1);
-			let fh1 = wndTxtBg.text;
-			fh1.set_text(fh1.text + res1);
-			textCtrl.setScrollMax(wndTxt.text.get_textHeight());
-		},function(e) {
-			wndTxt.text.set_text("Failed to fetch changelog.");
-			wndTxtBg.text.set_text("Failed to fetch changelog.");
-		});
 	}
 	onResize(width,height) {
 		let offsetX = (width - 1280) / 2;
@@ -82274,36 +82040,6 @@ class net_NetCommands {
 			net_Net.sendPacketToAll(stream);
 		}
 	}
-	static playCustomLevel(levelPath) {
-		let _this = src_MPCustoms.missionList;
-		let _g = [];
-		let _g1 = 0;
-		while(_g1 < _this.length) {
-			let v = _this[_g1];
-			++_g1;
-			if(v.path == levelPath) {
-				_g.push(v);
-			}
-		}
-		let levelEntry = _g[0];
-		src_MarbleGame.canvas.setContent(new gui_MultiplayerLoadingGui("Downloading",false));
-		src_MPCustoms.play(levelEntry,function() {
-		},function() {
-			src_MarbleGame.canvas.setContent(new gui_MultiplayerGui());
-			net_Net.disconnect();
-		});
-		if(net_Net.isHost) {
-			net_Net.serverInfo.state = "WAITING";
-			net_MasterServerClient.instance.sendServerInfo(net_Net.serverInfo);
-		}
-		if(net_Net.isHost) {
-			let stream = new net_OutputBitStream();
-			stream.writeByte(2);
-			stream.writeByte(4);
-			stream.writeString(levelPath);
-			net_Net.sendPacketToAll(stream);
-		}
-	}
 	static playLevelMidJoin(index) {
 		if(net_Net.isClient) {
 			let difficultyMissions = src_MissionList.missionList.h["ultra"].h["multiplayer"];
@@ -94235,68 +93971,6 @@ Object.assign(shapes_Trapdoor.prototype, {
 	,lastDirection: null
 	,lastCompletion: null
 });
-class src_Analytics {
-	static setURL(url) {
-		src_Analytics.umami = url;
-	}
-	static trackSingle(eventName) {
-		let p = src_Analytics.payload(eventName,null);
-		let json = JSON.stringify(p);
-		src_Http.post(src_Analytics.umami,json,function(b) {
-		},function(e) {
-		});
-	}
-	static trackLevelPlay(levelName,levelFile) {
-		let p = src_Analytics.payload("level-play",{ level : { name : levelName, file : levelFile}});
-		let json = JSON.stringify(p);
-		src_Http.post(src_Analytics.umami,json,function(b) {
-		},function(e) {
-		});
-	}
-	static trackLevelScore(levelName,levelFile,time,oobs,respawns,rewind) {
-		let p = src_Analytics.payload("level-score",{ level_play : JSON.stringify({ name : levelName, file : levelFile, time : time, oobs : oobs, respawns : respawns, rewind : rewind})});
-		let json = JSON.stringify(p);
-		src_Http.post(src_Analytics.umami,json,function(b) {
-		},function(e) {
-		});
-	}
-	static trackLevelQuit(levelName,levelFile,time,oobs,respawns,rewind) {
-		let p = src_Analytics.payload("level-quit",{ level_quit : JSON.stringify({ name : levelName, file : levelFile, time : time, oobs : oobs, respawns : respawns, rewind : rewind})});
-		let json = JSON.stringify(p);
-		src_Http.post(src_Analytics.umami,json,function(b) {
-		},function(e) {
-		});
-	}
-	static trackPlatformInfo() {
-		let p = src_Analytics.payload("device-telemetry",{ platform : $global.navigator.platform, screen : src_Analytics.screen()});
-		let json = JSON.stringify(p);
-		src_Http.post(src_Analytics.umami,json,function(b) {
-		},function(e) {
-		});
-	}
-	static payload(eventName,eventData) {
-		let p = { type : "event", payload : { hostname : src_Analytics.hostname(), language : src_Analytics.language(), referrer : src_Analytics.referrer(), screen : src_Analytics.screen(), title : "MBHaxe Ultra", url : "/", website : "359e2bfd-5152-4284-969f-c9f5b56fcb76", name : eventName}};
-		if(eventData == null) {
-			return p;
-		}
-		p.payload.data = eventData;
-		return p;
-	}
-	static hostname() {
-		return window.location.hostname;
-	}
-	static language() {
-		return window.navigator.language;
-	}
-	static referrer() {
-		return window.document.referrer;
-	}
-	static screen() {
-		return "" + window.screen.width + "x" + window.screen.height;
-	}
-}
-$hxClasses["src.Analytics"] = src_Analytics;
-src_Analytics.__name__ = "src.Analytics";
 class src_AudioManager {
 	static init() {
 		src_Console.instance.addEntry("log","Initializing Audio System");
@@ -97683,43 +97357,6 @@ class src_Gamepad {
 }
 $hxClasses["src.Gamepad"] = src_Gamepad;
 src_Gamepad.__name__ = "src.Gamepad";
-class src_Http {
-	static get(url,callback,errCallback) {
-		return window.setTimeout(function() {
-			return window.fetch(url).then(function(r) {
-				return r.arrayBuffer().then(function(b) {
-					callback(haxe_io_Bytes.ofData(b));
-				});
-			},function(e) {
-				errCallback(e.toString());
-			});
-		},75);
-	}
-	static post(url,postData,callback,errCallback) {
-		return window.setTimeout(function() {
-			return window.fetch(url,{ method : "POST", headers : { "User-Agent" : window.navigator.userAgent, "Content-Type" : "application/json"}, body : postData}).then(function(r) {
-				return r.arrayBuffer().then(function(b) {
-					callback(haxe_io_Bytes.ofData(b));
-				});
-			},function(e) {
-				errCallback(e.toString());
-			});
-		},75);
-	}
-	static uploadFile(url,data,callback,errCallback) {
-		return window.setTimeout(function() {
-			return window.fetch(url,{ method : "POST", headers : { "User-Agent" : window.navigator.userAgent, "Content-Type" : "application/octet-stream"}, body : data.b.bufferValue}).then(function(r) {
-				return r.arrayBuffer().then(function(b) {
-					callback(haxe_io_Bytes.ofData(b));
-				});
-			},function(e) {
-				errCallback(e.toString());
-			});
-		},75);
-	}
-}
-$hxClasses["src.Http"] = src_Http;
-src_Http.__name__ = "src.Http";
 class src_MeshBatchInfo {
 	constructor() {
 	}
@@ -98249,156 +97886,6 @@ Object.assign(src_LRUCacheValue_$src_$DifCache.prototype, {
 	,value: null
 	,age: null
 });
-class src_Leaderboards {
-	static setHost(url) {
-		src_Leaderboards.host = url;
-	}
-	static submitScore(mission,score,rewindUsed,needsReplayCb) {
-		if(!mission.startsWith("data/") && !mission.startsWith("custom/")) {
-			mission = "data/" + mission;
-		}
-		src_Http.post("" + src_Leaderboards.host + "/api/submit",JSON.stringify({ mission : mission, score : score, game : src_Leaderboards.game, name : src_Settings.highscoreName, uid : src_Settings.userId, rewind : rewindUsed ? 1 : 0, platform : 3}),function(b) {
-			let s = b.toString();
-			let jd = JSON.parse(s);
-			let status = jd.status;
-			src_Console.instance.addEntry("log","Score submitted");
-			needsReplayCb(status == "new_record",status == "new_record" ? jd.rowid : 0);
-		},function(e) {
-			src_Console.instance.addEntry("log","Score submission failed: " + e);
-		});
-	}
-	static getScores(mission,kind,cb) {
-		if(!mission.startsWith("data/") && !mission.startsWith("custom/")) {
-			mission = "data/" + mission;
-		}
-		return src_Http.get("" + src_Leaderboards.host + "/api/scores?mission=" + encodeURIComponent(mission) + "&game=" + src_Leaderboards.game + "&view=" + kind + "&count=10",function(b) {
-			let s = b.toString();
-			let scores = JSON.parse(s).scores;
-			cb(scores);
-		},function(e) {
-			src_Console.instance.addEntry("log","Failed to get scores: " + e);
-			cb([]);
-		});
-	}
-	static getTopPlayers(kind,cb) {
-		return src_Http.get("" + src_Leaderboards.host + "/api/players?&game=" + src_Leaderboards.game + "&view=" + kind,function(b) {
-			let s = b.toString();
-			let players = JSON.parse(s).players;
-			cb(players);
-		},function(e) {
-			src_Console.instance.addEntry("log","Failed to get players: " + e);
-			cb([]);
-		});
-	}
-	static submitReplay(ref,replay) {
-		return src_Http.uploadFile("" + src_Leaderboards.host + "/api/record?ref=" + ref,replay,function(b) {
-			src_Console.instance.addEntry("log","Replay submitted");
-		},function(e) {
-			src_Console.instance.addEntry("log","Replay submission failed: " + e);
-		});
-	}
-	static watchTopReplay(mission,kind,cb) {
-		if(!mission.startsWith("data/") && !mission.startsWith("custom/")) {
-			mission = "data/" + mission;
-		}
-		return src_Http.get("" + src_Leaderboards.host + "/api/replay?mission=" + encodeURIComponent(mission) + "&game=" + src_Leaderboards.game + "&view=" + kind,function(b) {
-			cb(b);
-		},function(e) {
-			src_Console.instance.addEntry("log","Failed to get replay: " + e);
-			cb(null);
-		});
-	}
-}
-$hxClasses["src.Leaderboards"] = src_Leaderboards;
-src_Leaderboards.__name__ = "src.Leaderboards";
-class src_MPCustoms {
-	static loadMissionList() {
-		if(src_MPCustoms.missionList.length == 0 && !src_MPCustoms._requestSent) {
-			src_MPCustoms._requestSent = true;
-			src_Http.get(Main.isDiscord ? ".proxy/data/ultraCustom.json" : "https://marbleblastultra.randomityguy.me/data/ultraCustom.json",function(b) {
-				let misList = JSON.parse(b.toString());
-				src_MPCustoms.missionList = misList;
-				src_MPCustoms.missionList.sort(function(a,b) {
-					let a1 = a.title.toLowerCase();
-					let b1 = b.title.toLowerCase();
-					if(a1 < b1) {
-						return -1;
-					} else if(a1 > b1) {
-						return 1;
-					} else {
-						return 0;
-					}
-				});
-				let _g = 0;
-				let _g1 = src_MPCustoms.missionList;
-				while(_g < _g1.length) {
-					let mis = _g1[_g];
-					++_g;
-					let mission = new src_Mission();
-					mission.id = mis.id;
-					mission.path = mis.path;
-					mission.title = mis.title;
-					mission.artist = mis.artist;
-					mission.description = mis.description;
-					mission.qualifyTime = Infinity;
-					mission.goldTime = 0;
-					mission.game = "ultra";
-					mission.isClaMission = true;
-					mission.customSource = "MPCustoms";
-					src_Marbleland.ultraMissions.push(mission);
-					src_Marbleland.missions.h[mission.id] = mission;
-				}
-				src_Console.instance.addEntry("log","Loaded " + misList.length + " custom missions.");
-				src_MPCustoms._requestSent = false;
-			},function(e) {
-				src_Console.instance.addEntry("log","Error getting custom list from marbleland.");
-				src_MPCustoms._requestSent = false;
-			});
-		}
-	}
-	static download(mission,onFinish,onFail) {
-		let lastSlashIdx = mission.path.lastIndexOf("/");
-		let dlHost = Main.isDiscord ? ".proxy/" : "https://marbleblastultra.randomityguy.me/";
-		let s = HxOverrides.substr(mission.path,0,lastSlashIdx);
-		let dlPath = dlHost + encodeURIComponent(s) + ".zip";
-		src_Http.get(dlPath,function(zipData) {
-			let reader = new haxe_zip_Reader(new haxe_io_BytesInput(zipData));
-			let entries = null;
-			try {
-				let _g = [];
-				let _g_head = reader.read().h;
-				while(_g_head != null) {
-					let val = _g_head.item;
-					_g_head = _g_head.next;
-					let x = val;
-					_g.push(x);
-				}
-				entries = _g;
-			} catch( _g ) {
-			}
-			src_ResourceLoader.loadZip(entries,"missions/mpcustom/");
-			if(entries != null) {
-				onFinish();
-			} else {
-				src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
-				onFail();
-			}
-		},function(e) {
-			src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
-			onFail();
-		});
-	}
-	static play(mission,onFinish,onFail) {
-		src_MPCustoms.download(mission,function() {
-			let f = src_ResourceLoader.getFileEntry(mission.path);
-			let mis = src_MissionList.parseMisHeader(f.entry.getBytes().toString(),mission.path);
-			src_MarbleGame.instance.playMission(mis,true);
-			onFinish();
-		},onFail);
-	}
-}
-$hxClasses["src.MPCustoms"] = src_MPCustoms;
-src_MPCustoms.__name__ = "src.MPCustoms";
 var src_Mode = $hxEnums["src.Mode"] = { __ename__:true,__constructs__:null
 	,Start: {_hx_name:"Start",_hx_index:0,__enum__:"src.Mode",toString:$estr}
 	,Play: {_hx_name:"Play",_hx_index:1,__enum__:"src.Mode",toString:$estr}
@@ -105832,8 +105319,6 @@ class src_MarbleGame {
 		scene2d.addEventListener(function(e) {
 			_gthis._mouseWheelDelta = e.wheelDelta;
 		});
-		src_Analytics.trackSingle("game-start");
-		src_Analytics.trackPlatformInfo();
 	}
 	update(dt) {
 		net_Net.checkPacketTimeout(dt);
@@ -105954,7 +105439,6 @@ class src_MarbleGame {
 			src_Settings.levelStatistics.h[this.world.mission.path] = { oobs : 0, respawns : 0, totalTime : 0, totalMPScore : 0};
 		}
 		let stats = src_Settings.levelStatistics.h[this.world.mission.path];
-		src_Analytics.trackLevelQuit(this.world.mission.title,this.world.mission.path,this.world.timeState.timeSinceLoad * 1000 | 0,stats.oobs,stats.respawns,src_Settings.optionsSettings.rewindEnabled);
 		this.world.dispose();
 		this.world = null;
 		this.paused = false;
@@ -106005,14 +105489,12 @@ class src_MarbleGame {
 		if(this.world != null) {
 			this.world.dispose();
 		}
-		src_Analytics.trackLevelPlay(mission.title,mission.path);
 		this.world = new src_MarbleWorld(this.scene,this.scene2d,mission,!multiplayer,multiplayer);
 		this.world.init();
 	}
 	watchMissionReplay(mission,replay,replayExitGui) {
 		src_MarbleGame.canvas.clearContent();
 		this.destroyPreviewWorld();
-		src_Analytics.trackSingle("replay-watch");
 		this.world = new src_MarbleWorld(this.scene,this.scene2d,mission);
 		this.world.replay = replay;
 		this.world.isWatching = true;
@@ -109355,7 +108837,6 @@ class src_MarbleWorld extends src_Scheduler {
 			if(!Object.prototype.hasOwnProperty.call(src_Settings.levelStatistics.h,misPath)) {
 				src_Settings.levelStatistics.h[misPath] = { oobs : 0, respawns : 0, totalTime : 0, totalMPScore : 0};
 			}
-			src_Analytics.trackLevelScore(this.mission.title,misPath,this.gameMode.getScoreType() == modes_ScoreType.Time ? 1000 * this.gameMode.getFinishScore() | 0 : this.gameMode.getFinishScore() | 0,src_Settings.levelStatistics.h[misPath].oobs,src_Settings.levelStatistics.h[misPath].respawns,src_Settings.optionsSettings.rewindEnabled);
 			if(!this.isWatching) {
 				let myScore = { name : "Player", time : this.gameMode.getFinishScore()};
 				src_Settings.saveScore(misPath,myScore,this.gameMode.getScoreType());
@@ -110247,113 +109728,6 @@ Object.assign(src_MarbleWorld.prototype, {
 	,lock: null
 	,postInited: null
 });
-class src_Marbleland {
-	static init() {
-		src_Http.get("https://marbleland.vaniverse.io/api/level/list",function(b) {
-			src_Marbleland.parseMissionList(b.toString());
-			src_Console.instance.addEntry("log","Loaded ultra customs: " + src_Marbleland.ultraMissions.length);
-			let urlParams = new URLSearchParams(window.location.search);
-			let playParam = urlParams.get("play");
-			if(playParam != null) {
-				let intParam = Std.parseInt(playParam);
-				if(intParam != null) {
-					let mission = src_Marbleland.missions.h[intParam];
-					if(mission != null) {
-						src_MarbleGame.instance.playMission(mission);
-					}
-				}
-			}
-		},function(e) {
-			src_Console.instance.addEntry("log","Error getting custom list from marbleland.");
-		});
-	}
-	static parseMissionList(s) {
-		let claJson = JSON.parse(s);
-		let _g = 0;
-		while(_g < claJson.length) {
-			let missionData = claJson[_g];
-			++_g;
-			if(missionData.datablockCompatibility != "mbw" && missionData.datablockCompatibility != "mbg") {
-				continue;
-			}
-			if(missionData.gameMode != null && !(missionData.gameMode == "null" || missionData.gameMode.toLowerCase() == "hunt")) {
-				continue;
-			}
-			let isMultiplayer = missionData.gameType == "multi";
-			if(isMultiplayer && (missionData.gameMode == null || missionData.gameMode.toLowerCase() != "hunt")) {
-				continue;
-			}
-			let mission = new src_Mission();
-			mission.id = missionData.id;
-			mission.path = "missions/" + Std.string(missionData.baseName);
-			mission.path = mission.path.toLowerCase();
-			mission.title = missionData.name;
-			mission.artist = missionData.artist != null ? missionData.artist : "Unknown Author";
-			mission.description = missionData.desc != null ? missionData.desc : "";
-			mission.qualifyTime = missionData.qualifyingTime != null && missionData.qualifyingTime != 0 ? missionData.qualifyingTime / 1000 : Infinity;
-			mission.goldTime = missionData.goldTime != null ? missionData.goldTime / 1000 : 0;
-			if(missionData.modification == "platinumquest") {
-				missionData.modification = "platinum";
-			}
-			mission.game = missionData.modification;
-			if(missionData.modification == "platinum") {
-				mission.goldTime = missionData.platinumTime != null ? missionData.platinumTime / 1000 : mission.goldTime;
-			}
-			mission.ultimateTime = missionData.ultimateTime != null ? missionData.ultimateTime / 1000 : 0;
-			mission.hasEgg = missionData.hasEgg;
-			mission.isClaMission = true;
-			mission.customSource = "Marbleland";
-			let game = missionData.modification;
-			if(isMultiplayer) {
-				game = "multiplayer";
-			}
-			if(game == "ultra") {
-				src_Marbleland.ultraMissions.push(mission);
-			}
-			src_Marbleland.missions.h[mission.id] = mission;
-		}
-		src_Marbleland.ultraMissions.sort(function(x,y) {
-			if(x.title > y.title) {
-				return 1;
-			} else if(x.title < y.title) {
-				return -1;
-			} else {
-				return 0;
-			}
-		});
-		let _g1 = 0;
-		let _g2 = src_Marbleland.ultraMissions.length - 1;
-		while(_g1 < _g2) {
-			let i = _g1++;
-			src_Marbleland.ultraMissions[i].next = src_Marbleland.ultraMissions[i + 1];
-			src_Marbleland.ultraMissions[i].index = i;
-		}
-		src_Marbleland.ultraMissions[src_Marbleland.ultraMissions.length - 1].next = src_Marbleland.ultraMissions[0];
-		src_Marbleland.ultraMissions[src_Marbleland.ultraMissions.length - 1].index = src_Marbleland.ultraMissions.length - 1;
-	}
-	static download(id,cb) {
-		src_Http.get("https://marbleland.vaniverse.io/api/level/" + id + "/zip?assuming=none",function(zipData) {
-			let reader = new haxe_zip_Reader(new haxe_io_BytesInput(zipData));
-			let entries = null;
-			try {
-				let _g = [];
-				let _g_head = reader.read().h;
-				while(_g_head != null) {
-					let val = _g_head.item;
-					_g_head = _g_head.next;
-					_g.push(val);
-				}
-				entries = _g;
-			} catch( _g ) {
-			}
-			cb(entries);
-		},function(e) {
-			cb(null);
-		});
-	}
-}
-$hxClasses["src.Marbleland"] = src_Marbleland;
-src_Marbleland.__name__ = "src.Marbleland";
 class src__$MeshBatch_BatchData {
 	constructor() {
 		this.buffers = [];
@@ -111059,27 +110433,6 @@ class src_Mission {
 		}
 		src_Console.instance.addEntry("error","Interior resource not found: " + rawElementPath);
 		return "";
-	}
-	download(onFinish) {
-		if(this.isClaMission) {
-			if(this.customSource == "Marbleland") {
-				src_Marbleland.download(this.id,function(zipEntries) {
-					if(zipEntries != null) {
-						src_ResourceLoader.loadZip(zipEntries,"");
-						onFinish();
-					} else {
-						src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
-					}
-				});
-			}
-			if(this.customSource == "MPCustoms") {
-				src_MPCustoms.download({ id : this.id, title : this.title, path : this.path, description : this.description, artist : this.artist},function() {
-					onFinish();
-				},function() {
-					src_MarbleGame.canvas.pushDialog(new gui_MessageBoxOkDlg("Failed to download mission"));
-				});
-			}
-		}
 	}
 	postProcessFromMarbleland() {
 		let skyEl = null;
@@ -131082,7 +130435,6 @@ shaders_marble_CrystalMarb.SRC = "HXSLGnNoYWRlcnMubWFyYmxlLkNyeXN0YWxNYXJiFQEKZG
 src_DtsObject.sharedGraphNodesMap = new haxe_ds_StringMap();
 var shapes_SuperJump_superJumpParticleOptions = { ejectionPeriod : 10, ambientVelocity : new h3d_Vector(0,0,0), ejectionVelocity : 1, velocityVariance : 0.25, emitterLifetime : 1000, inheritedVelFactor : 0.1, particleOptions : { texture : "particles/twirl.png", blending : h2d_BlendMode.Add, spinSpeed : 90, spinRandomMin : -90, spinRandomMax : 90, lifetime : 1000, lifetimeVariance : 150, dragCoefficient : 0.25, acceleration : 0, colors : [new h3d_Vector(0.38,0.38,0.38,0),new h3d_Vector(0.34,0.34,0.34,1),new h3d_Vector(0.3,0.3,0.3,0)], sizes : [0.25,0.25,0.5], times : [0,0.75,1]}};
 var shapes_SuperSpeed_superSpeedParticleOptions = { ejectionPeriod : 5, ambientVelocity : new h3d_Vector(0,0,0), ejectionVelocity : 1, velocityVariance : 0.25, emitterLifetime : 1100, inheritedVelFactor : 0.25, particleOptions : { texture : "particles/smoke.png", blending : h2d_BlendMode.Add, spinSpeed : 0, spinRandomMin : 0, spinRandomMax : 0, lifetime : 1500, lifetimeVariance : 750, dragCoefficient : 4, acceleration : 0, colors : [new h3d_Vector(0.42,0.42,0.38,0.1),new h3d_Vector(0.34,0.34,0.34,0.1),new h3d_Vector(0.30,0.30,0.30,0.1)], sizes : [0.3,0.7,1.4], times : [0,0.5,1]}};
-src_Analytics.umami = "https://analytics.randomityguy.me/api/send";
 src_Debug.timeScale = 1.0;
 src_Debug.wireFrame = false;
 src_Debug.drawBounds = false;
@@ -131355,16 +130707,10 @@ var src_DtsObject_dtsMaterials = (function($this) {
 }(this));
 src_Gamepad.gamepad = hxd_Pad.createDummy();
 src_InstanceManager.render_tmpBounds = new h3d_col_Bounds();
-src_Leaderboards.host = "https://lb.randomityguy.me";
-src_Leaderboards.game = "Ultra";
-src_MPCustoms.missionList = [];
-src_MPCustoms._requestSent = false;
 src_Marble.updateFinishAnimation_animTimeAccumulator = 0.0;
 var src_Marble_bounceParticleOptions = { ejectionPeriod : 5, ambientVelocity : new h3d_Vector(0,0,0.0), ejectionVelocity : 6, velocityVariance : 0.25, emitterLifetime : 50, inheritedVelFactor : 0, particleOptions : { texture : "particles/burst.png", blending : h2d_BlendMode.Add, spinSpeed : 90, spinRandomMin : -90, spinRandomMax : 90, lifetime : 400, lifetimeVariance : 50, dragCoefficient : 0, acceleration : -2, colors : [new h3d_Vector(0.5,0.5,0.5,0.6),new h3d_Vector(0.3,0.3,0.2,0.4),new h3d_Vector(0.2,0.2,0.1,0)], sizes : [0.8,0.4,0.2], times : [0,0.75,1]}};
 src_MarbleGame.currentVersion = "1.2.5";
 src_Scheduler._hx_skip_constructor = false;
-src_Marbleland.ultraMissions = [];
-src_Marbleland.missions = new haxe_ds_IntMap();
 src_MeshBatch.modelViewID = hxsl_Globals.allocID("global.modelView");
 src_MeshBatch.modelViewTransposeID = hxsl_Globals.allocID("global.modelViewTranspose");
 src_MeshBatch.modelViewInverseID = hxsl_Globals.allocID("global.modelViewInverse");
