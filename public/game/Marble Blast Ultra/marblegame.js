@@ -22886,7 +22886,7 @@ class gui_MainMenuGui extends gui_GuiImage {
 			(js_Boot.__cast(_gthis.parent , gui_Canvas)).setContent(new gui_OptionsListGui());
 		});
 		this.btnList.addButton(4,"Return to Arcade",function(sender) {
-			window.top.location.href = "https://letfordlay.github.io";
+			window.top.location.href = "/";
 		});
 		let loadButtonImages = function(path) {
 			let normal = src_ResourceLoader.getResource("" + path + "_n.png",src_ResourceLoader.getImage,_gthis.imageResources).toTile();
