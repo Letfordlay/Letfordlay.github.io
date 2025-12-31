@@ -1,142 +1,99 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <!-- 2. ytgame stub -->
     <script>
-        /**
-         * Full ytgame compatibility stub
-         * Allows YT-Playables-built games to run standalone / in iframe
-         */
-        window.ytgame = {
-            system: {
-                // audio / state
-                isAudioEnabled: () => true,
-                onAudioEnabledChange: () => {},
+        (function() {
+            const SAVE_KEY = "fruitninja_save";
 
-                // lifecycle
-                onPause: () => {},
-                onResume: () => {},
+            window.ytgame = {
+                system: {
+                    isAudioEnabled: () => true,
+                    onAudioEnabledChange: () => {},
+                    onPause: () => {},
+                    onResume: () => {},
+                    getLanguage: () => Promise.resolve("en"),
+                    getEnvironment: () => Promise.resolve("web"),
+                    trackEvent: () => {},
+                    trackScreen: () => {},
+                    log: () => {},
+                },
 
-                // visibility / environment
-                getLanguage: () => Promise.resolve("en"),
-                getEnvironment: () => Promise.resolve("web"),
+                game: {
+                    loadData: () => {
+                        return new Promise((resolve) => {
+                            let data = "";
+                            try {
+                                data = localStorage.getItem(SAVE_KEY) || "";
+                            } catch {}
 
-                // analytics (no-ops)
-                trackEvent: () => {},
-                trackScreen: () => {},
-                log: () => {},
-            },
+                            window.gameSaveData = data;
 
-            game: {
+                            resolve(data);
+                        });
+                    },
 
-                // lifecycle hooks REQUIRED by this build
-                firstFrameReady: () => {},
-                gameReady: () => {},
+                    saveData: (data) => {
+                        return new Promise((resolve) => {
+                            try {
+                                if (typeof data === "string") {
+                                    localStorage.setItem(SAVE_KEY, data);
+                                }
+                            } catch {}
+                            resolve();
+                        });
+                    },
 
-                // pause / resume
-                pause: () => {},
-                resume: () => {},
-            }
-        };
-(function () {
-    const SAVE_KEY = "fruitninja_save";
-
-    window.ytgame = {
-        system: {
-            isAudioEnabled: () => true,
-            onAudioEnabledChange: () => {},
-            onPause: () => {},
-            onResume: () => {},
-            getLanguage: () => Promise.resolve("en"),
-            getEnvironment: () => Promise.resolve("web"),
-            trackEvent: () => {},
-            trackScreen: () => {},
-            log: () => {},
-        },
-
-        game: {
-            loadData: () => {
-                return new Promise((resolve) => {
-                    let data = "";
-                    try {
-                        data = localStorage.getItem(SAVE_KEY) || "";
-                    } catch {}
-
-                    // 🔴 THIS is what the engine actually reads
-                    window.gameSaveData = data;
-
-                    resolve(data);
-                });
-            },
-
-            saveData: (data) => {
-                return new Promise((resolve) => {
-                    try {
-                        if (typeof data === "string") {
-                            localStorage.setItem(SAVE_KEY, data);
-                        }
-                    } catch {}
-                    resolve();
-                });
-            },
-
-            firstFrameReady: () => {},
-            gameReady: () => {},
-            pause: () => {},
-            resume: () => {},
-        }
-    };
-})();
+                    firstFrameReady: () => {},
+                    gameReady: () => {},
+                    pause: () => {},
+                    resume: () => {},
+                }
+            };
+        })();
     </script>
-	<meta charset="utf-8">
-	<title>Fruit Ninja</title>
-	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
-	<meta name="apple-mobile-web-app-capable" content="yes"/>
-	<meta name="full-screen" content="yes"/>
-	<meta name="screen-orientation" content="landscape"/>
-	<meta name="x5-fullscreen" content="true"/>
-	<meta name="360-fullscreen" content="true"/>
-	<meta name="renderer" content="webkit"/>
-	<meta name="force-rendering" content="webkit"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-	<!-- YT PLAYABLES -->
-	<!-- <script src="ytfake.js"></script> -->
-	<!-- Import map -->
-	<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="agz7V9dS0hcLnHzNHp2D-A"> </script>
-	
-	<!-- #FASTLIB# -->
-	<script defer src="fastLib/importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="agz7V9dS0hcLnHzNHp2D-A"></script>
+    <!-- Import map -->
+    <script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="agz7V9dS0hcLnHzNHp2D-A"> </script>
+
+    <!-- #FASTLIB# -->
+    <script defer src="fastLib/importer.js" data-fast="fastLib/fastHeader.js" type="text/javascript" nonce="agz7V9dS0hcLnHzNHp2D-A"></script>
 </head>
+
 <body>
-	<div id="GameDiv">
-		<div id="Cocos3dGameContainer">
-			<canvas id="GameCanvas"></canvas>
-		</div>
-	</div>
-	
-	<!-- start-fast-library -->
-	<script type="text/javascript" nonce="agz7V9dS0hcLnHzNHp2D-A">
-		document.addEventListener('fastloaded', function(e)
-		{
-			window.fast.gameReady = function()
-			{
-				window.fast.goGame({
-					prepare:prepareGame,
-					head:['style.css'],
-					body:["src/polyfills.bundle.js", "src/system.bundle.js"],
-					init:function(){ window.gameStart() },
-					resize:function(){ window.fastResizeCanvas() },
-					//docvisible:function(){ window.pauseMeSoftly(), window.fastManageAudioContext() }
-				});
-				console.log("inside [gameReady] -> "+window.fast.lang);
-			}
-			window.fast.stageElements(window.fast.gameReady, {fsbehind:true, nostats:true});
-		}, false);
-	</script>
-	<!-- end-fast-library -->
-	
-	<script nonce="agz7V9dS0hcLnHzNHp2D-A">
-		async function prepareGame() {
+    <div id="GameDiv">
+        <div id="Cocos3dGameContainer">
+            <canvas id="GameCanvas"></canvas>
+        </div>
+    </div>
+
+    <!-- start-fast-library -->
+    <script type="text/javascript" nonce="agz7V9dS0hcLnHzNHp2D-A">
+        document.addEventListener('fastloaded', function(e) {
+            window.fast.gameReady = function() {
+                window.fast.goGame({
+                    prepare: prepareGame,
+                    head: ['style.css'],
+                    body: ["src/polyfills.bundle.js", "src/system.bundle.js"],
+                    init: function() {
+                        window.gameStart()
+                    },
+                    resize: function() {
+                        window.fastResizeCanvas()
+                    },
+                    //docvisible:function(){ window.pauseMeSoftly(), window.fastManageAudioContext() }
+                });
+                console.log("inside [gameReady] -> " + window.fast.lang);
+            }
+            window.fast.stageElements(window.fast.gameReady, {
+                fsbehind: true,
+                nostats: true
+            });
+        }, false);
+    </script>
+    <!-- end-fast-library -->
+
+    <script nonce="agz7V9dS0hcLnHzNHp2D-A">
+        async function prepareGame() {
             // enable audio by default
             window.fast.gameAudio = true;
 
@@ -145,7 +102,7 @@
                 window.fast.info.languages[0] :
                 "en";
         }
-		//onchangeaudio
+        //onchangeaudio
         Object.defineProperty(document, "hidden", {
             get: () => false
         });
@@ -154,11 +111,11 @@
         });
         document.hasFocus = () => true;
         window.gameStart = async function() {
-    await window.ytgame.game.loadData(); // 🔴 MUST happen first
-    window.fast.gmg.create();
-    System.import('./index.js').catch(console.error);
-}
-
-	</script>
+            await window.ytgame.game.loadData();
+            window.fast.gmg.create();
+            System.import('./index.js').catch(console.error);
+        }
+    </script>
 </body>
+
 </html>

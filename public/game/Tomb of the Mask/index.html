@@ -1,181 +1,135 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html>
+
 <head>
-
-    <!-- 2. ytgame stub -->
-    <script>
-        (function() {
-            const SAVE_KEY = "tombofthemask_save";
-
-            window.ytgame = {
-                system: {
-                    isAudioEnabled: () => true,
-                    onAudioEnabledChange: () => {},
-                    onPause: () => {},
-                    onResume: () => {},
-                    getLanguage: () => Promise.resolve("en"),
-                    getEnvironment: () => Promise.resolve("web"),
-                    trackEvent: () => {},
-                    trackScreen: () => {},
-                    log: () => {},
-                },
-
-                game: {
-                    loadData: () => {
-                        try {
-                            const data = localStorage.getItem(SAVE_KEY);
-                            return Promise.resolve(data || "");
-                        } catch (e) {
-                            console.warn("loadData failed", e);
-                            return Promise.resolve("");
-                        }
-                    },
-
-                    saveData: (data) => {
-                        try {
-                            localStorage.setItem(SAVE_KEY, data);
-                        } catch (e) {
-                            console.warn("saveData failed", e);
-                        }
-                        return Promise.resolve();
-                    },
-
-                    firstFrameReady: () => {},
-                    gameReady: () => {},
-                    pause: () => {},
-                    resume: () => {},
-                }
-            };
-        })();
-    </script>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Tomb of the Mask</title>
-  <link rel="stylesheet" href="style.css" nonce="_uYKnDJpW-vgx4y7sZ0axw">
+    <link rel="stylesheet" href="style.css" nonce="_uYKnDJpW-vgx4y7sZ0axw">
 </head>
+
 <body class="dark">
-<div id="unity-container" class="unity-desktop">
-  <canvas id="unity-canvas"></canvas>
-</div>
-<script nonce="_uYKnDJpW-vgx4y7sZ0axw">
-  const isPlayable = true;
-  var gameInstance = null;
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas"></canvas>
+    </div>
+    <script nonce="_uYKnDJpW-vgx4y7sZ0axw">
+        const isPlayable = true;
+        var gameInstance = null;
 
 
-  function YTInitialize() {
-    console.log('[YouTubeSDK] Initialize');
-    if (isPlayable) {
-      // Hold the YouTube Playable pause/resume callbacks.
-      ytgame.system.onPause(() => {
-        if (gameInstance) {
-          console.log('[YouTubeSDK] SendMessage OnGamePausedChange');
-          gameInstance.SendMessage('YouTubeSDK', 'OnGamePausedChange', 1);
+        function YTInitialize() {
+            console.log('[YouTubeSDK] Initialize');
+            if (isPlayable) {
+                // Hold the YouTube Playable pause/resume callbacks.
+                ytgame.system.onPause(() => {
+                    if (gameInstance) {
+                        console.log('[YouTubeSDK] SendMessage OnGamePausedChange');
+                        gameInstance.SendMessage('YouTubeSDK', 'OnGamePausedChange', 1);
+                    }
+                });
+                ytgame.system.onResume(() => {
+                    if (gameInstance) {
+                        console.log('[YouTubeSDK] SendMessage OnGamePausedChange');
+                        gameInstance.SendMessage('YouTubeSDK', 'OnGamePausedChange', 0);
+                    }
+                });
+
+                // Handle the audio changing state from YouTube.
+                ytgame.system.onAudioEnabledChange((isAudioEnabled) => {
+                    if (gameInstance) {
+                        console.log('[YouTubeSDK] SendMessage OnAudioEnabledChange');
+                        gameInstance.SendMessage('YouTubeSDK', 'OnAudioEnabledChange', isAudioEnabled ? 1 : 0);
+                    }
+                });
+            }
         }
-      });
-      ytgame.system.onResume(() => {
-        if (gameInstance) {
-          console.log('[YouTubeSDK] SendMessage OnGamePausedChange');
-          gameInstance.SendMessage('YouTubeSDK', 'OnGamePausedChange', 0);
+
+        function YTSendFirstFrameReady() {
+            console.log('[YouTubeSDK] SendFirstFrameReady');
+            if (isPlayable) {
+                ytgame.game.firstFrameReady();
+            }
         }
-      });
 
-      // Handle the audio changing state from YouTube.
-      ytgame.system.onAudioEnabledChange((isAudioEnabled) => {
-        if (gameInstance) {
-          console.log('[YouTubeSDK] SendMessage OnAudioEnabledChange');
-          gameInstance.SendMessage('YouTubeSDK', 'OnAudioEnabledChange', isAudioEnabled ? 1 : 0);
+        function YTSendGameReady() {
+            console.log('[YouTubeSDK] SendGameReady');
+            if (isPlayable) {
+                ytgame.game.gameReady();
+            }
         }
-      });
-    }
-  }
 
-  function YTSendFirstFrameReady () {
-    console.log('[YouTubeSDK] SendFirstFrameReady');
-    if (isPlayable) {
-      ytgame.game.firstFrameReady();
-    }
-  }
-
-  function YTSendGameReady () {
-    console.log('[YouTubeSDK] SendGameReady');
-    if (isPlayable) {
-      ytgame.game.gameReady();
-    }
-  }
-
-  function YTLoadData () {
-    console.log('[YouTubeSDK] LoadData');
-    if (isPlayable) {
-      ytgame.game.loadData().then((data) => {
-        // Process data to resume game state.
-        if (data === null || data === '') {
-          data = '{}';
+        function YTLoadData() {
+            console.log('[YouTubeSDK] LoadData');
+            if (isPlayable) {
+                ytgame.game.loadData().then((data) => {
+                    // Process data to resume game state.
+                    if (data === null || data === '') {
+                        data = '{}';
+                    }
+                    console.log('[YouTubeSDK] Data Loaded: ' + data);
+                    if (gameInstance) {
+                        console.log('[YouTubeSDK] SendMessage OnGameDataLoaded');
+                        gameInstance.SendMessage('YouTubeSDK', 'OnGameDataLoaded', data);
+                    }
+                });
+            }
         }
-        console.log('[YouTubeSDK] Data Loaded: ' + data);
-        if (gameInstance) {
-          console.log('[YouTubeSDK] SendMessage OnGameDataLoaded');
-          gameInstance.SendMessage('YouTubeSDK', 'OnGameDataLoaded', data);
+
+        function YTSaveData(gameData) {
+            console.log('[YouTubeSDK] SaveData: ' + gameData);
+            if (isPlayable) {
+                ytgame.game.saveData(gameData).then(() => {
+                    console.log('[YouTubeSDK] Data Saved');
+                    // Handle data save success.
+                }, (e) => {
+                    // Handle data save failure.
+                    console.error(e);
+                    // Send an error to YouTube when this happens.
+                    ytgame.health.logError();
+                });
+            }
         }
-      });
-    }
-  }
 
-  function YTSaveData (gameData) {
-    console.log('[YouTubeSDK] SaveData: ' + gameData);
-    if (isPlayable) {
-      ytgame.game.saveData(gameData).then(() => {
-        console.log('[YouTubeSDK] Data Saved');
-        // Handle data save success.
-      }, (e) => {
-        // Handle data save failure.
-        console.error(e);
-        // Send an error to YouTube when this happens.
-        ytgame.health.logError();
-      });
-    }
-  }
+        function YTSendScore(score) {
+            console.log('[YouTubeSDK] SendScore: ' + score);
+            if (isPlayable) {
+                ytgame.engagement.sendScore({
+                    value: score
+                });
+            }
+        }
 
-  function YTSendScore (score) {
-    console.log('[YouTubeSDK] SendScore: ' + score);
-    if (isPlayable) {
-      ytgame.engagement.sendScore({value: score});
-    }
-  }
+        const buildUrl = "Build";
+        const loaderUrl = buildUrl + "/totm.loader.js";
+        const config = {
+            dataUrl: buildUrl + "/totm.data.unityweb",
+            frameworkUrl: buildUrl + "/totm.framework.js.unityweb",
+            codeUrl: buildUrl + "/totm.wasm.unityweb",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "Playgendary",
+            productName: "Tomb of the Mask",
+            productVersion: "1.0",
+        };
 
-  const buildUrl = "Build";
-  const loaderUrl = buildUrl + "/totm.loader.js";
-  const config = {
-    dataUrl: buildUrl + "/totm.data.unityweb",
-    frameworkUrl: buildUrl + "/totm.framework.js.unityweb",
-    codeUrl: buildUrl + "/totm.wasm.unityweb",
-    streamingAssetsUrl: "StreamingAssets",
-    companyName: "Playgendary",
-    productName: "Tomb of the Mask",
-    productVersion: "1.0",
-  };
+        const container = document.querySelector("#unity-container");
+        const canvas = document.querySelector("#unity-canvas");
 
-  const container = document.querySelector("#unity-container");
-  const canvas = document.querySelector("#unity-canvas");
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            container.className = "unity-mobile";
+            config.devicePixelRatio = 1;
+        }
 
-  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-    container.className = "unity-mobile";
-    config.devicePixelRatio = 1;
-  }
-  
-  const script = document.createElement("script");
-  script.src = loaderUrl;
-  script.onload = () => {
-    createUnityInstance(canvas, config).then((unityInstance) => {
-      console.log('[YouTubeSDK] unityInstance: ' + unityInstance);
-      gameInstance = unityInstance;
-      console.log('[YouTubeSDK] SendMessage InitializeSDK');
-      gameInstance.SendMessage('YouTubeSDK', 'InitializeSDK');
-    }).catch((message) => {
-      console.error(message);
-    });
-  };
-  document.body.appendChild(script);
-</script>
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(canvas, config).then((unityInstance) => {
+                console.log('[YouTubeSDK] unityInstance: ' + unityInstance);
+                gameInstance = unityInstance;
+                console.log('[YouTubeSDK] SendMessage InitializeSDK');
+                gameInstance.SendMessage('YouTubeSDK', 'InitializeSDK');
+            }).catch((message) => {
+                console.error(message);
+            });
+        };
+        document.body.appendChild(script);
+    </script>
 </body>
+
 </html>

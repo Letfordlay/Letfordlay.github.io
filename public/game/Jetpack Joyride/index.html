@@ -3,55 +3,40 @@
 
 <head>
     <script>
-  const SAVE_KEY = "jetpackjoyride_save";
+        const SAVE_KEY = "jetpackjoyride_save";
 
-  window.ytgame = {
-    system: {
-      isAudioEnabled: () => true,
-      onAudioEnabledChange: () => {},
-      onPause: () => {},
-      onResume: () => {},
-      getLanguage: () => Promise.resolve("en"),
-      getEnvironment: () => Promise.resolve("web"),
-      trackEvent: () => {},
-      trackScreen: () => {},
-      log: () => {},
-    },
+        window.ytgame = {
+            system: {
+                isAudioEnabled: () => true,
+                onAudioEnabledChange: () => {},
+                onPause: () => {},
+                onResume: () => {},
+                getLanguage: () => Promise.resolve("en"),
+                getEnvironment: () => Promise.resolve("web"),
+                trackEvent: () => {},
+                trackScreen: () => {},
+                log: () => {},
+            },
 
-    game: {
-      loadData: () => {
-        return Promise.resolve(
-          localStorage.getItem(SAVE_KEY) || ""
-        );
-      },
+            game: {
+                loadData: () => {
+                    return Promise.resolve(
+                        localStorage.getItem(SAVE_KEY) || ""
+                    );
+                },
 
-      saveData: (data) => {
-        localStorage.setItem(SAVE_KEY, data);
-        return Promise.resolve();
-      },
+                saveData: (data) => {
+                    localStorage.setItem(SAVE_KEY, data);
+                    return Promise.resolve();
+                },
 
-      firstFrameReady: () => {},
-      gameReady: () => {},
-      pause: () => {},
-      resume: () => {},
-    }
-  };
-</script>
-    <meta charset="utf-8">
-    <title>Jetpack Joyride</title>
-    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true" />
-    <meta name="mobile-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="full-screen" content="yes" />
-    <meta name="screen-orientation" content="landscape" />
-    <meta name="x5-fullscreen" content="true" />
-    <meta name="360-fullscreen" content="true" />
-    <meta name="renderer" content="webkit" />
-    <meta name="force-rendering" content="webkit" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <!-- YT PLAYABLES -->
-    <!-- <script src="ytfake.js"></script> -->
+                firstFrameReady: () => {},
+                gameReady: () => {},
+                pause: () => {},
+                resume: () => {},
+            }
+        };
+    </script>
     <!-- Import map -->
     <script src="src/import-map.json" type="systemjs-importmap" charset="utf-8" nonce="oS4dxTnYB3FjM5okaIntiA"> </script>
 
@@ -111,14 +96,14 @@
             get: () => "visible"
         });
         document.hasFocus = () => true;
-        window.gameStart = function () {
-  // Inject save BEFORE game loads
-  window.gameSaveData =
-    localStorage.getItem(SAVE_KEY) || "";
+        window.gameStart = function() {
+            // Inject save BEFORE game loads
+            window.gameSaveData =
+                localStorage.getItem(SAVE_KEY) || "";
 
-  window.fast.gmg.create();
-  System.import('./index.js').catch(console.error);
-};
+            window.fast.gmg.create();
+            System.import('./index.js').catch(console.error);
+        };
     </script>
 </body>
 

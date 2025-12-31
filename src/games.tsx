@@ -103,6 +103,9 @@ export const games: Record<string, GameEntry> = {
                  <a href="https://github.com/RandomityGuy/MBHaxe">
                      <img alt="Original on Github" src="/img/github.png" />
                  </a>
+                 <a href="https://ko-fi.com/randomityguy">
+                     <img alt="Support on Ko-fi" src="/img/ko-fi.png" />
+                 </a>
              </>
          )
      },
@@ -747,7 +750,7 @@ export const inprogress: Record<string, GameEntry> = {
          name: "NONE",
          content: (
             <body>
-                
+                <p>There are currently no games in progress.</p>
             </body>
          )
      }

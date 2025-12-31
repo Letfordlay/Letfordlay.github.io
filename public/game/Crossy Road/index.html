@@ -1,86 +1,24 @@
-<!--
-Game Bootstrapper
-
-New - Jon A Bellini 11/4/2024
- 
--->
 <!doctype HTML>
-<html lang="en">
+<html>
+
 <head>
-  <script>
-        (function() {
-            try {
-                document.addEventListener("visibilitychange", e => e.stopImmediatePropagation(), true);
-                document.addEventListener("webkitvisibilitychange", e => e.stopImmediatePropagation(), true);
-                document.hasFocus = () => true;
-            } catch {}
-        })();
-    </script>
+    <!-- Load game's CSS file. -->
+    <link rel="stylesheet" href="style.css" nonce="VzPMpYuQch5uszBNvQGlmA">
 
-    <!-- 2. ytgame stub -->
-    <script>
-        /**
-         * Full ytgame compatibility stub
-         * Allows YT-Playables-built games to run standalone / in iframe
-         */
-        window.ytgame = {
-            system: {
-                // audio / state
-                isAudioEnabled: () => true,
-                onAudioEnabledChange: () => {},
+    <!-- Core libraries like Three.js -->
+    <script src="scripts/three.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
 
-                // lifecycle
-                onPause: () => {},
-                onResume: () => {},
+    <!-- Main game script -->
+    <script src="scripts/game.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
 
-                // visibility / environment
-                getLanguage: () => Promise.resolve("en"),
-                getEnvironment: () => Promise.resolve("web"),
-
-                // analytics (no-ops)
-                trackEvent: () => {},
-                trackScreen: () => {},
-                log: () => {},
-            },
-
-            game: {
-                // save / load
-                loadData: () => Promise.resolve(""),
-                saveData: () => Promise.resolve(""),
-
-                // lifecycle hooks REQUIRED by this build
-                firstFrameReady: () => {},
-                gameReady: () => {},
-
-                // pause / resume
-                pause: () => {},
-                resume: () => {},
-            }
-        };
-    </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Crossy Road</title>
-
-  <!-- Load game's CSS file. -->
-  <link rel="stylesheet" href="style.css" nonce="VzPMpYuQch5uszBNvQGlmA">
-
-   <!-- Core libraries like Three.js -->
-  <script src="scripts/three.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
-
-  <!-- Main game script -->
-  <script src="scripts/game.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
-
-  <!-- Additional scripts -->
-  <script src="scripts/extra.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
-  <script src="scripts/bootstrap.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
+    <!-- Additional scripts -->
+    <script src="scripts/extra.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
+    <script src="scripts/bootstrap.min.js" nonce="VzPMpYuQch5uszBNvQGlmA"></script>
 </head>
 
 <body>
-  <canvas id="canvas"></canvas>
-  <div id="build-number"></div>  <!-- delete this when not in testing -->
-
-  
+    <canvas id="canvas"></canvas>
+    <div id="build-number"></div>
 </body>
+
 </html>

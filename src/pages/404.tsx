@@ -2,7 +2,11 @@ export default function Custom404() {
     return (
 		<>
 			<p>
-				Error 404 Page not found
+				Error 404
+			</p>
+
+			<p>
+				Page not found
 			</p>
 	
 			<p>
