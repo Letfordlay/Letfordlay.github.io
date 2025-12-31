@@ -21927,7 +21927,7 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 		scoreCtrl.extent = new h3d_Vector(706,305);
 		scoreCtrl.text.set_imageVerticalAlign(gui_ImageVerticalAlign.Top);
 		scoreCtrl.text.loadImage = imgLoader;
-		scoreCtrl.text.set_text(headerText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Loading...</p>");
+		scoreCtrl.text.set_text(headerText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Not Available</p>");
 		scoreWnd.addChild(scoreCtrl);
 		let allMissions = src_MissionList.missionList.h["ultra"].h["advanced"];
 		let allMissions1 = src_MissionList.missionList.h["ultra"].h["multiplayer"];
@@ -21963,12 +21963,12 @@ class gui_LeaderboardsGui extends gui_GuiImage {
 		let fetchScores = function() {
 			scoreTok += 1;
 			let ourToken = scoreTok - 1;
-			scoreCtrl.text.set_text(headerText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Loading...</p>");
+			scoreCtrl.text.set_text(headerText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Not Available</p>");
 		};
 		let fetchPlayers = function() {
 			scoreTok += 1;
 			let ourToken = scoreTok - 1;
-			scoreCtrl.text.set_text(playerHeaderText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Loading...</p>");
+			scoreCtrl.text.set_text(playerHeaderText + "<br/><br/><br/><br/><br/>" + "<p align=\"center\">Not Available</p>");
 		};
 		let levelSelectOpts = new gui_GuiXboxOptionsList(2,"Overall",result);
 		levelSelectOpts.position = new h3d_Vector(380,485);
