@@ -544,6 +544,17 @@ export const flashGames: Record<string, GameEntry> = {
 				/>
             </object>
         )
+    },
+    "unfair-mario": {
+        name: "Unfair Mario",
+        content: (
+            <object>
+                <embed 
+					src="/game/unfairmario.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "29.3vw" }}
+				/>
+            </object>
+        )
     }
 };
 
