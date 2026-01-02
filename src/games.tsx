@@ -115,7 +115,7 @@ export const games: Record<string, GameEntry> = {
              <>
                  <iframe
  					src="/game/Mari0/index.html"
- 					style={{ "border" : "0", "width" : 800, "height" : 600 }}
+ 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
  				/>
              </>
          )
@@ -189,7 +189,7 @@ export const games: Record<string, GameEntry> = {
              <iframe
                  src="/game/Soccer Physics/index.html"
 				 scrolling="no"
-                 style={{ "border" : "0", "width" : "46.875vw", "height" : "26.0416vw" }}
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
              />
          )
      },
@@ -219,9 +219,7 @@ export const games: Record<string, GameEntry> = {
              <>
                  <iframe
                      src="/game/Twist/index.html"
-                     width="550"
-                     height="550"
-                     style={{ border: 0 }}
+                     style={{ "border" : "0", "width" : "35vw", "height" : "35vw" }}
                  />
              </>
          )
