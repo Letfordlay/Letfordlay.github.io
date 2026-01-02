@@ -1,4 +1,4 @@
-import { flashGames, games, mcversions, inprogress } from "@/games";
+import { flashGames, games, mcversions, inprogress, papasflashgames } from "@/games";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 
@@ -8,6 +8,7 @@ export const getStaticPaths = (async () => {
     Object.keys(games).forEach((slug) => paths.push({ params: { slug: slug } }));
     Object.keys(flashGames).forEach((slug) => paths.push({ params: { slug: slug } }));
 	Object.keys(mcversions).forEach((slug) => paths.push({ params: { slug: slug } }));
+    Object.keys(papasflashgames).forEach((slug) => paths.push({ params: { slug: slug } }));
     Object.keys(inprogress).forEach((slug) => paths.push({ params: { slug: slug } }));
 
     return {
@@ -23,7 +24,7 @@ export const getStaticProps = (async (context) => {
 }>;
 
 export default function Game({ slug }: InferGetStaticPropsType<typeof getStaticProps>) {
-    const game = games[slug] || flashGames[slug] || mcversions[slug] || inprogress[slug];
+    const game = games[slug] || flashGames[slug] || mcversions[slug] || papasflashgames[slug] || inprogress[slug];
 
     return (
         <>
@@ -32,7 +33,7 @@ export default function Game({ slug }: InferGetStaticPropsType<typeof getStaticP
             </Head>
 
 			<center>
-				<p>{game.name}</p>
+				<p className="game-title">{game.name}</p>
 
 				{game.content}
 			</center>

@@ -10,8 +10,8 @@ export default function Videos() {
             <p>Videos</p>
 
             <iframe
-                width="420"
-                height="315"
+                width="720"
+                height="480"
                 src="https://www.youtube.com/embed/v7v-1cUWtzs"
                 style={{ border: 0 }}
             />

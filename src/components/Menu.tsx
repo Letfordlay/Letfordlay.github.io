@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { games, flashGames, mcversions, inprogress } from "@/games";
+import { games, flashGames, mcversions, papasflashgames,inprogress } from "@/games";
 
 export function Menu() {
     return (
@@ -42,9 +42,22 @@ export function Menu() {
 export function Minecraft() {
     return (
             <center className="list">
-                <p className="list-title">Versions</p>
+                <p className="menu-title">Versions</p>
 
                 {Object.entries(mcversions).map(([slug, entry]) => (
+                    <>
+                        <Link href={`/game/${slug}`}>{entry.name}</Link>
+                    </>
+                ))}
+            </center>
+    );
+}
+
+export function PapasGames() {
+    return (
+            <center className="list">
+
+                {Object.entries(papasflashgames).map(([slug, entry]) => (
                     <>
                         <Link href={`/game/${slug}`}>{entry.name}</Link>
                     </>

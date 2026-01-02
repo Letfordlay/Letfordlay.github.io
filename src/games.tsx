@@ -1,4 +1,4 @@
-import { Minecraft } from "@/components/Menu";
+import { Minecraft, PapasGames } from "@/components/Menu";
 
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
@@ -502,6 +502,25 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+ 	"papas-games": {
+         name: "Papa's Games",
+         content: (
+ 			<>
+ 				<PapasGames />
+ 			</>
+         )
+     },
+    poptropica: {
+        name: "Poptropica",
+        content: (
+            <object>
+                <iframe
+                 src="/game/Poptropica/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+                />
+            </object>
+        )
+    },
     portal: {
         name: "Portal",
         content: (
@@ -739,6 +758,163 @@ export const mcversions: Record<string, GameEntry> = {
 					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
 			</div>
+        )
+    }
+};
+
+export const papasflashgames: Record<string, GameEntry> = {
+    "papas-bakeria": {
+        name: "Papa's Bakeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papasbakeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+	"papas-burgeria": {
+        name: "Papa's Burgeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papasburgeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-cheeseria": {
+        name: "Papa's Cheeseria",
+        content: (
+            <object>
+                <embed
+					src="/game/papascheeseria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-cupcakeria": {
+        name: "Papa's Cupcakeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papascupcakeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-donuteria": {
+        name: "Papa's Donuteria",
+        content: (
+            <object>
+                <embed
+					src="/game/papasdonuteria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-freezeria": {
+        name: "Papa's Freezeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papasfreezeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-hotdoggeria": {
+        name: "Papa's Hotdoggeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papashotdoggeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-pancakeria": {
+        name: "Papa's Pancakeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papaspancakeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-pastaria": {
+        name: "Papa's Pastaria",
+        content: (
+            <object>
+                <embed
+					src="/game/papaspastaria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-pizzeria": {
+        name: "Papa's Pizzeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papaspizzeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-scooperia": {
+        name: "Papa's Scooperia",
+        content: (
+            <object>
+                <embed
+					src="/game/papasscooperia.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-sushiria": {
+        name: "Papa's Sushiria",
+        content: (
+            <object>
+                <embed
+					src="/game/papassushiria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-taco-mia": {
+        name: "Papa's Taco Mia",
+        content: (
+            <object>
+                <embed
+					src="/game/papastacomia.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
+    "papas-wingeria": {
+        name: "Papa's Wingeria",
+        content: (
+            <object>
+                <embed
+					src="/game/papaswingeria.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
         )
     }
 };
