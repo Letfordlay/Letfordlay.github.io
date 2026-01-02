@@ -502,6 +502,39 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "meeblings": {
+        name: "Meeblings",
+        content: (
+            <object>
+                <embed 
+					src="/game/meeblings.swf"
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
+				/>
+            </object>
+        )
+    },
+    "meeblings-2": {
+        name: "Meeblings 2",
+        content: (
+            <object>
+                <embed 
+					src="/game/meeblings2.swf"
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
+				/>
+            </object>
+        )
+    },
+    "meeblings-player-pack-i": {
+        name: "Meeblings: Player Pack I",
+        content: (
+            <object>
+                <embed 
+					src="/game/meeblingsplayerpacki.swf"
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
+				/>
+            </object>
+        )
+    },
  	"papas-games": {
          name: "Papa's Games",
          content: (
@@ -510,14 +543,14 @@ export const flashGames: Record<string, GameEntry> = {
  			</>
          )
      },
-    poptropica: {
-        name: "Poptropica",
+    "poppit-demo": {
+        name: "Poppit! Demo",
         content: (
             <object>
-                <iframe
-                 src="/game/Poptropica/index.html"
-                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-                />
+                <embed 
+					src="/game/poppit!demo.swf"
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
+				/>
             </object>
         )
     },
