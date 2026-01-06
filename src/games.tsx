@@ -227,6 +227,17 @@ export const games: Record<string, GameEntry> = {
  };
 
 export const flashGames: Record<string, GameEntry> = {
+    "bejeweled-blitz": {
+        name: "Bejeweled Blitz",
+        content: (
+            <object>
+                <embed
+					src="/game/bejeweledblitz.swf"
+					style={{ "border" : "0", "width" : "42.76vw", "height" : "32.08vw" }}
+				/>
+            </object>
+        )
+    },
     "bloons-tower-defense-3": {
         name: "Bloons Tower Defense 3",
         content: (
@@ -607,6 +618,17 @@ export const flashGames: Record<string, GameEntry> = {
 					style={{ "border" : "0", "width" : "40vw", "height" : "29.3vw" }}
 				/>
             </object>
+        )
+    },
+    "zack-and-codys-tipton-trouble": {
+        name: "Zack & Cody's Tipton Trouble",
+        content: (
+            <>
+            <iframe
+					src="/game/Zack & Cody's Tipton Trouble/index.html"
+					style={{ "border" : "0", "width" : "40vw", "height" : "27.6vw" }}
+				/>
+            </>
         )
     }
 };
