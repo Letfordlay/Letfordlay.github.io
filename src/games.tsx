@@ -234,12 +234,12 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/game/Bejeweled Blitz/addapp.swf"
-					style={{ "border" : "0", "width" : "760px", "height" : "108px" }}
+					style={{ "border" : "0", "width" : "39.58vw", "height" : "5.63vw" }}
 				/>
                 <br />
                 <embed
 					src="/game/Bejeweled Blitz/game_preloader.swf"
-					style={{ "border" : "0", "width" : "42.76vw", "height" : "32.08vw" }}
+					style={{ "border" : "0", "width" : "43vw", "height" : "32.4vw" }}
 				/>
             </object>
         )
