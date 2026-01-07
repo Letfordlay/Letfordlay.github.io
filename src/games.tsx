@@ -230,9 +230,15 @@ export const flashGames: Record<string, GameEntry> = {
     "bejeweled-blitz": {
         name: "Bejeweled Blitz",
         content: (
+            
             <object>
                 <embed
-					src="/game/bejeweledblitz.swf"
+					src="/game/Bejeweled Blitz/addapp.swf"
+					style={{ "border" : "0", "width" : "760px", "height" : "108px" }}
+				/>
+                <br />
+                <embed
+					src="/game/Bejeweled Blitz/game_preloader.swf"
 					style={{ "border" : "0", "width" : "42.76vw", "height" : "32.08vw" }}
 				/>
             </object>
