@@ -321,17 +321,6 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
-    "boxhead-2play-rooms": {
-        name: "Boxhead: 2Play Rooms",
-        content: (
-            <object>
-                <embed
-					src="/game/boxhead2play.swf"
-					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
-				/>
-            </object>
-        )
-    },
     "cargo-bridge": {
         name: "Cargo Bridge",
         content: (
@@ -382,17 +371,6 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/game/civiballsxmaslevelspack.swf"
-					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
-				/>
-            </object>
-        )
-    },
-    "crush-the-castle": {
-        name: "Crush the Castle",
-        content: (
-            <object>
-                <embed
-					src="/game/crushthecastle.swf"
 					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
 				/>
             </object>
