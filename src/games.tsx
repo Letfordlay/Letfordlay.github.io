@@ -549,6 +549,17 @@ export const flashGames: Record<string, GameEntry> = {
  			</>
          )
      },
+    peggle: {
+        name: "Peggle",
+        content: (
+            <object>
+                <embed 
+					src="/game/Peggle/peggle.swf"
+					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
+				/>
+            </object>
+        )
+    },
     "plants-vs-zombies": {
         name: "Plants Vs. Zombies",
         content: (
