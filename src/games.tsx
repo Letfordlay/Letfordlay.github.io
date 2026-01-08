@@ -343,17 +343,6 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
-    chuzzle: {
-        name: "Chuzzle",
-        content: (
-            <object>
-                <embed
-					src="/game/chuzzle.swf"
-					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
-				/>
-            </object>
-        )
-    },
     civiballs: {
         name: "Civiballs",
         content: (
@@ -1003,12 +992,15 @@ export const papasflashgames: Record<string, GameEntry> = {
 };
 
 export const inprogress: Record<string, GameEntry> = {
-	 NONE: {
-         name: "NONE",
-         content: (
-            <body>
-                <p>There are currently no games in progress.</p>
-            </body>
-         )
-     }
+    chuzzle: {
+        name: "Chuzzle",
+        content: (
+            <object>
+                <embed
+					src="/game/chuzzle.swf"
+					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
+				/>
+            </object>
+        )
+    }
 };
