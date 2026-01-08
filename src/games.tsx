@@ -343,7 +343,18 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
-    "civiballs": {
+    chuzzle: {
+        name: "Chuzzle",
+        content: (
+            <object>
+                <embed
+					src="/game/chuzzle.swf"
+					style={{ "border" : "0", "width" : "640px", "height" : "480px" }}
+				/>
+            </object>
+        )
+    },
+    civiballs: {
         name: "Civiballs",
         content: (
             <object>
@@ -416,6 +427,17 @@ export const flashGames: Record<string, GameEntry> = {
                 <embed
 					src="/game/dunebuggy.swf"
 					style={{ "border" : "0", "width" : "37.1875vw", "height" : "26.0416vw" }}
+				/>
+            </object>
+        )
+    },
+    "feeding-frenzy": {
+        name: "Feeding Frenzy",
+        content: (
+            <object>
+                <embed
+					src="/game/feedingfrenzy.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
 				/>
             </object>
         )
@@ -538,6 +560,17 @@ export const flashGames: Record<string, GameEntry> = {
  			</>
          )
      },
+    "plants-vs-zombies": {
+        name: "Plants Vs. Zombies",
+        content: (
+            <object>
+                <embed
+					src="/game/Plants Vs. Zombies/plantsvszombies.swf"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+				/>
+            </object>
+        )
+    },
     "poppit-demo": {
         name: "Poppit! Demo",
         content: (
@@ -613,6 +646,17 @@ export const flashGames: Record<string, GameEntry> = {
 					style={{ "border" : "0", "width" : "40vw", "height" : "27.6vw" }}
 				/>
             </>
+        )
+    },
+    "zuma-deluxe": {
+        name: "Zuma Deluxe",
+        content: (
+            <object>
+                <iframe
+					src="/game/Zuma Deluxe/index.html"
+					style={{ "border" : "0", "width" : "480px", "height" : "360px" }}
+				/>
+            </object>
         )
     }
 };
