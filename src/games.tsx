@@ -552,12 +552,12 @@ export const flashGames: Record<string, GameEntry> = {
     peggle: {
         name: "Peggle",
         content: (
-            <object>
-                <embed 
-					src="/game/Peggle/peggle.swf"
-					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
-				/>
-            </object>
+            <>
+            <iframe
+					src="/game/Peggle/index.html"
+					style={{ "border" : "0", "width" : "40vw", "height" : "30vw" }}
+			/>
+            </>
         )
     },
     "plants-vs-zombies": {
@@ -644,7 +644,7 @@ export const flashGames: Record<string, GameEntry> = {
             <iframe
 					src="/game/Zack & Cody's Tipton Trouble/index.html"
 					style={{ "border" : "0", "width" : "40vw", "height" : "27.6vw" }}
-				/>
+			/>
             </>
         )
     },
