@@ -7,7 +7,7 @@ export default function Home() {
                 <title>Letfordlay Gaming</title>
             </Head>
 
-            <p>
+            <p className="game-title">
 				Home
 			</p>
 

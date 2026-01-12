@@ -376,6 +376,17 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "crush-the-castle-2": {
+        name: "Crush the Castle 2",
+        content: (
+            <>
+            <iframe
+					src="/game/Crush the Castle 2/index.html"
+					style={{ "border" : "0", "width" : "40vw", "height" : "27.6vw" }}
+				/>
+            </>
+        )
+    },
     cubefield: {
         name: "Cubefield",
         content: (

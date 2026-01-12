@@ -12,7 +12,7 @@ export default function Document() {
                 <Menu />
 
                 <center className="content">
-                    <p className="menu-title">Welcome to Letfordlay Gaming!</p>
+                    <p className="menu-title">Letfordlay Gaming</p>
 
                     <Main />
                 </center>
