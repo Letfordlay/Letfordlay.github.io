@@ -204,6 +204,23 @@ export const games: Record<string, GameEntry> = {
              />
          )
      },
+     "super-mario-64": {
+         name: "Super Mario 64",
+         content: (
+            <>
+             <iframe
+                 src="/game/Super Mario 64/index.html"
+                 style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+             />
+ 
+                 <br />
+ 
+                 <a href="https://github.com/NotAn127/SM64-PC-Port-WebGL">
+                     <img alt="Original on Github" src="/img/github.png" />
+                 </a>
+                 </>
+         )
+     },
 	 "tomb-of-the-mask": {
          name: "Tomb of the Mask",
          content: (
