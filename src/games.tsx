@@ -654,6 +654,17 @@ export const flashGames: Record<string, GameEntry> = {
             </object>
         )
     },
+    "theres-2-wires": {
+        name: "There's 2 Wires?!",
+        content: (
+            <object>
+                <embed 
+					src="/game/theres2wires.swf"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+            </object>
+        )
+    },
     "unfair-mario": {
         name: "Unfair Mario",
         content: (
