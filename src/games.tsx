@@ -300,7 +300,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/game/bloxorz.swf"
-					style={{ "border" : "0", "width" : "40vw", "height" : "22vw" }}
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "36.3vw" }}
 				/>
             </object>
         )
@@ -311,7 +311,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/game/boombot.swf"
-					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
+					style={{ "border" : "0", "width" : "50vw", "height" : "37.5vw" }}
 				/>
             </object>
         )
@@ -322,7 +322,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/game/boombot2.swf"
-					style={{ "border" : "0", "width" : "36.4583vw", "height" : "27.34375vw" }}
+					style={{ "border" : "0", "width" : "50vw", "height" : "37.5vw" }}
 				/>
             </object>
         )
@@ -421,7 +421,7 @@ export const flashGames: Record<string, GameEntry> = {
             <object>
                 <embed
 					src="/game/doublewires.swf"
-					style={{ "border" : "0", "width" : "36.4583vw", "height" : "20.8333vw" }}
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
 				/>
             </object>
         )
