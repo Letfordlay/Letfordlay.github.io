@@ -221,6 +221,17 @@ export const games: Record<string, GameEntry> = {
                  </>
          )
      },
+    "super-stacker-3": {
+        name: "Super Stacker 3",
+        content: (
+            <object>
+                <embed 
+					src="/game/Super Stacker 3/index.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+            </object>
+        )
+    },
 	 "tomb-of-the-mask": {
          name: "Tomb of the Mask",
          content: (
@@ -639,6 +650,28 @@ export const flashGames: Record<string, GameEntry> = {
                 <embed 
 					src="/game/run2.swf"
 					style={{ "border" : "0", "width" : "36.4583vw", "height" : "26.6vw" }}
+				/>
+            </object>
+        )
+    },
+    "super-stacker": {
+        name: "Super Stacker",
+        content: (
+            <object>
+                <embed 
+					src="/game/superstacker.swf"
+					style={{ "border" : "0", "width" : "31.25vw", "height" : "28.65vw" }}
+				/>
+            </object>
+        )
+    },
+    "super-stacker-2": {
+        name: "Super Stacker 2",
+        content: (
+            <object>
+                <embed 
+					src="/game/superstacker2.swf"
+					style={{ "border" : "0", "width" : "31.25vw", "height" : "28.65vw" }}
 				/>
             </object>
         )

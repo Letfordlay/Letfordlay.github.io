@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Bubblez">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+
+
+    <title>Super Stacker 3</title>
+
+    <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
+
+</head>
+
+<body>
+
+    <div id="content"></div>
+    <div id="loader">Loading...</div>
+
+    <script type="text/javascript">
+        var gameName = "super-stacker-3.min.js";
+
+
+
+
+
+
+        //This all here is for cache busting;
+        function addScript(src, buster, callback) {
+            var s = document.createElement('script');
+            s.setAttribute('src', src + '?v=' + buster);
+            if (typeof callback === 'function') {
+                s.onload = callback;
+            }
+            document.body.appendChild(s);
+        }
+
+
+        addScript('version.js', Date.now(), function() {
+
+            addScript(gameName, version, function() {
+                new Stracker.Game();
+            });
+
+        });
+    </script>
+</body>
+
+</html>
