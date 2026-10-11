@@ -815,6 +815,23 @@ export const flashGames: Record<string, GameEntry> = {
 };
 
 export const mcversions: Record<string, GameEntry> = {
+    "minecraft-26-2": {
+        name: "Minecraft 26.2",
+        content: (
+            <>
+				<iframe
+					src="/game/Minecraft/minecraft26.2.html"
+					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+				/>
+
+                <br />
+
+                <a href="https://eaglercraft.com/">
+                    <img alt="Original on Github" src="/img/eaglercraft.png" />
+                </a>
+            </>
+        )
+    },
 	"minecraft-1-12-2": {
         name: "Minecraft 1.12.2",
         content: (
