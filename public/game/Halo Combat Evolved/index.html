@@ -20,6 +20,7 @@
         height: 100%;
         margin: 0;
         overflow: hidden;
+        overscroll-behavior: none;
         background: #000;
         color: #d4efff;
         font-family:
@@ -45,6 +46,9 @@
         background: #000;
         outline: 0;
         transform: scaleY(-1);
+        /* Show the pointer in the menus (the game sets cursor:none on the canvas).
+           The browser still hides it while the game has the mouse locked. */
+        cursor: default !important;
       }
 
       #loading {
@@ -308,18 +312,15 @@
         resumeGameAudio();
       });
 
-      // Click the game to capture the mouse (Esc releases it).
-      canvas.addEventListener("click", () => {
-        if (
-          document.pointerLockElement === canvas ||
-          !canvas.requestPointerLock
-        )
-          return;
-        try {
-          const request = canvas.requestPointerLock();
-          if (request && typeof request.catch === "function")
-            request.catch(() => {});
-        } catch (_) {}
+      // Mouse capture is left to the game: it locks the pointer itself (SDL relative
+      // mouse mode) when gameplay starts, and the browser hides the pointer while locked.
+      // Until then the normal cursor stays visible for the menus.
+
+      // The scroll wheel switches weapons. Stop it from also scrolling the page that
+      // embeds this game (the wheel event still reaches the game).
+      window.addEventListener("wheel", (event) => event.preventDefault(), {
+        passive: false,
+        capture: true,
       });
 
       // Tab is the Y button, so keep it from moving browser focus while playing.
