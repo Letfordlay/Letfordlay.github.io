@@ -232,6 +232,16 @@ export const games: Record<string, GameEntry> = {
             </object>
         )
     },
+     "the-simpsons-hit-and-run": {
+         name: "The Simpsons: Hit & Run",
+         content: (
+             <iframe
+                src="/game/The Simpsons Hit & Run/index.html"
+                allow="cross-origin-isolated"
+                style={{ border: 0, width: "66.66vw", height: "37.5vw" }}
+/>
+         )
+     },
 	 "tomb-of-the-mask": {
          name: "Tomb of the Mask",
          content: (

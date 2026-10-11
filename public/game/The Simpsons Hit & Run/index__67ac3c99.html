@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="/assets/favicon-Dd973O1L.ico" sizes="any" />
+    <title>The Simpsons: Hit &amp; Run - WASM</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      :root {
+        --color-error: #ff4444;
+      }
+
+      /* Keep the HTML hidden attribute authoritative over later display rules. */
+      [hidden] {
+        display: none !important;
+      }
+
+      html,
+      body {
+        overscroll-behavior-y: contain;
+      }
+
+      /* Use large viewport height on body and dynamic viewport height on main;
+         the gap keeps the page scrollable so mobile browser chrome can retract. */
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+        background: #000;
+        color: #e0e0e0;
+        min-height: 100lvh;
+        overflow-x: hidden;
+      }
+
+      main {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100dvh;
+        display: flex;
+      }
+
+      /* Keep the game surface edge-to-edge; do not reintroduce safe-area padding here. */
+      .canvas-container {
+        position: relative;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+      }
+
+      #canvas {
+        max-width: 100%;
+        max-height: 100%;
+        /* pan-y passes vertical swipes to the browser (so mobile UI can
+           retract), other gestures stay with the canvas. */
+        touch-action: pan-y;
+      }
+
+      /* Start overlay */
+
+      #start-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.85);
+      }
+
+      #start-button {
+        min-width: 180px;
+        padding: 14px 44px;
+        font-size: 15px;
+        font-family: inherit;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          border-color 0.2s,
+          color 0.2s;
+      }
+
+      #start-button:hover:not([disabled]) {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+
+      #start-button:active:not([disabled]) {
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      #start-button[disabled] {
+        cursor: default;
+        opacity: 0.55;
+      }
+
+      .progress-track {
+        width: min(280px, calc(100vw - 48px));
+        height: 6px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 999px;
+      }
+
+      .progress-track.done {
+        visibility: hidden;
+      }
+
+      #preload-bar {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #ffd54a, #ffe680);
+        transition: width 0.12s linear;
+      }
+
+      /* Error overlay */
+
+      #error-overlay {
+        position: absolute;
+        inset: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+          max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+        padding: 16px;
+        background: rgba(40, 0, 0, 0.92);
+        border: 1px solid var(--color-error);
+        border-radius: 8px;
+        overflow-y: auto;
+        font-size: 12px;
+        font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
+      }
+
+      .error-line {
+        color: var(--color-error);
+        padding: 2px 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      /* FMV overlay */
+
+      #fmv-overlay {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        container-type: size;
+        background: #000;
+        cursor: default;
+      }
+
+      /* FMVs are always 4:3. Container units pick the limiting dimension so the
+         stage fits the overlay without JS. */
+      #fmv-stage {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        width: min(100%, calc(100dvh * 4 / 3));
+        background: #000;
+      }
+
+      @supports (width: 100cqw) {
+        #fmv-stage {
+          width: min(100cqw, calc(100cqh * 4 / 3));
+        }
+      }
+
+      #fmv-video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      #fmv-fade {
+        position: absolute;
+        inset: 0;
+        background: #000;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #fmv-audio-toggle {
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+
+      #fmv-audio-toggle:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      #fmv-audio-toggle:active {
+        background: rgba(0, 0, 0, 0.85);
+      }
+
+      #fmv-audio-toggle-icon {
+        display: inline-flex;
+        width: 20px;
+        height: 20px;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+      }
+
+      #fmv-audio-toggle-icon > svg {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-zBlXHWNX.js"></script>
+  </head>
+  <body>
+    <main>
+      <div id="canvas-container" class="canvas-container">
+        <canvas id="canvas"></canvas>
+
+        <div id="fmv-overlay" hidden>
+          <div id="fmv-stage">
+            <video id="fmv-video" playsinline></video>
+            <button
+              id="fmv-audio-toggle"
+              type="button"
+              hidden
+              aria-label="Unmute movie"
+              title="Unmute movie"
+            >
+              <span id="fmv-audio-toggle-icon" aria-hidden="true">
+                <svg id="fmv-audio-toggle-muted-icon" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M5 9.5H8.5L13.5 5.5V18.5L8.5 14.5H5V9.5Z"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M16 9L20 15"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M20 9L16 15"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <svg
+                  id="fmv-audio-toggle-unmuted-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  hidden
+                >
+                  <path
+                    d="M5 9.5H8.5L13.5 5.5V18.5L8.5 14.5H5V9.5Z"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M16 9C17.3333 10.3333 17.3333 13.6667 16 15"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M18.75 6.5C21.4167 9.16667 21.4167 14.8333 18.75 17.5"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div id="fmv-fade" hidden></div>
+
+        <div id="start-overlay">
+          <button id="start-button" type="button" disabled>Loading...</button>
+          <div id="progress-track" class="progress-track">
+            <div id="preload-bar"></div>
+          </div>
+        </div>
+
+        <div id="error-overlay" hidden></div>
+      </div>
+    </main>
+
+  </body>
+</html>

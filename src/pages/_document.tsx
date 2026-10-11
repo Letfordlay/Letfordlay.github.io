@@ -6,6 +6,12 @@ export default function Document() {
         <Html lang="en">
             <Head>
                 <link rel="icon" href="/favicon.ico" />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `window.coi = { coepCredentialless: () => true };`
+                    }}
+                />
+                <script src="/coi-serviceworker.js" />
                 <script src="https://unpkg.com/@ruffle-rs/ruffle" async />
             </Head>
             <body>
