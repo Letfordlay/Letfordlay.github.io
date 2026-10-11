@@ -3,6 +3,64 @@ import { Minecraft, PapasGames } from "@/components/Menu";
 /* eslint-disable @next/next/no-img-element */
 export type GameEntry = { name: string; content: React.ReactNode };
 
+/* Halo controller legend (moved out of the game's index.html). */
+const HALO_DIR = "/game/Halo Combat Evolved"; // folder that holds the game's index.html
+
+const HALO_BINDINGS: [label: string, button: string, key: string][] = [
+    ["A button - Space", "A", "Space"],
+    ["B button - F", "B", "F"],
+    ["X button - E or R", "X", "E / R"],
+    ["Y button - Tab or mouse wheel", "Y", "Tab / Wheel"],
+    ["White button - Q", "White", "Q"],
+    ["Black button - X", "Black", "X"],
+    ["Left trigger - G or right mouse button", "LT", "G / RMB"],
+    ["Right trigger - left mouse button", "RT", "LMB"],
+    ["Move - W A S D", "Move", "WASD"],
+    ["Aim - mouse", "Aim", "Mouse"],
+    ["Left stick click - C", "L3", "C"],
+    ["Right stick click - Z or middle mouse button", "R3", "Z / MMB"],
+    ["Directional pad - arrow keys", "D-pad", "Arrows"],
+    ["Start - Escape", "Start", "Esc"],
+    ["Back - F1", "Back", "F1"],
+];
+
+const HALO_CSS = `
+.halo-legend{display:flex;align-items:center;justify-content:center;gap:1.25rem;box-sizing:border-box;width:min(44rem,66.66vw);margin:.75rem auto 0;padding:.75rem 1rem;color:#c4d8e5;text-align:left;font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;border:1px solid rgba(34,151,220,.3);background:rgba(2,15,30,.74);box-shadow:0 .65rem 2rem rgba(0,0,0,.34);clip-path:polygon(.55rem 0,100% 0,100% calc(100% - .55rem),calc(100% - .55rem) 100%,0 100%,0 .55rem)}
+.halo-legend-figure{display:grid;justify-items:center;margin:0;flex:0 0 auto}
+.halo-legend-controller{display:block;width:10.5rem;height:auto;filter:drop-shadow(0 .65rem .75rem rgba(0,0,0,.5))}
+.halo-legend-bindings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.28rem .9rem;flex:1 1 auto;min-width:0;margin:0}
+.halo-legend-binding{display:flex;align-items:baseline;gap:.28rem;min-width:0}
+.halo-legend-binding dt,.halo-legend-binding dd{margin:0}
+.halo-legend-binding dt{flex:0 0 auto;color:#73c8f5;font-size:.7rem;font-weight:760;letter-spacing:.045em;text-transform:uppercase}
+.halo-legend-binding dd{overflow:hidden;color:#c4d8e5;font-size:.72rem;letter-spacing:.02em;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:700px){.halo-legend{flex-direction:column;width:min(24rem,92vw)}.halo-legend-bindings{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.halo-legend-controller{width:8rem}}
+`;
+
+function HaloControls() {
+    return (
+        <>
+            <style dangerouslySetInnerHTML={{ __html: HALO_CSS }} />
+            <aside aria-label="Duke controller keyboard mapping" className="halo-legend">
+                <figure className="halo-legend-figure">
+                    <img
+                        alt="Black original Xbox Duke controller"
+                        className="halo-legend-controller"
+                        src={`${HALO_DIR}/assets/ui/shell/xbox-duke-controller.png`}
+                    />
+                </figure>
+                <dl className="halo-legend-bindings">
+                    {HALO_BINDINGS.map(([label, button, key]) => (
+                        <div aria-label={label} className="halo-legend-binding" key={button}>
+                            <dt>{button}</dt>
+                            <dd>- {key}</dd>
+                        </div>
+                    ))}
+                </dl>
+            </aside>
+        </>
+    );
+}
+
 export const games: Record<string, GameEntry> = {
  	"call-of-duty-zombies": {
          name: "Call of Duty: Zombies",
@@ -57,6 +115,19 @@ export const games: Record<string, GameEntry> = {
                  width="582"
                  style={{ border: 0 }}
              />
+         )
+     },
+    "halo-combat-evolved": {
+         name: "Halo: Combat Evolved",
+         content: (
+             <>
+                 <iframe
+                     src={`${HALO_DIR}/index.html`}
+                     allow="cross-origin-isolated"
+                     style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+                 />
+                 <HaloControls />
+             </>
          )
      },
 	 "hill-climb-racing": {
@@ -239,7 +310,7 @@ export const games: Record<string, GameEntry> = {
                 src="/game/The Simpsons Hit & Run/index.html"
                 allow="cross-origin-isolated"
                 style={{ border: 0, width: "66.66vw", height: "37.5vw" }}
-/>
+            />
          )
      },
 	 "tomb-of-the-mask": {

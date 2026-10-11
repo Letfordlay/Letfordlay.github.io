@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark" />
+    <title>Halo: Combat Evolved</title>
+
+    <!-- Adds the COOP/COEP headers GitHub Pages can't send (needed for threaded WebAssembly).
+         It does nothing once the page is already cross-origin isolated. -->
+    <script src="/coi-serviceworker.js"></script>
+
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+        color: #d4efff;
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+      }
+
+      /* 16:9 box that fits the window. The game renders upside down, so it is flipped back here. */
+      canvas {
+        display: block;
+        width: min(100vw, 177.7778vh);
+        height: min(100vh, 56.25vw);
+        width: min(100vw, 177.7778dvh);
+        height: min(100dvh, 56.25vw);
+        background: #000;
+        outline: 0;
+        transform: scaleY(-1);
+      }
+
+      #loading {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        display: grid;
+        place-content: center;
+        gap: 0.8rem;
+        justify-items: center;
+        padding: 1rem;
+        background: #000;
+        text-align: center;
+      }
+
+      #loading[hidden],
+      #sound-hint[hidden] {
+        display: none;
+      }
+
+      #loading-label {
+        max-width: 28rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+      }
+
+      #loading[data-error="true"] #loading-label {
+        color: #ffb9a8;
+      }
+
+      #progress {
+        width: min(20rem, 80vw);
+        height: 0.3rem;
+        accent-color: #1dacff;
+      }
+
+      #progress[hidden] {
+        display: block;
+        visibility: hidden;
+      }
+
+      #sound-hint {
+        position: fixed;
+        left: 50%;
+        bottom: 1rem;
+        z-index: 3;
+        translate: -50% 0;
+        padding: 0.45rem 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 0.3rem;
+        background: rgba(0, 0, 0, 0.8);
+        font-size: 0.75rem;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas
+      id="canvas"
+      width="1280"
+      height="720"
+      tabindex="-1"
+      aria-label="Halo game display"
+      oncontextmenu="event.preventDefault()"
+    ></canvas>
+
+    <div id="loading" role="status" aria-live="polite">
+      <div id="loading-label">Downloading WebAssembly…</div>
+      <progress id="progress" max="100" value="0" hidden></progress>
+    </div>
+
+    <div id="sound-hint" hidden>Click anywhere to enable sound</div>
+
+    <script>
+      // Multiplayer is removed. halo.js skips installing its online module when
+      // window.HaloOnline already exists, so this stub keeps it (and its menus) out.
+      window.HaloOnline = Object.freeze({
+        runtimeReady() {},
+        host() {},
+        join() {},
+        leave() {
+          return Promise.resolve();
+        },
+      });
+
+      const canvas = document.getElementById("canvas");
+      const loadingElement = document.getElementById("loading");
+      const loadingLabel = document.getElementById("loading-label");
+      const progressElement = document.getElementById("progress");
+      const soundHint = document.getElementById("sound-hint");
+
+      let gamePresented = false;
+      let failed = false;
+      let gpuIsSoftware = false;
+      let presentationWaitToken = 0;
+      let presentationFrameRequest = 0;
+
+      function showLoading(text, isError) {
+        loadingLabel.textContent = text;
+        loadingElement.dataset.error = String(Boolean(isError));
+        loadingElement.hidden = false;
+      }
+
+      // ---- Showing the game once it is actually drawing frames ----
+
+      function revealPresentedGame(token) {
+        if (gamePresented || token !== presentationWaitToken) return;
+        gamePresented = true;
+        loadingElement.hidden = true;
+        progressElement.hidden = true;
+        setGameUnmuted();
+        refreshSoundHint();
+      }
+
+      function waitForPresentedGame() {
+        if (gamePresented || presentationFrameRequest) return;
+        const token = ++presentationWaitToken;
+        let first = null;
+        let stableSince = 0;
+
+        const tick = (now) => {
+          presentationFrameRequest = 0;
+          if (gamePresented || token !== presentationWaitToken) return;
+
+          const loops = Module._platform_web_profile_loops;
+          const swaps = Module._platform_web_profile_swaps;
+          if (typeof loops !== "function" || typeof swaps !== "function") {
+            presentationFrameRequest = requestAnimationFrame(tick);
+            return;
+          }
+
+          const sample = { loops: loops(), swaps: swaps() };
+          if (
+            !first ||
+            sample.loops < first.loops ||
+            sample.swaps < first.swaps
+          ) {
+            first = sample;
+            stableSince = 0;
+          } else {
+            const dLoops = sample.loops - first.loops;
+            const dSwaps = sample.swaps - first.swaps;
+            if (dLoops > 0 && dSwaps > 0 && !stableSince) stableSince = now;
+            if (
+              stableSince &&
+              dLoops >= 4 &&
+              dSwaps >= 2 &&
+              now - stableSince >= 140
+            ) {
+              revealPresentedGame(token);
+              return;
+            }
+          }
+          presentationFrameRequest = requestAnimationFrame(tick);
+        };
+
+        loadingElement.hidden = false;
+        presentationFrameRequest = requestAnimationFrame(tick);
+      }
+
+      function cancelPresentedGameWait() {
+        presentationWaitToken++;
+        if (presentationFrameRequest)
+          cancelAnimationFrame(presentationFrameRequest);
+        presentationFrameRequest = 0;
+      }
+
+      // ---- Loading / error status coming from the runtime ----
+
+      function setStatus(text) {
+        if (!text) {
+          if (!gamePresented) {
+            showLoading("Starting display…");
+            progressElement.hidden = true;
+            waitForPresentedGame();
+          }
+          return;
+        }
+
+        const isFailure = /^(Could not start:|Aborted:)/i.test(text);
+        if (gamePresented && !isFailure) return;
+
+        if (isFailure) {
+          failed = true;
+          cancelPresentedGameWait();
+        }
+
+        showLoading(
+          gpuIsSoftware && !failed
+            ? "Graphics acceleration appears to be off — enable it in your browser settings."
+            : text,
+          isFailure,
+        );
+
+        const match = text.match(/([^(]+)\((\d+(?:\.\d+)?)\/(\d+)\)/);
+        if (match) {
+          progressElement.hidden = false;
+          progressElement.value = Number(match[2]);
+          progressElement.max = Number(match[3]);
+        } else {
+          progressElement.hidden = true;
+        }
+      }
+
+      // ---- Sound: always on ----
+
+      function gameAudioContext() {
+        const ctx =
+          typeof Module !== "undefined" &&
+          Module.SDL3 &&
+          Module.SDL3.audioContext;
+        return ctx && typeof ctx.resume === "function" ? ctx : null;
+      }
+
+      function setGameUnmuted() {
+        if (
+          typeof Module !== "undefined" &&
+          typeof Module._platform_web_set_muted === "function"
+        ) {
+          Module._platform_web_set_muted(0);
+        }
+      }
+
+      function refreshSoundHint() {
+        const ctx = gameAudioContext();
+        soundHint.hidden = !(gamePresented && ctx && ctx.state !== "running");
+      }
+
+      // Browsers keep audio suspended until the user interacts with the page.
+      function resumeGameAudio() {
+        const ctx = gameAudioContext();
+        if (ctx && ctx.state !== "running") {
+          try {
+            Promise.resolve(ctx.resume()).then(
+              refreshSoundHint,
+              refreshSoundHint,
+            );
+          } catch (_) {}
+        }
+        refreshSoundHint();
+      }
+
+      ["pointerdown", "keydown", "touchstart"].forEach((type) => {
+        window.addEventListener(type, resumeGameAudio, { capture: true });
+      });
+      window.setInterval(refreshSoundHint, 500);
+
+      // ---- Input ----
+
+      function focusCanvas() {
+        try {
+          canvas.focus({ preventScroll: true });
+        } catch (_) {
+          canvas.focus();
+        }
+      }
+
+      canvas.addEventListener("pointerdown", () => {
+        focusCanvas();
+        resumeGameAudio();
+      });
+
+      // Click the game to capture the mouse (Esc releases it).
+      canvas.addEventListener("click", () => {
+        if (
+          document.pointerLockElement === canvas ||
+          !canvas.requestPointerLock
+        )
+          return;
+        try {
+          const request = canvas.requestPointerLock();
+          if (request && typeof request.catch === "function")
+            request.catch(() => {});
+        } catch (_) {}
+      });
+
+      // Tab is the Y button, so keep it from moving browser focus while playing.
+      document.addEventListener("keydown", (event) => {
+        const playing =
+          document.pointerLockElement === canvas ||
+          document.activeElement === canvas;
+        if (event.key === "Tab" && playing) event.preventDefault();
+      });
+
+      canvas.addEventListener("webglcontextlost", (event) => {
+        event.preventDefault();
+        cancelPresentedGameWait();
+        gamePresented = false;
+        showLoading("WebGL context lost — reload the page to continue.", true);
+        progressElement.hidden = true;
+      });
+
+      if (!window.crossOriginIsolated) {
+        console.warn(
+          "This page needs COOP/COEP headers for threaded WebAssembly.",
+        );
+      }
+
+      // ---- Emscripten module (halo.js reads this) ----
+
+      var Module = {
+        canvas: canvas,
+        print: (...args) => {
+          const text = args.join(" ");
+          if (!text.startsWith("HALO_PERF:")) console.log(...args);
+        },
+        printErr: (...args) => {
+          console.error(...args);
+          const text = args.join(" ");
+          if (text.startsWith("halo-linux: OpenGL ")) {
+            gpuIsSoftware =
+              /swiftshader|llvmpipe|software raster|software renderer/i.test(
+                text,
+              );
+            showLoading(
+              gpuIsSoftware
+                ? "Graphics acceleration appears to be off — enable it in your browser settings."
+                : "Starting renderer…",
+            );
+            waitForPresentedGame();
+          }
+        },
+        setStatus: setStatus,
+        totalDependencies: 0,
+        monitorRunDependencies(remaining) {
+          this.totalDependencies = Math.max(this.totalDependencies, remaining);
+          setStatus(
+            remaining
+              ? `Preparing files… (${this.totalDependencies - remaining}/${this.totalDependencies})`
+              : "Starting Halo…",
+          );
+        },
+        onRuntimeInitialized() {
+          setGameUnmuted();
+          setStatus("Starting Halo…");
+          waitForPresentedGame();
+        },
+        onAbort(reason) {
+          setStatus(`Aborted: ${reason || "the runtime stopped"}`);
+        },
+      };
+
+      // ---- Global error handling ----
+
+      function isIgnorableFailure(message, stack) {
+        const text = `${message || ""}\n${stack || ""}`;
+        return (
+          /pointer lock/i.test(text) ||
+          text.includes(
+            "If you see this error we have a bug. Please report this bug to chromium.",
+          ) ||
+          /\b(?:chrome|moz|safari|safari-web|ms-browser)-extension:\/\//i.test(
+            text,
+          ) ||
+          /webkit-masked-url:\/\//i.test(text) ||
+          /metamask/i.test(text)
+        );
+      }
+
+      window.addEventListener("error", (event) => {
+        const message = event.message || "see the browser console";
+        const stack =
+          event.error && event.error.stack ? event.error.stack : event.filename;
+        if (isIgnorableFailure(message, stack)) {
+          event.preventDefault();
+          return;
+        }
+        setStatus(`Could not start: ${message}`);
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        const message =
+          event.reason && event.reason.message
+            ? event.reason.message
+            : String(event.reason);
+        const stack =
+          event.reason && event.reason.stack ? event.reason.stack : "";
+        if (isIgnorableFailure(message, stack)) {
+          event.preventDefault();
+          return;
+        }
+        setStatus(`Could not start: ${message}`);
+      });
+    </script>
+    <script async src="halo.js"></script>
+  </body>
+</html>
