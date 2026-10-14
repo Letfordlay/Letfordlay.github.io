@@ -1,0 +1,11 @@
+{
+ "version": 1,
+ "files": {
+  "zone/Common/zombie_cod5_sumpf.ff": {
+   "size": 108813626,
+   "chunk": 94371840,
+   "parts": 2,
+   "sha256": "88d796f7a86112ab6f460d70f32f412b5f05f7796a1128fa7b26e4122f49a055"
+  }
+ }
+}

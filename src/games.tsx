@@ -62,12 +62,21 @@ function HaloControls() {
 }
 
 export const games: Record<string, GameEntry> = {
- 	"call-of-duty-zombies": {
-         name: "Call of Duty: Zombies",
+ 	"call-of-duty-black-ops-zombies": {
+         name: "Call of Duty: Black Ops - Zombies",
+         content: (
+ 			<iframe
+ 				src="/game/Call of Duty Black Ops - Zombies/index.html"
+ 				style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
+ 			/>
+         )
+     },
+ 	"call-of-duty-nazi-zombies": {
+         name: "Call of Duty: Nazi Zombies",
          content: (
              <>
  				<iframe
- 					src="/game/Call of Duty Zombies/index.html"
+ 					src="/game/Nazi Zombies/index.html"
  					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
  				/>
  

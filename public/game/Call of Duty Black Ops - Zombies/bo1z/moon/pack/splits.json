@@ -1,0 +1,11 @@
+{
+ "version": 1,
+ "files": {
+  "zone/Common/zombie_moon.ff": {
+   "size": 113690716,
+   "chunk": 94371840,
+   "parts": 2,
+   "sha256": "d2d89082b53f56d74922e8c691fb43557783c424165d1a7ba2c22049f7e2c352"
+  }
+ }
+}
