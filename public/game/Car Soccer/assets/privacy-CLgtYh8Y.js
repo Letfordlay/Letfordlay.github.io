@@ -1,0 +1,1 @@
+import{d as o,c as n}from"./persisted-sODZFpJB.js";const l=o("car-soccer.analytics-consent.v1",()=>({enabled:!0}),(a,e)=>{a.enabled=n(e.enabled,!1)}),r=()=>l.load().enabled&&navigator.doNotTrack!=="1"&&!navigator.globalPrivacyControl;export{l as A,r as a};
