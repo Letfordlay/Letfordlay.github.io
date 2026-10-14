@@ -292,17 +292,6 @@ export const games: Record<string, GameEntry> = {
                  </>
          )
      },
-    "super-stacker-3": {
-        name: "Super Stacker 3",
-        content: (
-            <object>
-                <embed 
-					src="/game/Super Stacker 3/index.html"
-					style={{ "border" : "0", "width" : "66.66vw", "height" : "37.5vw" }}
-				/>
-            </object>
-        )
-    },
      "the-simpsons-hit-and-run": {
          name: "The Simpsons: Hit & Run",
          content: (
